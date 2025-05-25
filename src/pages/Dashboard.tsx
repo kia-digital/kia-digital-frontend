@@ -8,16 +8,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-// Assets
-import dashboardIcon from "../assets/dashboard.svg";
-import dashboardActiveIcon from "../assets/dashboard_active.svg";
-import calendarIcon from "../assets/calendar.svg";
-import calendarActiveIcon from "../assets/calendar_active.svg";
-import pemeriksaanIcon from "../assets/pemeriksaan.svg";
-import pemeriksaanActiveIcon from "../assets/pemeriksaan_active.svg";
-import edukasiIcon from "../assets/edukasi.svg";
-import edukasiActiveIcon from "../assets/edukasi_active.svg";
+import Sidebar from "../components/Sidebar";
 
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
@@ -91,85 +82,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-sm">
-        {/* Logo */}
-        <div className="p-6 border-b">
-          <div className="flex items-center space-x-3">
-            <FontAwesomeIcon
-              icon={faBabyCarriage}
-              className="text-pink-400 text-5xl"
-            />
-            <div className="leading-tight">
-              <span className="font-bold text-lg text-gradient-primary">
-                Kesehatan
-              </span>
-              <br />
-              <span className="font-bold text-lg text-gradient-primary">
-                Ibu dan Anak
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-pink-500 bg-pink-50 rounded-lg border-l-4 border-pink-500"
-              >
-                <img
-                  src={dashboardIcon}
-                  alt="Dashboard Icon"
-                  className="w-6 h-6 bg-primary-color"
-                />
-                <span className="font-medium">Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <img
-                  src={calendarIcon}
-                  alt="Calendar Icon"
-                  className="w-6 h-6 bg-primary-color"
-                />
-                <span>Kalender</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <img
-                  src={pemeriksaanIcon}
-                  alt="Pemeriksaan Icon"
-                  className="w-6 h-6 bg-primary-color"
-                />
-                <span>Pemeriksaan</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <img
-                  src={edukasiIcon}
-                  alt="Edukasi Icon"
-                  className="w-6 h-6 bg-primary-color"
-                />
-                <span>Edukasi</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 p-8">
