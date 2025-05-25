@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import {
-  faHome,
   faCalendarAlt,
   faFileAlt,
   faGraduationCap,
-  faUser,
   faBabyCarriage,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// Assets
+import dashboardIcon from "../assets/dashboard.svg";
+import dashboardActiveIcon from "../assets/dashboard_active.svg";
+import calendarIcon from "../assets/calendar.svg";
+import calendarActiveIcon from "../assets/calendar_active.svg";
+import pemeriksaanIcon from "../assets/pemeriksaan.svg";
+import pemeriksaanActiveIcon from "../assets/pemeriksaan_active.svg";
+import edukasiIcon from "../assets/edukasi.svg";
+import edukasiActiveIcon from "../assets/edukasi_active.svg";
 
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
@@ -93,9 +101,11 @@ const Dashboard = () => {
               className="text-pink-400 text-5xl"
             />
             <div className="leading-tight">
-              <span className="font-bold text-pink-400 text-lg">Kesehatan</span>
+              <span className="font-bold text-lg text-gradient-primary">
+                Kesehatan
+              </span>
               <br />
-              <span className="font-bold text-pink-400 text-lg">
+              <span className="font-bold text-lg text-gradient-primary">
                 Ibu dan Anak
               </span>
             </div>
@@ -110,7 +120,11 @@ const Dashboard = () => {
                 href="#"
                 className="flex items-center space-x-3 px-4 py-3 text-pink-500 bg-pink-50 rounded-lg border-l-4 border-pink-500"
               >
-                <FontAwesomeIcon icon={faHome} size="lg" />
+                <img
+                  src={dashboardIcon}
+                  alt="Dashboard Icon"
+                  className="w-6 h-6 bg-primary-color"
+                />
                 <span className="font-medium">Dashboard</span>
               </a>
             </li>
@@ -119,7 +133,11 @@ const Dashboard = () => {
                 href="#"
                 className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
               >
-                <FontAwesomeIcon icon={faCalendarAlt} size="lg" />
+                <img
+                  src={calendarIcon}
+                  alt="Calendar Icon"
+                  className="w-6 h-6 bg-primary-color"
+                />
                 <span>Kalender</span>
               </a>
             </li>
@@ -128,7 +146,11 @@ const Dashboard = () => {
                 href="#"
                 className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
               >
-                <FontAwesomeIcon icon={faFileAlt} size="lg" />
+                <img
+                  src={pemeriksaanIcon}
+                  alt="Pemeriksaan Icon"
+                  className="w-6 h-6 bg-primary-color"
+                />
                 <span>Pemeriksaan</span>
               </a>
             </li>
@@ -137,7 +159,11 @@ const Dashboard = () => {
                 href="#"
                 className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
               >
-                <FontAwesomeIcon icon={faGraduationCap} size="lg" />
+                <img
+                  src={edukasiIcon}
+                  alt="Edukasi Icon"
+                  className="w-6 h-6 bg-primary-color"
+                />
                 <span>Edukasi</span>
               </a>
             </li>
