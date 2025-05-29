@@ -13,6 +13,17 @@ import Sidebar from "../components/Sidebar";
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
 
+  interface InfoCard {
+    id: number;
+    title: string;
+  }
+
+  const infoCards: InfoCard[] = [
+    { id: 1, title: "Imunisasi" },
+    { id: 2, title: "Asupan Gizi" },
+    { id: 3, title: "Kesehatan Mental" },
+  ];
+
   // Generate calendar days
   const generateCalendarDays = () => {
     const year = currentDate.getFullYear();
@@ -103,49 +114,43 @@ const Dashboard = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Carousel Info Cards */}
             <div>
-              <h2 className="text-xl font-semibold mb-4 text-center">
-                carosel info card
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-xl p-6 shadow-sm border">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
-                    <div>
-                      <p className="text-sm text-gray-500">Tentang</p>
-                      <p className="font-semibold">Imunisasi</p>
+              <div className="bg-white rounded-xl shadow-sm border mb-6 h-[270px] flex items-center justify-center">
+                <h2 className="text-xl font-semibold mb-4 text-center">
+                  carosel info card
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {infoCards.map((card) => (
+                  <div
+                    key={card.id}
+                    className="bg-white rounded-xl shadow-sm border flex justify-center items-center h-32 hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-4 w-40">
+                      <div className="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0"></div>
+                      <div>
+                        <p className="text-sm text-gray-500">Tentang</p>
+                        <p className="font-semibold">{card.title}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="bg-white rounded-xl p-6 shadow-sm border">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
-                    <div>
-                      <p className="text-sm text-gray-500">Tentang</p>
-                      <p className="font-semibold">Asupan Gizi</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white rounded-xl p-6 shadow-sm border">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
-                    <div>
-                      <p className="text-sm text-gray-500">Tentang</p>
-                      <p className="font-semibold">Kesehatan Mental</p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
             {/* Articles Section */}
-            <div>
-              <div className="flex justify-between items-center mb-6">
-                <button className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
-                  <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-                </button>
-                <button className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
-                  <FontAwesomeIcon icon={faChevronRight} size="sm" />
-                </button>
+            <div className="lg:col-span-1 space-y-6">
+              <div className="flex justify-between">
+                <h2 className="text-xl text-primary font-bold">
+                  Artikel Minggu Ini
+                </h2>
+                <div className="flex justify-between items-center">
+                  <button className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+                    <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                  </button>
+                  <button className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+                    <FontAwesomeIcon icon={faChevronRight} size="sm" />
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

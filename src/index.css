@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"); /* <--- Tambahkan ini */
 @import "tailwindcss";
 
 @theme {
@@ -80,6 +81,11 @@
   --color-secondary: #677487;
   --color-tertiary: #98a2b3;
   --color-accent: #d4dbea;
+}
+
+/* Cara paling umum untuk mengatur font default */
+body {
+  font-family: "Poppins", sans-serif; /* <--- Tambahkan atau modifikasi ini */
 }
 
 .bg-gradient {
