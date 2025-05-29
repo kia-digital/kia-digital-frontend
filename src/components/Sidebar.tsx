@@ -19,146 +19,88 @@ function Sidebar() {
     return null;
   }
   const { activeTab, setActiveTab } = context;
+  const menuItems = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: dashboardIcon,
+      activeIcon: dashboardActiveIcon,
+    },
+    {
+      id: "calendar",
+      label: "Kalender",
+      icon: calendarIcon,
+      activeIcon: calendarActiveIcon,
+    },
+    {
+      id: "pemeriksaan",
+      label: "Pemeriksaan",
+      icon: pemeriksaanIcon,
+      activeIcon: pemeriksaanActiveIcon,
+    },
+    {
+      id: "edukasi",
+      label: "Edukasi",
+      icon: edukasiIcon,
+      activeIcon: edukasiActiveIcon,
+    },
+  ];
+
   return (
-    <>
-      <div className="w-64 bg-white shadow-sm">
-        {/* Logo */}
-        <div className="p-6 border-b">
-          <div className="flex items-center space-x-3">
-            <img src={strollerIcon} alt="Stroller Icon" className="text-5xl" />
-            <div className="leading-tight">
-              <span className="font-bold text-lg text-gradient-primary">
-                Kesehatan
-              </span>
-              <br />
-              <span className="font-bold text-lg text-gradient-primary">
-                Ibu dan Anak
-              </span>
-            </div>
-          </div>
+    <div className="w-64 bg-gray-50 min-h-screen shadow-lg">
+      {/* Logo Section */}
+      <div className="p-6 pb-8">
+        <div className="flex items-center space-x-3">
+          <img src={strollerIcon} alt="Stroller Icon" className="w-10 h-10" />
+          <h1 className="font-bold text-lg text-gradient leading-tight">
+            <span className="block">Kesehatan</span>
+            <span className="block">Ibu dan Anak</span>
+          </h1>
         </div>
-        <nav className="mt-6">
-          <ul className="space-y-2 px-4">
-            <li>
-              <a
-                href="#"
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${
-                  activeTab === "dashboard"
-                    ? "text-pink-500 bg-pink-50 border-l-4 border-pink-500"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-                onClick={() => setActiveTab("dashboard")}
-              >
-                <img
-                  src={
-                    activeTab === "dashboard"
-                      ? dashboardActiveIcon
-                      : dashboardIcon
-                  }
-                  alt="Dashboard Icon"
-                  className="w-6 h-6"
-                />
-                <span
-                  className={
-                    activeTab === "dashboard"
-                      ? "font-medium text-gradient-primary"
-                      : "text-[var(--tertiary-color)]"
-                  }
-                >
-                  Dashboard
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${
-                  activeTab === "calendar"
-                    ? "text-pink-500 bg-pink-50 border-l-4 border-pink-500"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-                onClick={() => setActiveTab("calendar")}
-              >
-                <img
-                  src={
-                    activeTab === "calendar" ? calendarActiveIcon : calendarIcon
-                  }
-                  alt="Calendar Icon"
-                  className="w-6 h-6"
-                />
-                <span
-                  className={
-                    activeTab === "calendar"
-                      ? "font-medium text-gradient-primary"
-                      : "text-[var(--tertiary-color)]"
-                  }
-                >
-                  Calendar
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${
-                  activeTab === "pemeriksaan"
-                    ? "text-pink-500 bg-pink-50 border-l-4 border-pink-500"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-                onClick={() => setActiveTab("pemeriksaan")}
-              >
-                <img
-                  src={
-                    activeTab === "pemeriksaan"
-                      ? pemeriksaanActiveIcon
-                      : pemeriksaanIcon
-                  }
-                  alt="Pemeriksaan Icon"
-                  className="w-6 h-6"
-                />
-                <span
-                  className={
-                    activeTab === "pemeriksaan"
-                      ? "font-medium text-gradient-primary"
-                      : "text-[var(--tertiary-color)]"
-                  }
-                >
-                  Pemeriksaan
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${
-                  activeTab === "edukasi"
-                    ? "text-pink-500 bg-pink-50 border-l-4 border-pink-500"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-                onClick={() => setActiveTab("edukasi")}
-              >
-                <img
-                  src={
-                    activeTab === "edukasi" ? edukasiActiveIcon : edukasiIcon
-                  }
-                  alt="Edukasi Icon"
-                  className="w-6 h-6"
-                />
-                <span
-                  className={
-                    activeTab === "edukasi"
-                      ? "font-medium text-gradient-primary"
-                      : "text-[var(--tertiary-color)]"
-                  }
-                >
-                  Edukasi
-                </span>
-              </a>
-            </li>
-          </ul>
-        </nav>
       </div>
-    </>
+
+      {/* Navigation */}
+      <nav className="pl-2 space-y-2">
+        {menuItems.map((item) => {
+          const isActive = activeTab === item.id;
+
+          return (
+            <div key={item.id} className="relative">
+              <button
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? "text-pink-600" // State aktif: Latar + Teks Pink
+                    : "text-gray-500 hover:bg-pink-50 hover:text-pink-600" // State non-aktif + Efek Hover
+                }`}
+              >
+                <img
+                  src={isActive ? item.activeIcon : item.icon}
+                  alt={`${item.label} Icon`}
+                  className="w-5 h-5"
+                />
+                <span
+                  className={`font-medium ${
+                    isActive ? "text-gradient" : "text-gray-600"
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </button>
+              {/* Active indicator line */}
+              {isActive && (
+                <div className="absolute right-0 top-0 bottom-0 w-1 bg-primary-500 rounded-l-full"></div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* Bottom section for additional content if needed */}
+      <div className="mt-auto p-4">
+        {/* You can add user profile or other content here */}
+      </div>
+    </div>
   );
 }
 
