@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+:root {
+  --primary-color: #ff6fb3;
+  --secondary-color: #fbd333;
+  --tertiary-color: #98a2b3;
+  --success-color: #32d583;
+  --danger-color: #f45959;
+  --info-color: #2d68f8;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(to right, #ff65ae 0%, #ff8bc7 50%, #ff6fb3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

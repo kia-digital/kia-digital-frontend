@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import {
-  faHome,
   faCalendarAlt,
   faFileAlt,
   faGraduationCap,
-  faUser,
   faBabyCarriage,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Sidebar from "../components/Sidebar";
 
 const Dashboard = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
@@ -83,67 +82,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-sm">
-        {/* Logo */}
-        <div className="p-6 border-b">
-          <div className="flex items-center space-x-3">
-            <FontAwesomeIcon
-              icon={faBabyCarriage}
-              className="text-pink-400 text-5xl"
-            />
-            <div className="leading-tight">
-              <span className="font-bold text-pink-400 text-lg">Kesehatan</span>
-              <br />
-              <span className="font-bold text-pink-400 text-lg">
-                Ibu dan Anak
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-pink-500 bg-pink-50 rounded-lg border-l-4 border-pink-500"
-              >
-                <FontAwesomeIcon icon={faHome} size="lg" />
-                <span className="font-medium">Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <FontAwesomeIcon icon={faCalendarAlt} size="lg" />
-                <span>Kalender</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <FontAwesomeIcon icon={faFileAlt} size="lg" />
-                <span>Pemeriksaan</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} size="lg" />
-                <span>Edukasi</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 p-8">
