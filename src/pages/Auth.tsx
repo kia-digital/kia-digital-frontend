@@ -1,373 +1,344 @@
 import React, { useState } from "react";
-import type { ChangeEvent, FormEvent, ReactElement } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHeart,
+  faEye,
+  faEyeSlash,
+  faSpinner,
+  faEnvelope,
+  faLock,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import AuthService from "../services/AuthService";
 
-// Interface for the AppIcon props (if any were needed)
-interface AppIconProps {}
-
-// Placeholder for an icon, you can replace this with an actual SVG or an icon library
-const AppIcon: React.FC<AppIconProps> = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-8 w-8 text-white"
-    viewBox="0 0 20 20"
-    fill="currentColor"
-  >
-    <path
-      fillRule="evenodd"
-      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
-// Interface for the return type of useFormInput
-interface FormInputHook {
-  value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+// Definisikan tipe data untuk form
+interface FormData {
+  name?: string; // Opsional, hanya untuk registrasi
+  email: string;
+  password: string;
 }
 
-// Custom hook for form input handling with TypeScript
-const useFormInput = (initialValue: string): FormInputHook => {
-  const [value, setValue] = useState<string>(initialValue);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setValue(e.target.value);
-  return { value, onChange: handleChange, setValue };
-};
+const Auth: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [errors, setErrors] = useState<string[]>([]);
+  // Inisialisasi React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: formErrors },
+    reset, // Untuk mereset form setelah berpindah tab
+  } = useForm<FormData>();
+  // Mengubah tab dan mereset form
+  const handleTabChange = (tab: "login" | "register") => {
+    setActiveTab(tab);
+    setMessage("");
+    setErrors([]);
+    reset(); // Reset form dan error saat berganti tab
+  };
+  // Fungsi untuk menangani submit form
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setIsLoading(true);
+    setMessage("");
+    setErrors([]);
 
-// Interface for the message state
-interface MessageState {
-  text: string;
-  type: "error" | "success" | "";
-}
+    try {
+      if (activeTab === "login") {
+        const response = await AuthService.login({
+          email: data.email,
+          password: data.password,
+        });
 
-export default function Auth(): ReactElement {
-  const [activeForm, setActiveForm] = useState<"login" | "register">("login");
-  const [message, setMessage] = useState<MessageState>({ text: "", type: "" });
+        console.log("Response: ", response);
 
-  // Login form states
-  const loginEmail = useFormInput("");
-  const loginPassword = useFormInput("");
+        if (response.detail.status === "success") {
+          setMessage("Login successful!");
+          alert("Login successful! Redirecting to dashboard...");
+          // TODO: Redirect to dashboard
+        } else {
+          setMessage(response.detail.message);
+        }
+      } else {
+        const response = await AuthService.register({
+          name: data.name || "",
+          email: data.email,
+          password: data.password,
+        });
 
-  // Registration form states
-  const registerName = useFormInput("");
-  const registerEmail = useFormInput("");
-  const registerPassword = useFormInput("");
-  const confirmPassword = useFormInput("");
+        if (response.status === "success") {
+          setMessage("Registration successful! Please login.");
+          reset();
+          setActiveTab("login");
+        } else {
+          setMessage(response.message);
+          if (response.errors && response.errors.length > 0) {
+            setErrors(response.errors);
+          }
+        }
+      }
+    } catch (error: any) {
+      console.error(`${activeTab} error:`, error);
+      if (error.response?.data?.message) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage(
+          `${
+            activeTab === "login" ? "Login" : "Registration"
+          } failed. Please try again.`
+        );
+      }
 
-  const showMessage = (
-    text: string,
-    type: "error" | "success" = "error",
-    duration: number = 3000
-  ): void => {
-    setMessage({ text, type });
-    setTimeout(() => {
-      setMessage({ text: "", type: "" });
-    }, duration);
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLoginSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (!loginEmail.value || !loginPassword.value) {
-      showMessage("Please fill in all login fields.");
-      return;
-    }
-    console.log("Login submitted:", {
-      email: loginEmail.value,
-      password: loginPassword.value,
-    });
-    showMessage(
-      `Login attempt with ${loginEmail.value}. Check console. (Implement actual login logic)`,
-      "success"
-    );
-    loginEmail.setValue("");
-    loginPassword.setValue("");
+  const handleForgotPassword = () => {
+    alert("Password reset link would be sent to your email");
   };
 
-  const handleRegisterSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (
-      !registerName.value ||
-      !registerEmail.value ||
-      !registerPassword.value ||
-      !confirmPassword.value
-    ) {
-      showMessage("Please fill in all registration fields.");
-      return;
-    }
-    if (registerPassword.value !== confirmPassword.value) {
-      showMessage("Passwords do not match!");
-      return;
-    }
-    console.log("Registration submitted:", {
-      name: registerName.value,
-      email: registerEmail.value,
-      password: registerPassword.value,
-    });
-    showMessage(
-      `Registration attempt for ${registerName.value}. Check console. (Implement actual registration logic)`,
-      "success"
-    );
-    registerName.setValue("");
-    registerEmail.setValue("");
-    registerPassword.setValue("");
-    confirmPassword.setValue("");
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
-
-  const commonInputClasses: string =
-    "w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors duration-300 placeholder-gray-400";
-  const commonButtonClasses: string =
-    "w-full bg-pink-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-105";
 
   return (
-    // Added font-poppins to the main div and ensured body has it too.
-    <div className="bg-pink-50 flex items-center justify-center min-h-screen p-4 selection:bg-pink-200 selection:text-pink-800 font-poppins">
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        /* Import Poppins font */
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
-
-        body {
-          font-family: "Poppins", sans-serif; /* Apply Poppins to body */
-        }
-
-        .form-container::before {
-          content: "";
-          position: absolute;
-          top: -50px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100px;
-          height: 100px;
-          background-color: #fce7f3; /* pink-100 */
-          border-radius: 50%;
-          filter: blur(40px);
-          opacity: 0.7;
-          z-index: -1;
-        }
-        /* Ensure Tailwind's font-poppins class works if defined in tailwind.config.js */
-        .font-poppins {
-          font-family: "Poppins", sans-serif;
-        }
-      `,
-        }}
-      />
-
-      <div className="bg-white p-8 md:p-12 rounded-xl shadow-2xl w-full max-w-md relative form-container">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center bg-pink-600 p-3 rounded-full mb-3 shadow-md">
-            <AppIcon />
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-pink-500 rounded-full mb-4">
+              <FontAwesomeIcon icon={faHeart} className="text-white text-2xl" />
+            </div>
+            <h1 className="text-2xl font-bold text-pink-600 mb-2">
+              Aplikasi KIA Digital
+            </h1>
+            <p className="text-gray-600">
+              Welcome! Please sign in or create an account.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-pink-700">My Health App</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Welcome! Please sign in or create an account.
-          </p>
-        </div>
 
-        {message.text && (
-          <div
-            className={`mb-4 p-3 rounded-md text-sm text-center ${
-              message.type === "error"
-                ? "bg-red-100 text-red-700"
-                : "bg-green-100 text-green-700"
-            }`}
-          >
-            {message.text}
+          {/* Tab Navigation */}
+          <div className="flex mb-6">
+            <button
+              type="button"
+              onClick={() => handleTabChange("login")}
+              className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+                activeTab === "login"
+                  ? "text-pink-600 border-b-2 border-pink-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange("register")}
+              className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+                activeTab === "register"
+                  ? "text-pink-600 border-b-2 border-pink-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Register
+            </button>{" "}
           </div>
-        )}
 
-        <div className="mb-6 flex border-b border-gray-200">
-          <button
-            className={`flex-1 py-3 px-2 text-center font-semibold focus:outline-none transition-colors duration-300 ${
-              activeForm === "login"
-                ? "text-pink-600 border-b-2 border-pink-600"
-                : "text-gray-500 hover:text-pink-500"
-            }`}
-            onClick={() => {
-              setActiveForm("login");
-              setMessage({ text: "", type: "" });
-            }}
-          >
-            Login
-          </button>
-          <button
-            className={`flex-1 py-3 px-2 text-center font-semibold focus:outline-none transition-colors duration-300 ${
-              activeForm === "register"
-                ? "text-pink-600 border-b-2 border-pink-600"
-                : "text-gray-500 hover:text-pink-500"
-            }`}
-            onClick={() => {
-              setActiveForm("register");
-              setMessage({ text: "", type: "" });
-            }}
-          >
-            Register
-          </button>
-        </div>
+          {/* Message and Error Display */}
+          {message && (
+            <div
+              className={`mb-4 p-3 rounded-lg ${
+                message.includes("successful")
+                  ? "bg-green-50 text-green-700 border border-green-200"
+                  : "bg-red-50 text-red-700 border border-red-200"
+              }`}
+            >
+              {message}
+            </div>
+          )}
 
-        {activeForm === "login" && (
-          <form onSubmit={handleLoginSubmit} className="space-y-6">
-            <div>
+          {errors.length > 0 && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 border border-red-200">
+              <ul className="list-disc list-inside space-y-1">
+                {errors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Form - Menggunakan handleSubmit dari React Hook Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name Field (Hanya untuk Register) */}
+            {activeTab === "register" && (
+              <div className="relative">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Name
+                </label>
+                <div className="absolute left-3 top-10 text-gray-400">
+                  <FontAwesomeIcon icon={faUser} />
+                </div>
+                <input
+                  id="name"
+                  {...register("name", { required: "Name is required" })}
+                  placeholder="Your Name"
+                  className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
+                    formErrors.name
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                />
+                {formErrors.name && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formErrors.name.message}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Email Field */}
+            <div className="relative">
               <label
-                htmlFor="loginEmail"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Email Address
               </label>
+              <div className="absolute left-3 top-10 text-gray-400">
+                <FontAwesomeIcon icon={faEnvelope} />
+              </div>
               <input
                 type="email"
-                id="loginEmail"
-                name="loginEmail"
-                required
-                className={commonInputClasses}
+                id="email"
+                {...register("email", {
+                  required: "Email address is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Please enter a valid email address",
+                  },
+                })}
                 placeholder="you@example.com"
-                value={loginEmail.value}
-                onChange={loginEmail.onChange}
+                className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
+                  formErrors.email
+                    ? "border-red-500 bg-red-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
               />
+              {formErrors.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {formErrors.email.message}
+                </p>
+              )}
             </div>
+
+            {/* Password Field */}
             <div>
-              <div className="flex justify-between items-center mb-1">
+              <div className="flex justify-between items-center mb-2">
                 <label
-                  htmlFor="loginPassword"
+                  htmlFor="password"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Password
                 </label>
-                <a
-                  href="#"
-                  className="text-xs text-pink-600 hover:text-pink-500 hover:underline"
-                >
-                  Forgot password?
-                </a>
+                {activeTab === "login" && (
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-sm text-pink-600 hover:text-pink-700 font-medium"
+                  >
+                    Forgot password?
+                  </button>
+                )}
               </div>
-              <input
-                type="password"
-                id="loginPassword"
-                name="loginPassword"
-                required
-                className={commonInputClasses}
-                placeholder="••••••••"
-                value={loginPassword.value}
-                onChange={loginPassword.onChange}
-              />
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  <FontAwesomeIcon icon={faLock} />
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
+                  placeholder="••••••••"
+                  className={`w-full px-10 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
+                    formErrors.password
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                </button>
+              </div>
+              {formErrors.password && (
+                <p className="mt-1 text-sm text-red-600">
+                  {formErrors.password.message}
+                </p>
+              )}
             </div>
-            <div>
-              <button type="submit" className={commonButtonClasses}>
-                Sign In
-              </button>
-            </div>
-            <p className="text-sm text-center text-gray-600">
-              Don't have an account?{" "}
-              <button
-                type="button"
-                className="font-medium text-pink-600 hover:text-pink-500 hover:underline"
-                onClick={() => {
-                  setActiveForm("register");
-                  setMessage({ text: "", type: "" });
-                }}
-              >
-                Register here
-              </button>
-            </p>
-          </form>
-        )}
 
-        {activeForm === "register" && (
-          <form onSubmit={handleRegisterSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="registerName"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="registerName"
-                name="registerName"
-                required
-                className={commonInputClasses}
-                placeholder="Your Name"
-                value={registerName.value}
-                onChange={registerName.onChange}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="registerEmail"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="registerEmail"
-                name="registerEmail"
-                required
-                className={commonInputClasses}
-                placeholder="you@example.com"
-                value={registerEmail.value}
-                onChange={registerEmail.onChange}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="registerPassword"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="registerPassword"
-                name="registerPassword"
-                required
-                className={commonInputClasses}
-                placeholder="Create a strong password"
-                value={registerPassword.value}
-                onChange={registerPassword.onChange}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                required
-                className={commonInputClasses}
-                placeholder="Confirm your password"
-                value={confirmPassword.value}
-                onChange={confirmPassword.onChange}
-              />
-            </div>
-            <div>
-              <button type="submit" className={commonButtonClasses}>
-                Create Account
-              </button>
-            </div>
-            <p className="text-sm text-center text-gray-600">
-              Already have an account?{" "}
+            {/* Submit Button */}
+            <button
+              type="submit" // Ubah menjadi 'submit'
+              disabled={isLoading}
+              className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
+                isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-pink-600 hover:bg-pink-700 active:transform active:scale-95"
+              }`}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <FontAwesomeIcon icon={faSpinner} className="fa-spin mr-2" />
+                  Processing...
+                </div>
+              ) : activeTab === "login" ? (
+                "Sign In"
+              ) : (
+                "Create Account"
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              {activeTab === "login"
+                ? "Don't have an account? "
+                : "Already have an account? "}
               <button
                 type="button"
-                className="font-medium text-pink-600 hover:text-pink-500 hover:underline"
-                onClick={() => {
-                  setActiveForm("login");
-                  setMessage({ text: "", type: "" });
-                }}
+                onClick={() =>
+                  handleTabChange(activeTab === "login" ? "register" : "login")
+                }
+                className="text-pink-600 hover:text-pink-700 font-medium"
               >
-                Login here
+                {activeTab === "login" ? "Register here" : "Sign in here"}
               </button>
             </p>
-          </form>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default Auth;
