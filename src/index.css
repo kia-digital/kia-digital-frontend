@@ -1,49 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"); /* <--- Tambahkan ini */
 @import "tailwindcss";
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@theme {
+  --color-brandBlue: #3b3dae;
 
-  color-scheme: light;
-  color: #213547;
-  background-color: #ffffff;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-primary-50: #fceff5;
+  --color-primary-100: #f9deeb;
+  --color-primary-200: #f4bed7;
+  --color-primary-300: #ee9dc4;
+  --color-primary-400: #e97db0;
+  --color-primary-500: #e35c9c;
+  --color-primary-600: #ba4a7f;
+  --color-primary-700: #903862;
+  --color-primary-800: #672745;
+  --color-primary-900: #3d1528;
+
+  --color-secondary-50: #faecf3;
+  --color-secondary-100: #f4dae6;
+  --color-secondary-200: #e9b5ce;
+  --color-secondary-300: #df90b5;
+  --color-secondary-400: #d46b9d;
+  --color-secondary-500: #e35c9c;
+  --color-secondary-600: #a1386a;
+  --color-secondary-700: #792a4f;
+  --color-secondary-800: #501c35;
+  --color-secondary-900: #280e1a;
+
+  --color-grey-50: #ffffff;
+  --color-grey-100: #f2f6ff;
+  --color-grey-200: #f0f4fd;
+  --color-grey-300: #d4dbea;
+  --color-grey-400: #98a2b3;
+  --color-grey-500: #667085;
+  --color-grey-600: #475467;
+  --color-grey-700: #344054;
+  --color-grey-800: #1d2939;
+  --color-grey-900: #101828;
+
+  --color-error-100: #fef0ef;
+  --color-error-200: #fee4e2;
+  --color-error-300: #fda29b;
+  --color-error-400: #f97066;
+  --color-error-500: #f04438;
+  --color-error-600: #d92d20;
+  --color-error-700: #b42318;
+  --color-error-800: #912018;
+  --color-error-900: #7a271a;
+
+  --color-warning-100: #fffaeb;
+  --color-warning-200: #fef0c7;
+  --color-warning-300: #fedf89;
+  --color-warning-400: #fec84b;
+  --color-warning-500: #fdb022;
+  --color-warning-600: #f79009;
+  --color-warning-700: #dc6803;
+  --color-warning-800: #b54708;
+  --color-warning-900: #93370d;
+
+  --color-success-100: #ecfdf3;
+  --color-success-200: #d1fadf;
+  --color-success-300: #a6f4c5;
+  --color-success-400: #6ce9a6;
+  --color-success-500: #32d583;
+  --color-success-600: #12b76a;
+  --color-success-700: #027a48;
+  --color-success-800: #05603a;
+  --color-success-900: #054f31;
+
+  --color-info-100: #edf7fe;
+  --color-info-200: #e0f2fe;
+  --color-info-300: #b9e6fe;
+  --color-info-400: #7cd4fd;
+  --color-info-500: #36bffa;
+  --color-info-600: #0ba5ec;
+  --color-info-700: #0086c9;
+  --color-info-800: #1769aa;
+  --color-info-900: #065986;
+
+  --color-primary: #1d2939;
+  --color-secondary: #677487;
+  --color-tertiary: #98a2b3;
+  --color-accent: #d4dbea;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Cara paling umum untuk mengatur font default */
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  font-family: "Poppins", sans-serif;
-  color: #213547;
-  background-color: #ffffff;
+  font-family: "Poppins", sans-serif; /* <--- Tambahkan atau modifikasi ini */
 }
 
-/* Pastikan input dan form elements memiliki warna yang tepat */
-input,
-textarea,
-select {
-  color: #213547;
+.bg-gradient {
+  background: linear-gradient(to right, #ff65ae 0%, #ff8bc7 50%, #ff6fb3 100%);
 }
 
-input::placeholder {
-  color: #9ca3af;
+.text-gradient {
+  background: linear-gradient(to right, #ff65ae 0%, #ff8bc7 50%, #ff6fb3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
-
-/* h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-} */

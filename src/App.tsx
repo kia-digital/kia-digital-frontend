@@ -3,6 +3,7 @@ import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import { DashboardProvider } from "./contexts/DashboardContext.tsx";
 import "./App.css";
+import Pemeriksaan from "./pages/Pemeriksaan/index.tsx";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/pemeriksaan" element={<Pemeriksaan />} />
           </Routes>
         </Router>
       </DashboardProvider>

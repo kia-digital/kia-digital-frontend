@@ -108,18 +108,21 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-grey-50 rounded-2xl shadow-xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-pink-500 rounded-full mb-4">
-              <FontAwesomeIcon icon={faHeart} className="text-white text-2xl" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-500 rounded-full mb-4">
+              <FontAwesomeIcon
+                icon={faHeart}
+                className="text-grey-50 text-2xl"
+              />
             </div>
-            <h1 className="text-2xl font-bold text-pink-600 mb-2">
+            <h1 className="text-2xl font-bold text-primary-600 mb-2">
               Aplikasi KIA Digital
             </h1>
-            <p className="text-gray-600">
+            <p className="text-grey-600">
               Welcome! Please sign in or create an account.
             </p>
           </div>
@@ -131,8 +134,8 @@ const Auth: React.FC = () => {
               onClick={() => handleTabChange("login")}
               className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
                 activeTab === "login"
-                  ? "text-pink-600 border-b-2 border-pink-600"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-primary-600 border-b-2 border-primary-600"
+                  : "text-grey-500 hover:text-grey-700"
               }`}
             >
               Login
@@ -142,8 +145,8 @@ const Auth: React.FC = () => {
               onClick={() => handleTabChange("register")}
               className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
                 activeTab === "register"
-                  ? "text-pink-600 border-b-2 border-pink-600"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-primary-600 border-b-2 border-primary-600"
+                  : "text-grey-500 hover:text-grey-700"
               }`}
             >
               Register
@@ -155,8 +158,8 @@ const Auth: React.FC = () => {
             <div
               className={`mb-4 p-3 rounded-lg ${
                 message.includes("successful")
-                  ? "bg-green-50 text-green-700 border border-green-200"
-                  : "bg-red-50 text-red-700 border border-red-200"
+                  ? "bg-success-100 text-success-700 border border-success-200"
+                  : "bg-error-100 text-error-700 border border-error-200"
               }`}
             >
               {message}
@@ -164,7 +167,7 @@ const Auth: React.FC = () => {
           )}
 
           {errors.length > 0 && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 border border-red-200">
+            <div className="mb-4 p-3 rounded-lg bg-error-100 text-error-700 border border-error-200">
               <ul className="list-disc list-inside space-y-1">
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -180,25 +183,25 @@ const Auth: React.FC = () => {
               <div className="relative">
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-grey-700 mb-2"
                 >
                   Name
                 </label>
-                <div className="absolute left-3 top-10 text-gray-400">
+                <div className="absolute left-3 top-10 text-grey-400">
                   <FontAwesomeIcon icon={faUser} />
                 </div>
                 <input
                   id="name"
                   {...register("name", { required: "Name is required" })}
                   placeholder="Your Name"
-                  className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
+                  className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
                     formErrors.name
-                      ? "border-red-500 bg-red-50"
-                      : "border-gray-300 hover:border-gray-400"
+                      ? "border-error-500 bg-error-100"
+                      : "border-grey-300 hover:border-grey-400"
                   }`}
                 />
                 {formErrors.name && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-error-600">
                     {formErrors.name.message}
                   </p>
                 )}
@@ -209,11 +212,11 @@ const Auth: React.FC = () => {
             <div className="relative">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-grey-700 mb-2"
               >
                 Email Address
               </label>
-              <div className="absolute left-3 top-10 text-gray-400">
+              <div className="absolute left-3 top-10 text-grey-400">
                 <FontAwesomeIcon icon={faEnvelope} />
               </div>
               <input
@@ -227,14 +230,14 @@ const Auth: React.FC = () => {
                   },
                 })}
                 placeholder="you@example.com"
-                className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
+                className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
                   formErrors.email
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300 hover:border-gray-400"
+                    ? "border-error-500 bg-error-100"
+                    : "border-grey-300 hover:border-grey-400"
                 }`}
               />
               {formErrors.email && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-error-600">
                   {formErrors.email.message}
                 </p>
               )}
@@ -245,7 +248,7 @@ const Auth: React.FC = () => {
               <div className="flex justify-between items-center mb-2">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-grey-700"
                 >
                   Password
                 </label>
@@ -253,14 +256,14 @@ const Auth: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleForgotPassword}
-                    className="text-sm text-pink-600 hover:text-pink-700 font-medium"
+                    className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                   >
                     Forgot password?
                   </button>
                 )}
               </div>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-grey-400">
                   <FontAwesomeIcon icon={faLock} />
                 </div>
                 <input
@@ -274,22 +277,22 @@ const Auth: React.FC = () => {
                     },
                   })}
                   placeholder="••••••••"
-                  className={`w-full px-10 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors ${
+                  className={`w-full px-10 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
                     formErrors.password
-                      ? "border-red-500 bg-red-50"
-                      : "border-gray-300 hover:border-gray-400"
+                      ? "border-error-500 bg-error-100"
+                      : "border-grey-300 hover:border-grey-400"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-grey-500 hover:text-grey-700"
                 >
                   <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                 </button>
               </div>
               {formErrors.password && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-error-600">
                   {formErrors.password.message}
                 </p>
               )}
@@ -299,10 +302,10 @@ const Auth: React.FC = () => {
             <button
               type="submit" // Ubah menjadi 'submit'
               disabled={isLoading}
-              className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
+              className={`w-full py-3 px-4 rounded-lg font-medium text-grey-50 transition-all ${
                 isLoading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-pink-600 hover:bg-pink-700 active:transform active:scale-95"
+                  ? "bg-grey-400 cursor-not-allowed"
+                  : "bg-primary-600 hover:bg-primary-700 active:transform active:scale-95"
               }`}
             >
               {isLoading ? (
@@ -320,7 +323,7 @@ const Auth: React.FC = () => {
 
           {/* Footer */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-grey-600">
               {activeTab === "login"
                 ? "Don't have an account? "
                 : "Already have an account? "}
@@ -329,7 +332,7 @@ const Auth: React.FC = () => {
                 onClick={() =>
                   handleTabChange(activeTab === "login" ? "register" : "login")
                 }
-                className="text-pink-600 hover:text-pink-700 font-medium"
+                className="text-primary-600 hover:text-primary-700 font-medium"
               >
                 {activeTab === "login" ? "Register here" : "Sign in here"}
               </button>
