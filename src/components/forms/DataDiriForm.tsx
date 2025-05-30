@@ -1,6 +1,6 @@
 // src/components/forms/DataDiriForm.tsx
 import React from "react";
-import { InputField, SelectField } from "./FormFields"; // Adjust path
+import { DatePicker, InputField, SelectField } from "./FormFields"; // Adjust path
 import type { AppFormData } from "../../pages/Pemeriksaan/types";
 
 interface DataDiriFormProps {
@@ -51,7 +51,7 @@ const DataDiriForm: React.FC<DataDiriFormProps> = ({
             value={formData.tempatLahir}
             onChange={handleChange}
           />
-          <InputField
+          <DatePicker
             label="Tanggal Lahir"
             name="tanggalLahir"
             placeholder="DD-MM-YYYY"

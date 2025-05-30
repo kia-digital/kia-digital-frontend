@@ -1,7 +1,7 @@
 const PemeriksaanLeopold = () => {
   return (
     <div>
-      <p>Ini adalah halaman pemeriksaan ANC</p>
+      <p>Ini adalah halaman pemeriksaan Leopold</p>
     </div>
   );
 };
