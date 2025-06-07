@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHeart,
@@ -25,6 +26,8 @@ const Auth: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [errors, setErrors] = useState<string[]>([]);
+  const navigate = useNavigate();
+
   // Inisialisasi React Hook Form
   const {
     register,
@@ -54,12 +57,12 @@ const Auth: React.FC = () => {
 
         console.log("Response: ", response);
 
-        if (response.detail.status === "success") {
+        if (response.status === "success") {
           setMessage("Login successful!");
-          alert("Login successful! Redirecting to dashboard...");
-          // TODO: Redirect to dashboard
+          // Redirect to dashboard
+          navigate("/dashboard", { replace: true });
         } else {
-          setMessage(response.detail.message);
+          setMessage(response.message);
         }
       } else {
         const response = await AuthService.register({

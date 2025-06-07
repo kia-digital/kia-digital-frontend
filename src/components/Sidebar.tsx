@@ -1,4 +1,6 @@
 import { useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import AuthService from "../services/AuthService";
 
 import { DashboardContext } from "../contexts/DashboardContext";
 
@@ -15,34 +17,61 @@ import edukasiActiveIcon from "../assets/edukasi_active.svg";
 
 function Sidebar() {
   const context = useContext(DashboardContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   if (!context) {
     return null;
   }
-  const { activeTab, setActiveTab } = context;
+  const handleLogout = () => {
+    AuthService.logout();
+    navigate("/auth");
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
+  // Determine active tab based on current route
+  const getActiveTab = () => {
+    const pathname = location.pathname;
+    if (pathname === "/dashboard") return "dashboard";
+    if (pathname === "/pemeriksaan") return "pemeriksaan";
+    if (pathname.includes("calendar")) return "calendar";
+    if (pathname.includes("edukasi")) return "edukasi";
+    return "dashboard";
+  };
+
+  const activeTab = getActiveTab();
+
   const menuItems = [
     {
       id: "dashboard",
       label: "Dashboard",
       icon: dashboardIcon,
       activeIcon: dashboardActiveIcon,
+      path: "/dashboard",
     },
     {
       id: "calendar",
       label: "Kalender",
       icon: calendarIcon,
       activeIcon: calendarActiveIcon,
+      path: "/calendar",
     },
     {
       id: "pemeriksaan",
       label: "Pemeriksaan",
       icon: pemeriksaanIcon,
       activeIcon: pemeriksaanActiveIcon,
+      path: "/pemeriksaan",
     },
     {
       id: "edukasi",
       label: "Edukasi",
       icon: edukasiIcon,
       activeIcon: edukasiActiveIcon,
+      path: "/edukasi",
     },
   ];
 
@@ -58,7 +87,6 @@ function Sidebar() {
           </h1>
         </div>
       </div>
-
       {/* Navigation */}
       <nav className="pl-2 space-y-2">
         {menuItems.map((item) => {
@@ -67,7 +95,7 @@ function Sidebar() {
           return (
             <div key={item.id} className="relative">
               <button
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleNavigation(item.path)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "text-pink-600" // State aktif: Latar + Teks Pink
@@ -81,7 +109,7 @@ function Sidebar() {
                 />
                 <span
                   className={`font-medium ${
-                    isActive ? "text-pink-600" : "text-gray-600"
+                    isActive ? "text-gradient" : "text-gray-600"
                   }`}
                 >
                   {item.label}
@@ -94,11 +122,28 @@ function Sidebar() {
             </div>
           );
         })}
-      </nav>
-
-      {/* Bottom section for additional content if needed */}
+      </nav>{" "}
+      {/* Bottom section for logout button */}
       <div className="mt-auto p-4">
-        {/* You can add user profile or other content here */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </svg>
+          <span className="font-medium">Logout</span>
+        </button>
       </div>
     </div>
   );

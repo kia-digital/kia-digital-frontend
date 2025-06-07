@@ -1,4 +1,5 @@
 import axiosInstance from "./axiosInstance";
+import { setToken, removeToken } from "../utils/auth";
 
 interface LoginCredentials {
   email: string;
@@ -6,10 +7,11 @@ interface LoginCredentials {
 }
 
 interface LoginResponse {
-  status: string;
-  message: string;
-  token?: string;
-  data?: null;
+  detail: {
+    status: string;
+    message: string;
+    token?: string;
+  };
 }
 
 interface RegisterCredentials {
@@ -29,8 +31,8 @@ class AuthService {
     try {
       const response = await axiosInstance.post("/auth/login", credentials);
       const data: LoginResponse = response.data;
-      if (data.status === "success") {
-        localStorage.setItem("authToken", data.token || "");
+      if (data.detail.status === "success" && data.detail.token) {
+        setToken(data.detail.token);
       }
       return data;
     } catch (error) {
@@ -38,7 +40,6 @@ class AuthService {
       throw error;
     }
   }
-
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
       const response = await axiosInstance.post("/auth/register", credentials);
@@ -48,6 +49,10 @@ class AuthService {
       console.error("Registration error:", error);
       throw error;
     }
+  }
+
+  logout(): void {
+    removeToken();
   }
 }
 
