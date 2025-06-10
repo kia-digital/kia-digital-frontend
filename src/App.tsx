@@ -28,11 +28,11 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Layout>
+              <Dashboard />
+            </Layout>
+            // </ProtectedRoute>
           }
         />
         <Route
@@ -44,13 +44,14 @@ function App() {
               </Layout>
             </ProtectedRoute>
           }
-        />        <Route
+        />{" "}
+        <Route
           path="/calendar"
           element={
             <ProtectedRoute>
               <Layout>
-                <PageHeader 
-                  title="Kalender" 
+                <PageHeader
+                  title="Kalender"
                   subtitle="Halaman Kalender sedang dalam pengembangan."
                   showLembarPemantauan={false}
                   showUserAvatar={true}
@@ -58,13 +59,14 @@ function App() {
               </Layout>
             </ProtectedRoute>
           }
-        />{" "}        <Route
+        />{" "}
+        <Route
           path="/edukasi"
           element={
             <ProtectedRoute>
               <Layout>
-                <PageHeader 
-                  title="Edukasi" 
+                <PageHeader
+                  title="Edukasi"
                   subtitle="Halaman Edukasi sedang dalam pengembangan."
                   showLembarPemantauan={false}
                   showUserAvatar={true}

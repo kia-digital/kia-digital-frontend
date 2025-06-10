@@ -23,6 +23,7 @@ function Sidebar() {
   if (!context) {
     return null;
   }
+<<<<<<< HEAD
   const handleLogout = () => {
     AuthService.logout();
     navigate("/auth");
@@ -44,34 +45,49 @@ function Sidebar() {
 
   const activeTab = getActiveTab();
 
+=======
+  const { activeTab, setActiveTab } = context;
+>>>>>>> dashboard-page
   const menuItems = [
     {
       id: "dashboard",
       label: "Dashboard",
       icon: dashboardIcon,
       activeIcon: dashboardActiveIcon,
+<<<<<<< HEAD
       path: "/dashboard",
+=======
+>>>>>>> dashboard-page
     },
     {
       id: "calendar",
       label: "Kalender",
       icon: calendarIcon,
       activeIcon: calendarActiveIcon,
+<<<<<<< HEAD
       path: "/calendar",
+=======
+>>>>>>> dashboard-page
     },
     {
       id: "pemeriksaan",
       label: "Pemeriksaan",
       icon: pemeriksaanIcon,
       activeIcon: pemeriksaanActiveIcon,
+<<<<<<< HEAD
       path: "/pemeriksaan",
+=======
+>>>>>>> dashboard-page
     },
     {
       id: "edukasi",
       label: "Edukasi",
       icon: edukasiIcon,
       activeIcon: edukasiActiveIcon,
+<<<<<<< HEAD
       path: "/edukasi",
+=======
+>>>>>>> dashboard-page
     },
   ];
 
@@ -87,6 +103,10 @@ function Sidebar() {
           </h1>
         </div>
       </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> dashboard-page
       {/* Navigation */}
       <nav className="pl-2 space-y-2">
         {menuItems.map((item) => {
@@ -95,7 +115,11 @@ function Sidebar() {
           return (
             <div key={item.id} className="relative">
               <button
+<<<<<<< HEAD
                 onClick={() => handleNavigation(item.path)}
+=======
+                onClick={() => setActiveTab(item.id)}
+>>>>>>> dashboard-page
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "text-pink-600" // State aktif: Latar + Teks Pink
@@ -122,6 +146,7 @@ function Sidebar() {
             </div>
           );
         })}
+<<<<<<< HEAD
       </nav>{" "}
       {/* Bottom section for logout button */}
       <div className="mt-auto p-4">
@@ -144,6 +169,13 @@ function Sidebar() {
           </svg>
           <span className="font-medium">Logout</span>
         </button>
+=======
+      </nav>
+
+      {/* Bottom section for additional content if needed */}
+      <div className="mt-auto p-4">
+        {/* You can add user profile or other content here */}
+>>>>>>> dashboard-page
       </div>
     </div>
   );
