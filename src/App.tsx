@@ -38,26 +38,26 @@ function App() {
         <Route
           path="/pemeriksaan"
           element={
-            <ProtectedRoute>
-              <Layout>
-                <Pemeriksaan />
-              </Layout>
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Layout>
+              <Pemeriksaan />
+            </Layout>
+            // </ProtectedRoute>
           }
         />{" "}
         <Route
           path="/calendar"
           element={
-            <ProtectedRoute>
-              <Layout>
-                <PageHeader
-                  title="Kalender"
-                  subtitle="Halaman Kalender sedang dalam pengembangan."
-                  showLembarPemantauan={false}
-                  showUserAvatar={true}
-                />
-              </Layout>
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Layout>
+              <PageHeader
+                title="Kalender"
+                subtitle="Halaman Kalender sedang dalam pengembangan."
+                showLembarPemantauan={false}
+                showUserAvatar={true}
+              />
+            </Layout>
+            // </ProtectedRoute>
           }
         />{" "}
         <Route
