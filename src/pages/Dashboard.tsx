@@ -103,14 +103,49 @@ const Dashboard = () => {
     if (!selectedDate) return false;
     return date.toDateString() === selectedDate.toDateString();
   };
-
   const categories = [
-    "Trimester 1",
-    "Trimester 2",
-    "Trimester 3",
-    "Imunisasi",
-    "Asupan Gizi",
-    "Kesehatan Mental",
+    {
+      id: 1,
+      title: "Trimester 1",
+      description: "Informasi dan tips untuk trimester pertama kehamilan",
+      icon: "🤱",
+      articleCount: 12,
+    },
+    {
+      id: 2,
+      title: "Trimester 2",
+      description: "Panduan lengkap untuk trimester kedua kehamilan",
+      icon: "👶",
+      articleCount: 15,
+    },
+    {
+      id: 3,
+      title: "Trimester 3",
+      description: "Persiapan persalinan dan trimester ketiga",
+      icon: "🍼",
+      articleCount: 10,
+    },
+    {
+      id: 4,
+      title: "Imunisasi",
+      description: "Jadwal dan informasi imunisasi selama kehamilan",
+      icon: "💉",
+      articleCount: 8,
+    },
+    {
+      id: 5,
+      title: "Asupan Gizi",
+      description: "Nutrisi penting untuk ibu dan bayi",
+      icon: "🥗",
+      articleCount: 20,
+    },
+    {
+      id: 6,
+      title: "Kesehatan Mental",
+      description: "Menjaga kesehatan mental selama kehamilan",
+      icon: "🧠",
+      articleCount: 6,
+    },
   ];
   const scheduleItems = [
     {
@@ -191,22 +226,44 @@ const Dashboard = () => {
                 <div className="space-y-6">
                   <h2 className="text-xl text-gray-800 font-bold">
                     Eksplorasi kategori artikel yang Anda ingin pelajari
-                  </h2>
-
+                  </h2>{" "}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-6">
-                    {categories.map((category, index) => (
+                    {categories.map((category) => (
                       <div
-                        key={index}
-                        className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col items-center justify-center p-6 cursor-pointer hover:shadow-xl transition-shadow border border-gray-100"
+                        key={category.id}
+                        className="bg-white rounded-xl shadow-lg overflow-hidden p-6 cursor-pointer hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col items-center justify-center text-center"
                       >
-                        <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
-                        <div className="text-center">
-                          <p className="text-gray-500 font-medium text-sm mb-1">
-                            Tentang
-                          </p>
-                          <p className="text-gray-800 text-lg font-medium">
-                            {category}
-                          </p>
+                        <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
+                          {category.icon}
+                        </div>
+                        <p className="text-gray-500 font-medium text-sm mb-1">
+                          Tentang
+                        </p>
+                        <h3 className="font-semibold text-gray-800 mb-2">
+                          {category.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-3">
+                          {category.description}
+                        </p>
+                        <div className="flex items-center justify-center w-full">
+                          <span className="text-xs font-medium text-primary-500">
+                            {category.articleCount} artikel
+                          </span>
+                          {/* <button className="text-pink-500 hover:text-pink-700 transition-colors">
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
+                            </svg>
+                          </button> */}
                         </div>
                       </div>
                     ))}

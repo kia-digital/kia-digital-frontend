@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import AuthService from "../services/AuthService";
 
 import { DashboardContext } from "../contexts/DashboardContext";
 
@@ -24,32 +23,52 @@ function Sidebar() {
     return null;
   }
   const { activeTab, setActiveTab } = context;
+
   const menuItems = [
     {
       id: "dashboard",
       label: "Dashboard",
       icon: dashboardIcon,
       activeIcon: dashboardActiveIcon,
+      route: "/dashboard",
     },
     {
       id: "calendar",
       label: "Kalender",
       icon: calendarIcon,
       activeIcon: calendarActiveIcon,
+      route: "/calendar",
     },
     {
       id: "pemeriksaan",
       label: "Pemeriksaan",
       icon: pemeriksaanIcon,
       activeIcon: pemeriksaanActiveIcon,
+      route: "/pemeriksaan",
     },
     {
       id: "edukasi",
       label: "Edukasi",
       icon: edukasiIcon,
       activeIcon: edukasiActiveIcon,
+      route: "/edukasi",
     },
   ];
+  const handleMenuClick = (item: (typeof menuItems)[0]) => {
+    setActiveTab(item.id);
+    navigate(item.route);
+  };
+
+  // Sync activeTab with current URL on component mount and route changes
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const currentMenuItem = menuItems.find(
+      (item) => item.route === currentPath
+    );
+    if (currentMenuItem && activeTab !== currentMenuItem.id) {
+      setActiveTab(currentMenuItem.id);
+    }
+  }, [location.pathname, activeTab, setActiveTab]);
 
   return (
     <div className="w-64 bg-gray-50 min-h-screen shadow-lg">
@@ -71,7 +90,7 @@ function Sidebar() {
           return (
             <div key={item.id} className="relative">
               <button
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleMenuClick(item)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "text-pink-600"

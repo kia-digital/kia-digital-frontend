@@ -26,10 +26,11 @@ const Pemeriksaan: React.FC = () => {
     { key: "InformasiIbu", label: "Informasi Ibu" },
     { key: "PemeriksaanANC", label: "Pemeriksaan ANC" },
     { key: "PemeriksaanLeopold", label: "Pemeriksaan Leopold" },
-  ];  return (
+  ];
+  return (
     <>
-      <PageHeader 
-        title="Pemeriksaan" 
+      <PageHeader
+        title="Pemeriksaan"
         subtitle="Selamat datang di halaman Pemeriksaan ibu!"
         showLembarPemantauan={true}
         showUserAvatar={true}
@@ -60,7 +61,7 @@ const Pemeriksaan: React.FC = () => {
       {/* Main Content */}
       {renderMainContent()}
     </>
-);                      
+  );
 };
 
 export default Pemeriksaan;

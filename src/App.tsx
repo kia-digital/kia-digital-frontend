@@ -7,10 +7,10 @@ import {
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Pemeriksaan from "./pages/Pemeriksaan";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Edukasi from "./pages/Edukasi";
+import Calendar from "./pages/Calendar";
 import AuthRedirect from "./components/AuthRedirect";
 import Layout from "./components/Layout";
-import PageHeader from "./components/PageHeader";
 
 function App() {
   return (
@@ -50,12 +50,7 @@ function App() {
           element={
             // <ProtectedRoute>
             <Layout>
-              <PageHeader
-                title="Kalender"
-                subtitle="Halaman Kalender sedang dalam pengembangan."
-                showLembarPemantauan={false}
-                showUserAvatar={true}
-              />
+              <Calendar />
             </Layout>
             // </ProtectedRoute>
           }
@@ -63,16 +58,11 @@ function App() {
         <Route
           path="/edukasi"
           element={
-            <ProtectedRoute>
-              <Layout>
-                <PageHeader
-                  title="Edukasi"
-                  subtitle="Halaman Edukasi sedang dalam pengembangan."
-                  showLembarPemantauan={false}
-                  showUserAvatar={true}
-                />
-              </Layout>
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <Layout>
+              <Edukasi />
+            </Layout>
+            // </ProtectedRoute>
           }
         />
         {/* 404 Route */}
