@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { DashboardContext } from "../contexts/DashboardContext";
+import { useRole } from "../contexts/RoleContext";
 
 // Assets
 import strollerIcon from "../assets/stroller.svg";
@@ -16,6 +17,7 @@ import edukasiActiveIcon from "../assets/edukasi_active.svg";
 
 function Sidebar() {
   const context = useContext(DashboardContext);
+  const { currentUser } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,37 +25,52 @@ function Sidebar() {
     return null;
   }
   const { activeTab, setActiveTab } = context;
+  // Menu items berdasarkan role
+  const getMenuItems = () => {
+    const baseItems = [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: dashboardIcon,
+        activeIcon: dashboardActiveIcon,
+        route: "/dashboard",
+      },
+    ];
 
-  const menuItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: dashboardIcon,
-      activeIcon: dashboardActiveIcon,
-      route: "/dashboard",
-    },
-    {
-      id: "calendar",
-      label: "Kalender",
-      icon: calendarIcon,
-      activeIcon: calendarActiveIcon,
-      route: "/calendar",
-    },
-    {
-      id: "pemeriksaan",
-      label: "Pemeriksaan",
-      icon: pemeriksaanIcon,
-      activeIcon: pemeriksaanActiveIcon,
-      route: "/pemeriksaan",
-    },
-    {
-      id: "edukasi",
-      label: "Edukasi",
-      icon: edukasiIcon,
-      activeIcon: edukasiActiveIcon,
-      route: "/edukasi",
-    },
-  ];
+    // Menu khusus untuk role Ibu
+    if (currentUser.role === "ibu") {
+      return [
+        ...baseItems,
+        {
+          id: "pemeriksaan",
+          label: "Pemeriksaan",
+          icon: pemeriksaanIcon,
+          activeIcon: pemeriksaanActiveIcon,
+          route: "/pemeriksaan",
+        },
+        {
+          id: "calendar",
+          label: "Kalender",
+          icon: calendarIcon,
+          activeIcon: calendarActiveIcon,
+          route: "/calendar",
+        },
+        {
+          id: "edukasi",
+          label: "Edukasi",
+          icon: edukasiIcon,
+          activeIcon: edukasiActiveIcon,
+          route: "/edukasi",
+        },
+      ];
+    }
+
+    // Menu untuk Petugas Kesehatan (hanya Dashboard)
+    return [baseItems[0]]; // Hanya Dashboard
+  };
+
+  const menuItems = getMenuItems();
+
   const handleMenuClick = (item: (typeof menuItems)[0]) => {
     setActiveTab(item.id);
     navigate(item.route);
@@ -68,7 +85,7 @@ function Sidebar() {
     if (currentMenuItem && activeTab !== currentMenuItem.id) {
       setActiveTab(currentMenuItem.id);
     }
-  }, [location.pathname, activeTab, setActiveTab]);
+  }, [location.pathname, activeTab, setActiveTab, menuItems]);
 
   return (
     <div className="w-64 bg-gray-50 min-h-screen shadow-lg">
@@ -82,6 +99,20 @@ function Sidebar() {
           </h1>
         </div>
       </div>
+
+      {/* Role Indicator */}
+      <div className="px-6 pb-4">
+        <div className="text-xs text-gray-500 mb-1">Login sebagai:</div>
+        <div
+          className={`text-sm font-medium ${
+            currentUser.role === "ibu" ? "text-pink-600" : "text-blue-600"
+          }`}
+        >
+          {currentUser.role === "ibu" ? "👩 " : "👩‍⚕️ "}
+          {currentUser.name}
+        </div>
+      </div>
+
       {/* Navigation */}
       <nav className="pl-2 space-y-2">
         {menuItems.map((item) => {

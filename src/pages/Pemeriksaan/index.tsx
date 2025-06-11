@@ -1,13 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import InformasiIbu from "./subpages/InformasiIbu";
 import PemeriksaanANC from "./subpages/PemeriksaanANC";
 import PemeriksaanLeopold from "./subpages/PemeriksaanLeopold";
 import PageHeader from "../../components/PageHeader";
+import { useRole } from "../../contexts/RoleContext";
 
 type PemeriksaanTabs = "InformasiIbu" | "PemeriksaanANC" | "PemeriksaanLeopold";
 
 const Pemeriksaan: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<PemeriksaanTabs>("InformasiIbu");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { currentUser } = useRole();
+
+  // Get initial tab from URL params, location state, or default
+  const getInitialTab = (): PemeriksaanTabs => {
+    // Priority 1: Check location state (from DetailPemeriksaanIbu navigation)
+    if (location.state?.activeTab) {
+      return location.state.activeTab as PemeriksaanTabs;
+    }
+    // Priority 2: Check URL parameters (from petugas navigation)
+    const type = searchParams.get("type");
+    if (type === "anc") return "PemeriksaanANC";
+    if (type === "leopold") return "PemeriksaanLeopold";
+    // Default
+    return "InformasiIbu";
+  };
+  const [activeTab, setActiveTab] = useState<PemeriksaanTabs>(getInitialTab());
+  const ibuId = searchParams.get("ibuId");
+
+  // Update activeTab when location state changes
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab as PemeriksaanTabs);
+    }
+  }, [location.state]);
+
+  // Mock data untuk ibu yang dipilih petugas
+  const selectedIbu = ibuId
+    ? {
+        id: parseInt(ibuId),
+        nama: "Ibu Hanifah",
+        usia: 26,
+        usiaKehamilan: "17 minggu 1 hari",
+      }
+    : null;
 
   const renderMainContent = () => {
     switch (activeTab) {
@@ -29,10 +67,54 @@ const Pemeriksaan: React.FC = () => {
   ];
   return (
     <>
+      {/* Header untuk Petugas Kesehatan */}
+      {currentUser.role === "petugas_kesehatan" && selectedIbu && (
+        <div className="bg-blue-50 border-b border-blue-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Kembali ke Dashboard
+              </button>
+              <div className="h-6 w-px bg-blue-300"></div>
+              <div>
+                <h3 className="font-semibold text-blue-800">
+                  Pemeriksaan untuk: {selectedIbu.nama}
+                </h3>
+                <p className="text-sm text-blue-600">
+                  {selectedIbu.usia} tahun • {selectedIbu.usiaKehamilan}
+                </p>
+              </div>
+            </div>
+            <div className="text-xs text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+              Petugas: {currentUser.name}
+            </div>
+          </div>
+        </div>
+      )}
       <PageHeader
         title="Pemeriksaan"
-        subtitle="Selamat datang di halaman Pemeriksaan ibu!"
-        showLembarPemantauan={true}
+        subtitle={
+          currentUser.role === "petugas_kesehatan" && selectedIbu
+            ? `Melakukan pemeriksaan untuk ${selectedIbu.nama}`
+            : "Selamat datang di halaman Pemeriksaan ibu!"
+        }
+        showLembarPemantauan={currentUser.role === "ibu"}
         showUserAvatar={true}
       />{" "}
       {/* Tabs */}

@@ -5,9 +5,19 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { useRole } from "../contexts/RoleContext";
+import DashboardPetugas from "./DashboardPetugas";
 import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
+  const { currentUser } = useRole();
+
+  // Jika user adalah petugas kesehatan, tampilkan dashboard petugas
+  if (currentUser.role === "petugas_kesehatan") {
+    return <DashboardPetugas />;
+  }
+
+  // Dashboard untuk role Ibu (existing dashboard)
   const navigate = useNavigate();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today); // Start with today's date

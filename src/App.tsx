@@ -18,6 +18,7 @@ import KategoriImunisasi from "./pages/Edukasi/KategoriImunisasi";
 import KategoriAsupanGizi from "./pages/Edukasi/KategoriAsupanGizi";
 import KategoriKesehatanMental from "./pages/Edukasi/KategoriKesehatanMental";
 import ArtikelDetail from "./pages/Edukasi/ArtikelDetail";
+import DetailPemeriksaanIbu from "./pages/DetailPemeriksaanIbu";
 
 function App() {
   return (
@@ -41,7 +42,7 @@ function App() {
             </Layout>
             // </ProtectedRoute>
           }
-        />
+        />{" "}
         <Route
           path="/pemeriksaan"
           element={
@@ -52,6 +53,30 @@ function App() {
             // </ProtectedRoute>
           }
         />{" "}
+        <Route
+          path="/pemeriksaan/anc"
+          element={
+            <Layout>
+              <Pemeriksaan />
+            </Layout>
+          }
+        />
+        <Route
+          path="/pemeriksaan/leopold"
+          element={
+            <Layout>
+              <Pemeriksaan />
+            </Layout>
+          }
+        />
+        <Route
+          path="/pemeriksaan/detail/:ibuId"
+          element={
+            <Layout>
+              <DetailPemeriksaanIbu />
+            </Layout>
+          }
+        />
         <Route
           path="/calendar"
           element={
