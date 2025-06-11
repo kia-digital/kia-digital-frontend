@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import PemeriksaanANC from "./Pemeriksaan/subpages/PemeriksaanANC";
+import PemeriksaanLeopold from "./Pemeriksaan/subpages/PemeriksaanLeopold";
+
+type PemeriksaanMode = "detail" | "anc" | "leopold";
 
 const mockIbuData = {
   1: {
@@ -25,6 +29,7 @@ const mockIbuData = {
 const DetailPemeriksaanIbu: React.FC = () => {
   const { ibuId } = useParams<{ ibuId: string }>();
   const navigate = useNavigate();
+  const [activeMode, setActiveMode] = useState<PemeriksaanMode>("detail");
 
   const ibu = mockIbuData[parseInt(ibuId || "1") as keyof typeof mockIbuData];
 
@@ -46,12 +51,11 @@ const DetailPemeriksaanIbu: React.FC = () => {
     );
   }
   const handlePemeriksaan = (jenis: "anc" | "leopold") => {
-    // Navigate ke halaman pemeriksaan biasa seperti role Ibu
-    if (jenis === "anc") {
-      navigate("/pemeriksaan", { state: { activeTab: "PemeriksaanANC" } });
-    } else {
-      navigate("/pemeriksaan", { state: { activeTab: "PemeriksaanLeopold" } });
-    }
+    setActiveMode(jenis);
+  };
+
+  const handleBackToDetail = () => {
+    setActiveMode("detail");
   };
 
   return (
@@ -83,198 +87,278 @@ const DetailPemeriksaanIbu: React.FC = () => {
               Detail Pemeriksaan
             </h1>
             <p className="text-gray-600">{ibu.nama}</p>
-          </div>
-
+          </div>{" "}
           <div className="flex space-x-3">
             <button
               onClick={() => handlePemeriksaan("anc")}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                activeMode === "anc"
+                  ? "bg-blue-600 text-white shadow-lg scale-105"
+                  : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md"
+              }`}
             >
-              Pemeriksaan ANC
+              {activeMode === "anc" && (
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              )}
+              <span>Pemeriksaan ANC</span>
             </button>
             <button
               onClick={() => handlePemeriksaan("leopold")}
-              className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors"
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                activeMode === "leopold"
+                  ? "bg-purple-600 text-white shadow-lg scale-105"
+                  : "bg-purple-500 text-white hover:bg-purple-600 hover:shadow-md"
+              }`}
             >
-              Pemeriksaan Leopold
+              {activeMode === "leopold" && (
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              )}
+              <span>Pemeriksaan Leopold</span>
             </button>
-          </div>
-        </div>{" "}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Data Pribadi */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <span className="w-2 h-6 bg-pink-500 rounded mr-3"></span>
-              Data Pribadi
-            </h3>
-
-            <div className="space-y-3">
-              <div>
-                <label className="text-sm text-gray-500">Nama Lengkap</label>
-                <p className="font-medium text-gray-800">{ibu.nama}</p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Usia</label>
-                <p className="font-medium text-gray-800">{ibu.usia} tahun</p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Nomor Telepon</label>
-                <p className="font-medium text-gray-800">{ibu.telepon}</p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Alamat</label>
-                <p className="font-medium text-gray-800">{ibu.alamat}</p>
-              </div>
-            </div>
-          </div>
-          {/* Data Medis */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <span className="w-2 h-6 bg-blue-500 rounded mr-3"></span>
-              Data Medis
-            </h3>
-
-            <div className="space-y-3">
-              <div>
-                <label className="text-sm text-gray-500">Usia Kehamilan</label>
-                <p className="font-medium text-gray-800">{ibu.usiaKehamilan}</p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Kondisi</label>
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                    ibu.kondisi === "Sehat"
-                      ? "bg-green-100 text-green-800"
-                      : ibu.kondisi === "Perlu Perhatian"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {ibu.kondisi}
-                </span>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Golongan Darah</label>
-                <p className="font-medium text-gray-800">{ibu.golonganDarah}</p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">
-                  Tinggi/Berat Badan
-                </label>
-                <p className="font-medium text-gray-800">
-                  {ibu.tinggiBadan} / {ibu.beratBadan}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">
-                  Riwayat Penyakit
-                </label>
-                <p className="font-medium text-gray-800">
-                  {ibu.riwayatPenyakit}
-                </p>
-              </div>
-            </div>
+            {activeMode !== "detail" && (
+              <button
+                onClick={handleBackToDetail}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+              >
+                Kembali ke Detail
+              </button>
+            )}
           </div>{" "}
-          {/* Jadwal Pemeriksaan */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <span className="w-2 h-6 bg-green-500 rounded mr-3"></span>
-              Jadwal Pemeriksaan
-            </h3>
+        </div>
+        {/* Detail Cards - Hanya tampil pada mode detail */}
+        {activeMode === "detail" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Data Pribadi */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <span className="w-2 h-6 bg-pink-500 rounded mr-3"></span>
+                Data Pribadi
+              </h3>
 
-            <div className="space-y-4">
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <label className="text-sm text-gray-500">
-                  Pemeriksaan Terakhir
-                </label>
-                <p className="font-medium text-gray-800">
-                  {new Date(ibu.lastCheckup).toLocaleDateString("id-ID", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
-
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <label className="text-sm text-blue-600">
-                  Pemeriksaan Selanjutnya
-                </label>
-                <p className="font-medium text-blue-800">
-                  {new Date(ibu.nextCheckup).toLocaleDateString("id-ID", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm text-gray-500">Nama Lengkap</label>
+                  <p className="font-medium text-gray-800">{ibu.nama}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">Usia</label>
+                  <p className="font-medium text-gray-800">{ibu.usia} tahun</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">Nomor Telepon</label>
+                  <p className="font-medium text-gray-800">{ibu.telepon}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">Alamat</label>
+                  <p className="font-medium text-gray-800">{ibu.alamat}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </div>{" "}
-        {/* Riwayat Pemeriksaan */}
-        <div className="mt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Riwayat Pemeriksaan
-          </h3>
+            {/* Data Medis */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <span className="w-2 h-6 bg-blue-500 rounded mr-3"></span>
+                Data Medis
+              </h3>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">
-                    Tanggal
-                  </th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">
-                    Jenis Pemeriksaan
-                  </th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">
-                    Hasil
-                  </th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">
-                    Petugas
-                  </th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="p-3 text-sm text-gray-700">15 Maret 2025</td>
-                  <td className="p-3 text-sm text-gray-700">ANC</td>
-                  <td className="p-3">
-                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                      Normal
-                    </span>
-                  </td>
-                  <td className="p-3 text-sm text-gray-700">Dr. Sarah Putri</td>
-                  <td className="p-3">
-                    <button className="text-blue-500 hover:text-blue-700 text-sm">
-                      Lihat Detail
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="p-3 text-sm text-gray-700">1 Maret 2025</td>
-                  <td className="p-3 text-sm text-gray-700">Leopold</td>
-                  <td className="p-3">
-                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                      Normal
-                    </span>
-                  </td>
-                  <td className="p-3 text-sm text-gray-700">Dr. Sarah Putri</td>
-                  <td className="p-3">
-                    <button className="text-blue-500 hover:text-blue-700 text-sm">
-                      Lihat Detail
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm text-gray-500">
+                    Usia Kehamilan
+                  </label>
+                  <p className="font-medium text-gray-800">
+                    {ibu.usiaKehamilan}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">Kondisi</label>
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                      ibu.kondisi === "Sehat"
+                        ? "bg-green-100 text-green-800"
+                        : ibu.kondisi === "Perlu Perhatian"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {ibu.kondisi}
+                  </span>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">
+                    Golongan Darah
+                  </label>
+                  <p className="font-medium text-gray-800">
+                    {ibu.golonganDarah}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">
+                    Tinggi/Berat Badan
+                  </label>
+                  <p className="font-medium text-gray-800">
+                    {ibu.tinggiBadan} / {ibu.beratBadan}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">
+                    Riwayat Penyakit
+                  </label>
+                  <p className="font-medium text-gray-800">
+                    {ibu.riwayatPenyakit}
+                  </p>
+                </div>
+              </div>
+            </div>{" "}
+            {/* Jadwal Pemeriksaan */}
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <span className="w-2 h-6 bg-green-500 rounded mr-3"></span>
+                Jadwal Pemeriksaan
+              </h3>
+              <div className="space-y-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <label className="text-sm text-gray-500">
+                    Pemeriksaan Terakhir
+                  </label>
+                  <p className="font-medium text-gray-800">
+                    {new Date(ibu.lastCheckup).toLocaleDateString("id-ID", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <label className="text-sm text-blue-600">
+                    Pemeriksaan Selanjutnya
+                  </label>
+                  <p className="font-medium text-blue-800">
+                    {new Date(ibu.nextCheckup).toLocaleDateString("id-ID", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+              </div>{" "}
+            </div>
           </div>
-        </div>
+        )}
+        {/* Riwayat Pemeriksaan - Hanya tampil pada mode detail */}
+        {activeMode === "detail" && (
+          <div className="mt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Riwayat Pemeriksaan
+            </h3>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">
+                      Tanggal
+                    </th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">
+                      Jenis Pemeriksaan
+                    </th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">
+                      Hasil
+                    </th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">
+                      Petugas
+                    </th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="p-3 text-sm text-gray-700">15 Maret 2025</td>
+                    <td className="p-3 text-sm text-gray-700">ANC</td>
+                    <td className="p-3">
+                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                        Normal
+                      </span>
+                    </td>
+                    <td className="p-3 text-sm text-gray-700">
+                      Dr. Sarah Putri
+                    </td>
+                    <td className="p-3">
+                      <button className="text-blue-500 hover:text-blue-700 text-sm">
+                        Lihat Detail
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-3 text-sm text-gray-700">1 Maret 2025</td>
+                    <td className="p-3 text-sm text-gray-700">Leopold</td>
+                    <td className="p-3">
+                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                        Normal
+                      </span>
+                    </td>
+                    <td className="p-3 text-sm text-gray-700">
+                      Dr. Sarah Putri
+                    </td>{" "}
+                    <td className="p-3">
+                      <button className="text-blue-500 hover:text-blue-700 text-sm">
+                        Lihat Detail
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>{" "}
+              </table>
+            </div>
+          </div>
+        )}
+        {/* Konten Pemeriksaan - Muncul ketika mode ANC atau Leopold */}{" "}
+        {activeMode === "anc" && (
+          <div className="mt-6">
+            <div className="mb-4 pb-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-blue-600">
+                    Pemeriksaan ANC
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {ibu.nama} • {ibu.usiaKehamilan} •{" "}
+                    {new Date().toLocaleDateString("id-ID")}
+                  </p>
+                </div>
+                <div className="text-sm text-gray-500">
+                  Petugas: Dr. Sarah Putri
+                </div>
+              </div>
+            </div>
+            <PemeriksaanANC />
+          </div>
+        )}
+        {activeMode === "leopold" && (
+          <div className="mt-6">
+            <div className="mb-4 pb-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-purple-600">
+                    Pemeriksaan Leopold
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {ibu.nama} • {ibu.usiaKehamilan} •{" "}
+                    {new Date().toLocaleDateString("id-ID")}
+                  </p>
+                </div>
+                <div className="text-sm text-gray-500">
+                  Petugas: Dr. Sarah Putri
+                </div>
+              </div>
+            </div>
+            <PemeriksaanLeopold />
+          </div>
+        )}
       </div>
     </div>
   );
