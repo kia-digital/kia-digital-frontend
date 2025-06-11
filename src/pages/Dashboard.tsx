@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -6,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today); // Start with today's date
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -110,6 +112,7 @@ const Dashboard = () => {
       description: "Informasi dan tips untuk trimester pertama kehamilan",
       icon: "🤱",
       articleCount: 12,
+      slug: "/edukasi/trimester-1",
     },
     {
       id: 2,
@@ -117,6 +120,7 @@ const Dashboard = () => {
       description: "Panduan lengkap untuk trimester kedua kehamilan",
       icon: "👶",
       articleCount: 15,
+      slug: "/edukasi/trimester-2",
     },
     {
       id: 3,
@@ -124,6 +128,7 @@ const Dashboard = () => {
       description: "Persiapan persalinan dan trimester ketiga",
       icon: "🍼",
       articleCount: 10,
+      slug: "/edukasi/trimester-3",
     },
     {
       id: 4,
@@ -131,6 +136,7 @@ const Dashboard = () => {
       description: "Jadwal dan informasi imunisasi selama kehamilan",
       icon: "💉",
       articleCount: 8,
+      slug: "/edukasi/imunisasi",
     },
     {
       id: 5,
@@ -138,6 +144,7 @@ const Dashboard = () => {
       description: "Nutrisi penting untuk ibu dan bayi",
       icon: "🥗",
       articleCount: 20,
+      slug: "/edukasi/asupan-gizi",
     },
     {
       id: 6,
@@ -145,8 +152,13 @@ const Dashboard = () => {
       description: "Menjaga kesehatan mental selama kehamilan",
       icon: "🧠",
       articleCount: 6,
+      slug: "/edukasi/kesehatan-mental",
     },
   ];
+
+  const handleCategoryClick = (slug: string) => {
+    navigate(slug);
+  };
   const scheduleItems = [
     {
       date: "9 April 2025",
@@ -228,9 +240,11 @@ const Dashboard = () => {
                     Eksplorasi kategori artikel yang Anda ingin pelajari
                   </h2>{" "}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-6">
+                    {" "}
                     {categories.map((category) => (
                       <div
                         key={category.id}
+                        onClick={() => handleCategoryClick(category.slug)}
                         className="bg-white rounded-xl shadow-lg overflow-hidden p-6 cursor-pointer hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col items-center justify-center text-center"
                       >
                         <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">

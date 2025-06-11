@@ -89,7 +89,7 @@ const PemeriksaanLeopold: React.FC = () => {
       leopold3: "Kepala belum masuk PAP",
       leopold4: "Konvergen 2/5",
       tfu: "32 cm",
-      posisi: "LOA"
+      posisi: "LOA",
     },
     {
       id: 2,
@@ -103,7 +103,7 @@ const PemeriksaanLeopold: React.FC = () => {
       leopold3: "Kepala belum masuk PAP",
       leopold4: "Konvergen 1/5",
       tfu: "30 cm",
-      posisi: "LOA"
+      posisi: "LOA",
     },
     {
       id: 3,
@@ -117,23 +117,26 @@ const PemeriksaanLeopold: React.FC = () => {
       leopold3: "Kepala belum masuk PAP",
       leopold4: "Konvergen 0/5",
       tfu: "28 cm",
-      posisi: "LOA"
+      posisi: "LOA",
     },
   ]);
 
   // State untuk alert/notifications
-  const [alerts, setAlerts] = useState<{type: 'warning' | 'error' | 'info', message: string}[]>([]);
+  const [alerts, setAlerts] = useState<
+    { type: "warning" | "error" | "info"; message: string }[]
+  >([]);
 
   // Function untuk validasi nilai normal
   const validateValues = () => {
-    const newAlerts: {type: 'warning' | 'error' | 'info', message: string}[] = [];
-    
+    const newAlerts: { type: "warning" | "error" | "info"; message: string }[] =
+      [];
+
     // Validasi DJJ
     const djj = parseInt(formData.denyutJantungJanin.frekuensi);
     if (djj && (djj < 120 || djj > 160)) {
       newAlerts.push({
-        type: 'warning',
-        message: `DJJ ${djj} bpm berada di luar range normal (120-160 bpm). Perlu evaluasi lebih lanjut.`
+        type: "warning",
+        message: `DJJ ${djj} bpm berada di luar range normal (120-160 bpm). Perlu evaluasi lebih lanjut.`,
       });
     }
 
@@ -144,18 +147,25 @@ const PemeriksaanLeopold: React.FC = () => {
       const expectedTfu = usiaKehamilan;
       if (Math.abs(tfu - expectedTfu) > 3) {
         newAlerts.push({
-          type: 'warning',
-          message: `TFU ${tfu} cm tidak sesuai dengan usia kehamilan ${usiaKehamilan} minggu. Expected: ±${expectedTfu} cm.`
+          type: "warning",
+          message: `TFU ${tfu} cm tidak sesuai dengan usia kehamilan ${usiaKehamilan} minggu. Expected: ±${expectedTfu} cm.`,
         });
       }
     }
 
     // Validasi konsistensi Leopold
-    if (formData.leopold1.posisiBagianAtas && formData.leopold3.posisiBagianBawah) {
-      if (formData.leopold1.posisiBagianAtas === formData.leopold3.posisiBagianBawah) {
+    if (
+      formData.leopold1.posisiBagianAtas &&
+      formData.leopold3.posisiBagianBawah
+    ) {
+      if (
+        formData.leopold1.posisiBagianAtas ===
+        formData.leopold3.posisiBagianBawah
+      ) {
         newAlerts.push({
-          type: 'error',
-          message: 'Inkonsistensi: Bagian atas dan bawah janin tidak boleh sama!'
+          type: "error",
+          message:
+            "Inkonsistensi: Bagian atas dan bawah janin tidak boleh sama!",
         });
       }
     }
@@ -188,25 +198,36 @@ const PemeriksaanLeopold: React.FC = () => {
     validateValues();
     console.log("Data Leopold:", formData);
     // Handle form submission
-  };  // Function untuk auto-interpretasi berdasarkan input
+  }; // Function untuk auto-interpretasi berdasarkan input
   const generateInterpretation = () => {
-    const { leopold1, leopold2, leopold3, leopold4, denyutJantungJanin } = formData;
-    
+    const { leopold1, leopold2, leopold3, leopold4, denyutJantungJanin } =
+      formData;
+
     let interpretation = "";
     let recommendations = [];
 
     // Interpretasi berdasarkan Leopold
-    if (leopold1.posisiBagianAtas === "bokong" && leopold3.posisiBagianBawah === "kepala") {
+    if (
+      leopold1.posisiBagianAtas === "bokong" &&
+      leopold3.posisiBagianBawah === "kepala"
+    ) {
       interpretation += "Janin dalam presentasi kepala (vertex). ";
       if (leopold2.posisiPunggungJanin === "kiri") {
         interpretation += "Punggung janin berada di sebelah kiri maternal. ";
       } else if (leopold2.posisiPunggungJanin === "kanan") {
         interpretation += "Punggung janin berada di sebelah kanan maternal. ";
       }
-    } else if (leopold1.posisiBagianAtas === "kepala" && leopold3.posisiBagianBawah === "bokong") {
+    } else if (
+      leopold1.posisiBagianAtas === "kepala" &&
+      leopold3.posisiBagianBawah === "bokong"
+    ) {
       interpretation += "Janin dalam presentasi bokong (breech). ";
-      recommendations.push("Konsultasi dengan dokter spesialis kandungan untuk evaluasi cara persalinan");
-      recommendations.push("Pertimbangkan versi luar eksternal jika memungkinkan");
+      recommendations.push(
+        "Konsultasi dengan dokter spesialis kandungan untuk evaluasi cara persalinan"
+      );
+      recommendations.push(
+        "Pertimbangkan versi luar eksternal jika memungkinkan"
+      );
     }
 
     // Interpretasi engagement
@@ -215,7 +236,9 @@ const PemeriksaanLeopold: React.FC = () => {
       if (engagement === "0/5" || engagement === "1/5") {
         interpretation += "Kepala janin belum engaged. ";
         if (parseInt(formData.usiaKehamilan) >= 36) {
-          recommendations.push("Monitor perkembangan engagement pada kunjungan berikutnya");
+          recommendations.push(
+            "Monitor perkembangan engagement pada kunjungan berikutnya"
+          );
         }
       } else if (engagement === "4/5" || engagement === "5/5") {
         interpretation += "Kepala janin sudah well-engaged. ";
@@ -228,25 +251,31 @@ const PemeriksaanLeopold: React.FC = () => {
       interpretation += "Denyut jantung janin dalam batas normal. ";
     } else if (djj < 120) {
       interpretation += "Denyut jantung janin bradikardia (< 120 bpm). ";
-      recommendations.push("Evaluasi kesejahteraan janin dengan CTG atau USG Doppler");
-      recommendations.push("Pertimbangkan penyebab bradikardia (hipoksia, blok jantung, dll)");
+      recommendations.push(
+        "Evaluasi kesejahteraan janin dengan CTG atau USG Doppler"
+      );
+      recommendations.push(
+        "Pertimbangkan penyebab bradikardia (hipoksia, blok jantung, dll)"
+      );
     } else if (djj > 160) {
       interpretation += "Denyut jantung janin takikardia (> 160 bpm). ";
-      recommendations.push("Evaluasi penyebab takikardia (demam maternal, hipoksia, infeksi)");
+      recommendations.push(
+        "Evaluasi penyebab takikardia (demam maternal, hipoksia, infeksi)"
+      );
       recommendations.push("Monitor ketat kesejahteraan janin");
     }
 
     // Update form dengan interpretasi
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       kesimpulan: interpretation,
-      saran: recommendations.join("; ")
+      saran: recommendations.join("; "),
     }));
   };
 
   // Function untuk mengisi template normal
   const fillNormalTemplate = () => {
-    const currentDate = new Date().toISOString().split('T')[0];
+    const currentDate = new Date().toISOString().split("T")[0];
     const normalTemplate: LeopoldData = {
       tanggalPemeriksaan: currentDate,
       usiaKehamilan: "32 minggu 0 hari",
@@ -254,37 +283,41 @@ const PemeriksaanLeopold: React.FC = () => {
       leopold1: {
         posisiBagianAtas: "bokong",
         konsistensi: "lunak",
-        keterangan: "Bokong teraba lunak dan tidak bulat di fundus uteri"
+        keterangan: "Bokong teraba lunak dan tidak bulat di fundus uteri",
       },
       leopold2: {
         posisiPunggungJanin: "kiri",
         ekstremitas: "jelas_teraba",
-        keterangan: "Punggung janin teraba di sebelah kiri maternal, ekstremitas di kanan"
+        keterangan:
+          "Punggung janin teraba di sebelah kiri maternal, ekstremitas di kanan",
       },
       leopold3: {
         posisiBagianBawah: "kepala",
         engagement: "belum_masuk",
-        keterangan: "Kepala janin teraba keras dan bulat, ballotement positif, belum masuk PAP"
+        keterangan:
+          "Kepala janin teraba keras dan bulat, ballotement positif, belum masuk PAP",
       },
       leopold4: {
         konvergenDivergen: "divergen",
         masukPanggul: "1/5",
-        keterangan: "Kedua tangan divergen, kepala janin masuk PAP 1/5 bagian"
+        keterangan: "Kedua tangan divergen, kepala janin masuk PAP 1/5 bagian",
       },
       denyutJantungJanin: {
         frekuensi: "142",
         lokasi: "kiri_bawah",
-        kualitas: "reguler"
+        kualitas: "reguler",
       },
       gerakanJanin: "aktif",
       estimasiBeratJanin: "1800",
       presentasi: "presentasi_kepala",
       posisi: "loa",
-      kesimpulan: "Janin tunggal hidup intrauterine dengan presentasi kepala, posisi LOA, belum engaged. DJJ dalam batas normal.",
-      saran: "Lanjutkan ANC rutin sesuai jadwal. Monitor pergerakan janin. Persiapan persalinan normal.",
-      pemeriksa: "Dr. Bidan Praktek"
+      kesimpulan:
+        "Janin tunggal hidup intrauterine dengan presentasi kepala, posisi LOA, belum engaged. DJJ dalam batas normal.",
+      saran:
+        "Lanjutkan ANC rutin sesuai jadwal. Monitor pergerakan janin. Persiapan persalinan normal.",
+      pemeriksa: "Dr. Bidan Praktek",
     };
-      setFormData(normalTemplate);
+    setFormData(normalTemplate);
   };
   // Function untuk menghitung progress form
   const calculateProgress = () => {
@@ -307,10 +340,12 @@ const PemeriksaanLeopold: React.FC = () => {
       formData.estimasiBeratJanin,
       formData.presentasi,
       formData.posisi,
-      formData.pemeriksa
+      formData.pemeriksa,
     ];
-    
-    const filledFields = fields.filter(field => field && field.trim() !== '').length;
+
+    const filledFields = fields.filter(
+      (field) => field && field.trim() !== ""
+    ).length;
     return Math.round((filledFields / fields.length) * 100);
   };
 
@@ -320,15 +355,15 @@ const PemeriksaanLeopold: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case 's':
+          case "s":
             e.preventDefault();
             handleSubmit(e as any);
             break;
-          case 't':
+          case "t":
             e.preventDefault();
             fillNormalTemplate();
             break;
-          case 'i':
+          case "i":
             e.preventDefault();
             generateInterpretation();
             break;
@@ -336,8 +371,8 @@ const PemeriksaanLeopold: React.FC = () => {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [formData]);
 
   // Effect untuk validasi real-time
@@ -345,10 +380,17 @@ const PemeriksaanLeopold: React.FC = () => {
     if (formData.denyutJantungJanin.frekuensi || formData.tinggiSimpulUteri) {
       validateValues();
     }
-  }, [formData.denyutJantungJanin.frekuensi, formData.tinggiSimpulUteri, formData.leopold1.posisiBagianAtas, formData.leopold3.posisiBagianBawah]);
+  }, [
+    formData.denyutJantungJanin.frekuensi,
+    formData.tinggiSimpulUteri,
+    formData.leopold1.posisiBagianAtas,
+    formData.leopold3.posisiBagianBawah,
+  ]);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">        <div className="max-w-6xl mx-auto">
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {" "}
+      <div className="max-w-6xl mx-auto">
         {/* Alert Messages */}
         {alerts.length > 0 && (
           <div className="mb-6 space-y-3">
@@ -356,18 +398,18 @@ const PemeriksaanLeopold: React.FC = () => {
               <div
                 key={index}
                 className={`p-4 rounded-lg border-l-4 ${
-                  alert.type === 'error'
-                    ? 'bg-red-50 border-red-400 text-red-700'
-                    : alert.type === 'warning'
-                    ? 'bg-yellow-50 border-yellow-400 text-yellow-700'
-                    : 'bg-blue-50 border-blue-400 text-blue-700'
+                  alert.type === "error"
+                    ? "bg-red-50 border-red-400 text-red-700"
+                    : alert.type === "warning"
+                    ? "bg-yellow-50 border-yellow-400 text-yellow-700"
+                    : "bg-blue-50 border-blue-400 text-blue-700"
                 }`}
               >
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    {alert.type === 'error' ? (
+                    {alert.type === "error" ? (
                       <span className="text-red-500">⚠️</span>
-                    ) : alert.type === 'warning' ? (
+                    ) : alert.type === "warning" ? (
                       <span className="text-yellow-500">⚠️</span>
                     ) : (
                       <span className="text-blue-500">ℹ️</span>
@@ -378,7 +420,9 @@ const PemeriksaanLeopold: React.FC = () => {
                   </div>
                   <div className="ml-auto pl-3">
                     <button
-                      onClick={() => setAlerts(alerts.filter((_, i) => i !== index))}
+                      onClick={() =>
+                        setAlerts(alerts.filter((_, i) => i !== index))
+                      }
                       className="text-gray-400 hover:text-gray-600"
                     >
                       ✕
@@ -398,13 +442,15 @@ const PemeriksaanLeopold: React.FC = () => {
                 Pemeriksaan Leopold
               </h2>
               <p className="text-gray-600 mt-1">
-                Pemeriksaan fisik untuk menentukan posisi, presentasi, dan kondisi janin
+                Pemeriksaan fisik untuk menentukan posisi, presentasi, dan
+                kondisi janin
               </p>
-            </div>            <div className="text-right">
+            </div>{" "}
+            <div className="text-right">
               <p className="text-sm text-gray-500">Pasien:</p>
               <p className="font-semibold text-gray-800">Ibu Hanifah</p>
               <p className="text-sm text-gray-500">17 minggu, 1 hari hamil</p>
-              
+
               {/* Quick Action Buttons */}
               <div className="flex space-x-2 mt-3">
                 <button
@@ -436,7 +482,8 @@ const PemeriksaanLeopold: React.FC = () => {
             <div className="bg-purple-50 rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-purple-600">32</div>
               <div className="text-sm text-purple-600">TFU (cm)</div>
-            </div>            <div className="bg-pink-50 rounded-lg p-4 text-center">
+            </div>{" "}
+            <div className="bg-pink-50 rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-pink-600">1800</div>
               <div className="text-sm text-pink-600">Est. Berat (gr)</div>
             </div>
@@ -451,22 +498,23 @@ const PemeriksaanLeopold: React.FC = () => {
               <span className="text-sm text-gray-500">{progress}% Selesai</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  progress < 30 ? 'bg-red-500' : 
-                  progress < 70 ? 'bg-yellow-500' : 
-                  'bg-green-500'
+                  progress < 30
+                    ? "bg-red-500"
+                    : progress < 70
+                    ? "bg-yellow-500"
+                    : "bg-green-500"
                 }`}
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              {progress < 50 ? 
-                'Lengkapi data dasar pemeriksaan Leopold' : 
-                progress < 90 ? 
-                'Hampir selesai! Tambahkan kesimpulan dan saran' :
-                'Form siap untuk disimpan'
-              }
+              {progress < 50
+                ? "Lengkapi data dasar pemeriksaan Leopold"
+                : progress < 90
+                ? "Hampir selesai! Tambahkan kesimpulan dan saran"
+                : "Form siap untuk disimpan"}
             </p>
           </div>
         </div>
@@ -489,7 +537,11 @@ const PemeriksaanLeopold: React.FC = () => {
                       type="date"
                       value={formData.tanggalPemeriksaan}
                       onChange={(e) =>
-                        handleInputChange("tanggalPemeriksaan", "", e.target.value)
+                        handleInputChange(
+                          "tanggalPemeriksaan",
+                          "",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     />
@@ -517,7 +569,11 @@ const PemeriksaanLeopold: React.FC = () => {
                       placeholder="32"
                       value={formData.tinggiSimpulUteri}
                       onChange={(e) =>
-                        handleInputChange("tinggiSimpulUteri", "", e.target.value)
+                        handleInputChange(
+                          "tinggiSimpulUteri",
+                          "",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     />
@@ -536,7 +592,8 @@ const PemeriksaanLeopold: React.FC = () => {
                   </h3>
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
-                  Menentukan bagian janin yang ada di fundus uteri (kepala atau bokong)
+                  Menentukan bagian janin yang ada di fundus uteri (kepala atau
+                  bokong)
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -546,7 +603,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold1.posisiBagianAtas}
                       onChange={(e) =>
-                        handleInputChange("leopold1", "posisiBagianAtas", e.target.value)
+                        handleInputChange(
+                          "leopold1",
+                          "posisiBagianAtas",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -563,7 +624,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold1.konsistensi}
                       onChange={(e) =>
-                        handleInputChange("leopold1", "konsistensi", e.target.value)
+                        handleInputChange(
+                          "leopold1",
+                          "konsistensi",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -581,7 +646,11 @@ const PemeriksaanLeopold: React.FC = () => {
                   <textarea
                     value={formData.leopold1.keterangan}
                     onChange={(e) =>
-                      handleInputChange("leopold1", "keterangan", e.target.value)
+                      handleInputChange(
+                        "leopold1",
+                        "keterangan",
+                        e.target.value
+                      )
                     }
                     rows={2}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -611,7 +680,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold2.posisiPunggungJanin}
                       onChange={(e) =>
-                        handleInputChange("leopold2", "posisiPunggungJanin", e.target.value)
+                        handleInputChange(
+                          "leopold2",
+                          "posisiPunggungJanin",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -629,7 +702,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold2.ekstremitas}
                       onChange={(e) =>
-                        handleInputChange("leopold2", "ekstremitas", e.target.value)
+                        handleInputChange(
+                          "leopold2",
+                          "ekstremitas",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -647,7 +724,11 @@ const PemeriksaanLeopold: React.FC = () => {
                   <textarea
                     value={formData.leopold2.keterangan}
                     onChange={(e) =>
-                      handleInputChange("leopold2", "keterangan", e.target.value)
+                      handleInputChange(
+                        "leopold2",
+                        "keterangan",
+                        e.target.value
+                      )
                     }
                     rows={2}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -677,7 +758,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold3.posisiBagianBawah}
                       onChange={(e) =>
-                        handleInputChange("leopold3", "posisiBagianBawah", e.target.value)
+                        handleInputChange(
+                          "leopold3",
+                          "posisiBagianBawah",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -694,7 +779,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold3.engagement}
                       onChange={(e) =>
-                        handleInputChange("leopold3", "engagement", e.target.value)
+                        handleInputChange(
+                          "leopold3",
+                          "engagement",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -712,7 +801,11 @@ const PemeriksaanLeopold: React.FC = () => {
                   <textarea
                     value={formData.leopold3.keterangan}
                     onChange={(e) =>
-                      handleInputChange("leopold3", "keterangan", e.target.value)
+                      handleInputChange(
+                        "leopold3",
+                        "keterangan",
+                        e.target.value
+                      )
                     }
                     rows={2}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -742,7 +835,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold4.konvergenDivergen}
                       onChange={(e) =>
-                        handleInputChange("leopold4", "konvergenDivergen", e.target.value)
+                        handleInputChange(
+                          "leopold4",
+                          "konvergenDivergen",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -759,7 +856,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.leopold4.masukPanggul}
                       onChange={(e) =>
-                        handleInputChange("leopold4", "masukPanggul", e.target.value)
+                        handleInputChange(
+                          "leopold4",
+                          "masukPanggul",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -780,7 +881,11 @@ const PemeriksaanLeopold: React.FC = () => {
                   <textarea
                     value={formData.leopold4.keterangan}
                     onChange={(e) =>
-                      handleInputChange("leopold4", "keterangan", e.target.value)
+                      handleInputChange(
+                        "leopold4",
+                        "keterangan",
+                        e.target.value
+                      )
                     }
                     rows={2}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -804,7 +909,11 @@ const PemeriksaanLeopold: React.FC = () => {
                       placeholder="142"
                       value={formData.denyutJantungJanin.frekuensi}
                       onChange={(e) =>
-                        handleInputChange("denyutJantungJanin", "frekuensi", e.target.value)
+                        handleInputChange(
+                          "denyutJantungJanin",
+                          "frekuensi",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     />
@@ -816,7 +925,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.denyutJantungJanin.lokasi}
                       onChange={(e) =>
-                        handleInputChange("denyutJantungJanin", "lokasi", e.target.value)
+                        handleInputChange(
+                          "denyutJantungJanin",
+                          "lokasi",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -835,7 +948,11 @@ const PemeriksaanLeopold: React.FC = () => {
                     <select
                       value={formData.denyutJantungJanin.kualitas}
                       onChange={(e) =>
-                        handleInputChange("denyutJantungJanin", "kualitas", e.target.value)
+                        handleInputChange(
+                          "denyutJantungJanin",
+                          "kualitas",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
@@ -875,7 +992,11 @@ const PemeriksaanLeopold: React.FC = () => {
                       placeholder="1800"
                       value={formData.estimasiBeratJanin}
                       onChange={(e) =>
-                        handleInputChange("estimasiBeratJanin", "", e.target.value)
+                        handleInputChange(
+                          "estimasiBeratJanin",
+                          "",
+                          e.target.value
+                        )
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     />
@@ -892,8 +1013,12 @@ const PemeriksaanLeopold: React.FC = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     >
                       <option value="">Pilih...</option>
-                      <option value="presentasi_kepala">Presentasi Kepala</option>
-                      <option value="presentasi_bokong">Presentasi Bokong</option>
+                      <option value="presentasi_kepala">
+                        Presentasi Kepala
+                      </option>
+                      <option value="presentasi_bokong">
+                        Presentasi Bokong
+                      </option>
                       <option value="presentasi_bahu">Presentasi Bahu</option>
                     </select>
                   </div>
@@ -977,7 +1102,8 @@ const PemeriksaanLeopold: React.FC = () => {
                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Batal
-                  </button>                  <button
+                  </button>{" "}
+                  <button
                     type="submit"
                     className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
                     title="Simpan (Ctrl+S)"
@@ -985,14 +1111,24 @@ const PemeriksaanLeopold: React.FC = () => {
                     Simpan Pemeriksaan
                   </button>
                 </div>
-                
+
                 {/* Keyboard Shortcuts Help */}
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-600 mb-2 font-medium">⌨️ Keyboard Shortcuts:</p>
+                  <p className="text-xs text-gray-600 mb-2 font-medium">
+                    ⌨️ Keyboard Shortcuts:
+                  </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-gray-500">
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+S</kbd> Simpan</div>
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+T</kbd> Template</div>
-                    <div><kbd className="bg-white px-1 rounded">Ctrl+I</kbd> Interpretasi</div>
+                    <div>
+                      <kbd className="bg-white px-1 rounded">Ctrl+S</kbd> Simpan
+                    </div>
+                    <div>
+                      <kbd className="bg-white px-1 rounded">Ctrl+T</kbd>{" "}
+                      Template
+                    </div>
+                    <div>
+                      <kbd className="bg-white px-1 rounded">Ctrl+I</kbd>{" "}
+                      Interpretasi
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1000,7 +1136,9 @@ const PemeriksaanLeopold: React.FC = () => {
           </div>
 
           {/* Sidebar - Panduan & Riwayat */}
-          <div className="space-y-6">            {/* Panduan Leopold */}
+          <div className="space-y-6">
+            {" "}
+            {/* Panduan Leopold */}
             <div className="bg-white rounded-xl shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 📋 Panduan Pemeriksaan Leopold
@@ -1011,13 +1149,17 @@ const PemeriksaanLeopold: React.FC = () => {
                     1
                   </div>
                   <div>
-                    <p className="font-medium text-sm text-gray-800">Leopold I - Fundus Uteri</p>
+                    <p className="font-medium text-sm text-gray-800">
+                      Leopold I - Fundus Uteri
+                    </p>
                     <p className="text-xs text-gray-600 mb-2">
                       Menentukan bagian janin di fundus
                     </p>
                     <ul className="text-xs text-gray-500 space-y-1">
                       <li>• Kepala: Keras, bulat, dapat digerakkan</li>
-                      <li>• Bokong: Lunak, tidak bulat, tidak dapat digerakkan</li>
+                      <li>
+                        • Bokong: Lunak, tidak bulat, tidak dapat digerakkan
+                      </li>
                       <li>• Kosong: Janin melintang/miring</li>
                     </ul>
                   </div>
@@ -1027,7 +1169,9 @@ const PemeriksaanLeopold: React.FC = () => {
                     2
                   </div>
                   <div>
-                    <p className="font-medium text-sm text-gray-800">Leopold II - Samping Uterus</p>
+                    <p className="font-medium text-sm text-gray-800">
+                      Leopold II - Samping Uterus
+                    </p>
                     <p className="text-xs text-gray-600 mb-2">
                       Menentukan posisi punggung janin
                     </p>
@@ -1043,7 +1187,9 @@ const PemeriksaanLeopold: React.FC = () => {
                     3
                   </div>
                   <div>
-                    <p className="font-medium text-sm text-gray-800">Leopold III - Bagian Bawah</p>
+                    <p className="font-medium text-sm text-gray-800">
+                      Leopold III - Bagian Bawah
+                    </p>
                     <p className="text-xs text-gray-600 mb-2">
                       Menentukan bagian terbawah janin
                     </p>
@@ -1059,7 +1205,9 @@ const PemeriksaanLeopold: React.FC = () => {
                     4
                   </div>
                   <div>
-                    <p className="font-medium text-sm text-gray-800">Leopold IV - Perlimaan Pawlik</p>
+                    <p className="font-medium text-sm text-gray-800">
+                      Leopold IV - Perlimaan Pawlik
+                    </p>
                     <p className="text-xs text-gray-600 mb-2">
                       Menentukan seberapa dalam janin masuk panggul
                     </p>
@@ -1072,7 +1220,6 @@ const PemeriksaanLeopold: React.FC = () => {
                 </div>
               </div>
             </div>
-
             {/* Ilustrasi Posisi Janin */}
             <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border">
               <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
@@ -1080,22 +1227,33 @@ const PemeriksaanLeopold: React.FC = () => {
               </h4>
               <div className="space-y-3 text-sm">
                 <div className="bg-white rounded-lg p-3 border">
-                  <p className="font-medium text-gray-700">LOA (Left Occiput Anterior)</p>
-                  <p className="text-xs text-gray-600">Kepala di kiri depan - Posisi paling optimal</p>
+                  <p className="font-medium text-gray-700">
+                    LOA (Left Occiput Anterior)
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Kepala di kiri depan - Posisi paling optimal
+                  </p>
                   <div className="text-center mt-2 text-2xl">🤱</div>
                 </div>
                 <div className="bg-white rounded-lg p-3 border">
-                  <p className="font-medium text-gray-700">ROA (Right Occiput Anterior)</p>
-                  <p className="text-xs text-gray-600">Kepala di kanan depan - Posisi normal</p>
+                  <p className="font-medium text-gray-700">
+                    ROA (Right Occiput Anterior)
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Kepala di kanan depan - Posisi normal
+                  </p>
                   <div className="text-center mt-2 text-2xl">🤱</div>
                 </div>
                 <div className="bg-white rounded-lg p-3 border">
                   <p className="font-medium text-gray-700">Presentasi Bokong</p>
-                  <p className="text-xs text-gray-600">Bokong di bawah - Perlu evaluasi</p>
+                  <p className="text-xs text-gray-600">
+                    Bokong di bawah - Perlu evaluasi
+                  </p>
                   <div className="text-center mt-2 text-2xl">🔄</div>
                 </div>
               </div>
-            </div>            {/* Nilai Normal */}
+            </div>{" "}
+            {/* Nilai Normal */}
             <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
               <h4 className="font-semibold text-blue-800 mb-4 flex items-center">
                 📊 Nilai Referensi Normal
@@ -1103,24 +1261,36 @@ const PemeriksaanLeopold: React.FC = () => {
               <div className="space-y-3 text-sm">
                 <div className="bg-white rounded-lg p-3 border border-blue-100">
                   <div className="flex justify-between items-center">
-                    <span className="text-blue-700 font-medium">DJJ Normal:</span>
+                    <span className="text-blue-700 font-medium">
+                      DJJ Normal:
+                    </span>
                     <span className="text-blue-800 font-bold">120-160 bpm</span>
-                  </div>                  <p className="text-xs text-blue-600 mt-1">
+                  </div>{" "}
+                  <p className="text-xs text-blue-600 mt-1">
                     &lt; 120: Bradikardia | &gt; 160: Takikardia
                   </p>
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-blue-100">
                   <div className="flex justify-between items-center">
-                    <span className="text-blue-700 font-medium">TFU (Tinggi Fundus Uteri):</span>
-                    <span className="text-blue-800 font-bold">± Usia kehamilan (minggu)</span>
-                  </div>                  <p className="text-xs text-blue-600 mt-1">
+                    <span className="text-blue-700 font-medium">
+                      TFU (Tinggi Fundus Uteri):
+                    </span>
+                    <span className="text-blue-800 font-bold">
+                      ± Usia kehamilan (minggu)
+                    </span>
+                  </div>{" "}
+                  <p className="text-xs text-blue-600 mt-1">
                     Toleransi ±3 cm dari usia kehamilan
                   </p>
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-blue-100">
                   <div className="flex justify-between items-center">
-                    <span className="text-blue-700 font-medium">Presentasi Normal:</span>
-                    <span className="text-blue-800 font-bold">Kepala (95%)</span>
+                    <span className="text-blue-700 font-medium">
+                      Presentasi Normal:
+                    </span>
+                    <span className="text-blue-800 font-bold">
+                      Kepala (95%)
+                    </span>
                   </div>
                   <p className="text-xs text-blue-600 mt-1">
                     Bokong: 3-4% | Lintang: 0.5%
@@ -1128,7 +1298,9 @@ const PemeriksaanLeopold: React.FC = () => {
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-blue-100">
                   <div className="flex justify-between items-center">
-                    <span className="text-blue-700 font-medium">Posisi Optimal:</span>
+                    <span className="text-blue-700 font-medium">
+                      Posisi Optimal:
+                    </span>
                     <span className="text-blue-800 font-bold">LOA/ROA</span>
                   </div>
                   <p className="text-xs text-blue-600 mt-1">
@@ -1137,15 +1309,17 @@ const PemeriksaanLeopold: React.FC = () => {
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-blue-100">
                   <div className="flex justify-between items-center">
-                    <span className="text-blue-700 font-medium">Engagement (≥36 minggu):</span>
+                    <span className="text-blue-700 font-medium">
+                      Engagement (≥36 minggu):
+                    </span>
                     <span className="text-blue-800 font-bold">3/5 - 5/5</span>
-                  </div>                  <p className="text-xs text-blue-600 mt-1">
+                  </div>{" "}
+                  <p className="text-xs text-blue-600 mt-1">
                     Primigravida: 36-38 mg | Multigravida: saat persalinan
                   </p>
                 </div>
               </div>
             </div>
-
             {/* Tips Praktis */}
             <div className="bg-green-50 rounded-xl p-6 border border-green-200">
               <h4 className="font-semibold text-green-800 mb-4 flex items-center">
@@ -1155,29 +1329,34 @@ const PemeriksaanLeopold: React.FC = () => {
                 <div className="flex items-start space-x-2">
                   <span className="text-green-600 mt-0.5">✓</span>
                   <p className="text-green-700">
-                    <strong>Persiapan:</strong> Kandung kemih kosong, posisi terlentang, relaksasi otot perut
+                    <strong>Persiapan:</strong> Kandung kemih kosong, posisi
+                    terlentang, relaksasi otot perut
                   </p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-green-600 mt-0.5">✓</span>
                   <p className="text-green-700">
-                    <strong>Teknik:</strong> Gunakan ujung jari, tekanan lembut tapi tegas
+                    <strong>Teknik:</strong> Gunakan ujung jari, tekanan lembut
+                    tapi tegas
                   </p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-green-600 mt-0.5">✓</span>
                   <p className="text-green-700">
-                    <strong>Interpretasi:</strong> Konfirmasi dengan USG jika hasil meragukan
+                    <strong>Interpretasi:</strong> Konfirmasi dengan USG jika
+                    hasil meragukan
                   </p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <span className="text-green-600 mt-0.5">✓</span>
                   <p className="text-green-700">
-                    <strong>Dokumentasi:</strong> Catat semua temuan dengan jelas dan konsisten
+                    <strong>Dokumentasi:</strong> Catat semua temuan dengan
+                    jelas dan konsisten
                   </p>
                 </div>
               </div>
-            </div>            {/* Riwayat Pemeriksaan */}
+            </div>{" "}
+            {/* Riwayat Pemeriksaan */}
             <div className="bg-white rounded-xl shadow-sm border p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -1202,52 +1381,63 @@ const PemeriksaanLeopold: React.FC = () => {
                           {riwayat.usiaKehamilan}
                         </p>
                       </div>
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                        riwayat.status === 'Normal' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          riwayat.status === "Normal"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
                         {riwayat.status}
                       </span>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div className="space-y-1">
                         <p className="text-gray-600">
-                          <span className="font-medium">TFU:</span> {riwayat.tfu}
+                          <span className="font-medium">TFU:</span>{" "}
+                          {riwayat.tfu}
                         </p>
                         <p className="text-gray-600">
-                          <span className="font-medium">DJJ:</span> {riwayat.djj}
+                          <span className="font-medium">DJJ:</span>{" "}
+                          {riwayat.djj}
                         </p>
                         <p className="text-gray-600">
-                          <span className="font-medium">Posisi:</span> {riwayat.posisi}
+                          <span className="font-medium">Posisi:</span>{" "}
+                          {riwayat.posisi}
                         </p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-gray-600">
-                          <span className="font-medium">L1:</span> {riwayat.leopold1}
+                          <span className="font-medium">L1:</span>{" "}
+                          {riwayat.leopold1}
                         </p>
                         <p className="text-gray-600">
-                          <span className="font-medium">L2:</span> {riwayat.leopold2}
+                          <span className="font-medium">L2:</span>{" "}
+                          {riwayat.leopold2}
                         </p>
                         <p className="text-gray-600">
-                          <span className="font-medium">L4:</span> {riwayat.leopold4}
+                          <span className="font-medium">L4:</span>{" "}
+                          {riwayat.leopold4}
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="mt-3 pt-2 border-t border-gray-100">
                       <p className="text-xs text-gray-600">
-                        <span className="font-medium">Presentasi:</span> {riwayat.presentasi}
+                        <span className="font-medium">Presentasi:</span>{" "}
+                        {riwayat.presentasi}
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
-              
+
               {/* Quick Actions */}
               <div className="mt-4 pt-4 border-t border-gray-200">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Aksi Cepat</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">
+                  Aksi Cepat
+                </h4>
                 <div className="space-y-2">
                   <button className="w-full text-left text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded transition-colors">
                     📊 Lihat Grafik Perkembangan
