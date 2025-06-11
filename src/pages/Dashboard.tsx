@@ -238,7 +238,7 @@ const Dashboard = () => {
                   <h2 className="text-xl text-gray-800 font-bold">
                     Eksplorasi kategori artikel yang Anda ingin pelajari
                   </h2>{" "}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-6">
                     {categories.map((category) => (
                       <div
                         key={category.id}
