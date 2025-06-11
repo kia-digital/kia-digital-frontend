@@ -17,6 +17,7 @@ import KategoriTrimester3 from "./pages/Edukasi/KategoriTrimester3";
 import KategoriImunisasi from "./pages/Edukasi/KategoriImunisasi";
 import KategoriAsupanGizi from "./pages/Edukasi/KategoriAsupanGizi";
 import KategoriKesehatanMental from "./pages/Edukasi/KategoriKesehatanMental";
+import ArtikelDetail from "./pages/Edukasi/ArtikelDetail";
 
 function App() {
   return (
@@ -110,12 +111,21 @@ function App() {
               <KategoriAsupanGizi />
             </Layout>
           }
-        />
+        />{" "}
         <Route
           path="/edukasi/kesehatan-mental"
           element={
             <Layout>
               <KategoriKesehatanMental />
+            </Layout>
+          }
+        />
+        {/* Route untuk detail artikel */}
+        <Route
+          path="/edukasi/:category/:id"
+          element={
+            <Layout>
+              <ArtikelDetail />
             </Layout>
           }
         />

@@ -140,20 +140,6 @@ const KategoriTrimester1: React.FC = () => {
     },
   ];
 
-  const categories = [
-    { name: "Semua", count: 12, active: true },
-    { name: "Perkembangan", count: 2, active: false },
-    { name: "Tips Kesehatan", count: 1, active: false },
-    { name: "Nutrisi", count: 3, active: false },
-    { name: "Keamanan", count: 1, active: false },
-    { name: "Olahraga", count: 1, active: false },
-    { name: "Pemeriksaan", count: 1, active: false },
-    { name: "Psikologi", count: 2, active: false },
-    { name: "Kesejahteraan", count: 1, active: false },
-  ];
-
-  const popularArticles = articles.filter((article) => article.isPopular);
-
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -207,65 +193,10 @@ const KategoriTrimester1: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Categories Filter */}
-            <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-              <h3 className="font-semibold text-gray-800 mb-4">Kategori</h3>
-              <div className="space-y-2">
-                {categories.map((category, index) => (
-                  <button
-                    key={index}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      category.active
-                        ? "bg-pink-100 text-pink-700 font-medium"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span>{category.name}</span>
-                      <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
-                        {category.count}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Popular Articles */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h3 className="font-semibold text-gray-800 mb-4 flex items-center">
-                🔥 Artikel Populer
-              </h3>
-              <div className="space-y-4">
-                {popularArticles.slice(0, 3).map((article) => (
-                  <div
-                    key={article.id}
-                    className="border-b border-gray-100 pb-4 last:border-b-0"
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className="text-2xl">{article.image}</div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm text-gray-800 mb-1 line-clamp-2">
-                          {article.title}
-                        </h4>
-                        <p className="text-xs text-gray-500">
-                          {article.readTime} • {article.category}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
+        </div>{" "}
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-1">
             {/* Search Bar */}
             <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
               <div className="relative">
@@ -291,20 +222,16 @@ const KategoriTrimester1: React.FC = () => {
             </div>
 
             {/* Articles Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {articles.map((article) => (
                 <div
                   key={article.id}
+                  onClick={() => navigate(`/edukasi/trimester-1/${article.id}`)}
                   className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-shadow cursor-pointer"
                 >
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="text-3xl">{article.image}</div>
-                      {article.isPopular && (
-                        <span className="bg-red-100 text-red-600 text-xs font-medium px-2 py-1 rounded-full">
-                          Populer
-                        </span>
-                      )}
                     </div>
 
                     <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
@@ -342,7 +269,6 @@ const KategoriTrimester1: React.FC = () => {
                 </div>
               ))}
             </div>
-
             {/* Load More Button */}
             <div className="text-center mt-8">
               <button className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors">

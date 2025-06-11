@@ -1,13 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
-import bannerEdukasi from "../assets/banner-edukasi.png";
 
 interface ArticleCardProps {
+  id: number;
   category: string;
   title: string;
   description: string;
   preview: string;
+  categoryRoute: string;
+  onClick: () => void;
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({
@@ -15,9 +17,13 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   title,
   description,
   preview,
+  onClick,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <div
+      className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="p-6">
         <div className="mb-3">
           <span className="text-pink-400 text-sm font-medium">{category}</span>
@@ -36,35 +42,43 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
 
 const EdukasiPage: React.FC = () => {
   const navigate = useNavigate();
-
   const articles = [
     {
+      id: 1,
       category: "Kesehatan Ibu Hamil",
-      title: "Demam Berkepanjangan - Kapan Harus Ke Dokter?",
-      description: "Membedakan demam biasa dengan infeksi serius.",
+      title: "Perubahan Tubuh di Trimester Pertama",
+      description:
+        "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
       preview:
-        "Demam selama kehamilan bisa menjadi hal yang mengkhawatirkan, terutama jika berlangsung lama...",
+        "Trimester pertama adalah periode krusial dalam kehamilan dimana terjadi banyak perubahan...",
+      categoryRoute: "trimester-1",
     },
     {
+      id: 11,
       category: "Nutrisi Kehamilan",
-      title: "Asupan Gizi Seimbang untuk Ibu Hamil",
-      description: "Panduan lengkap nutrisi yang dibutuhkan selama kehamilan.",
-      preview:
-        "Nutrisi yang tepat sangat penting untuk perkembangan janin dan kesehatan ibu...",
-    },
-    {
-      category: "Perkembangan Janin",
-      title: "Milestone Perkembangan Trimester Kedua",
-      description: "Tahapan penting perkembangan bayi di usia 13-27 minggu.",
+      title: "Perkembangan Janin Trimester 2",
+      description: "Milestone penting perkembangan bayi di usia 13-27 minggu",
       preview:
         "Trimester kedua adalah periode emas kehamilan dimana banyak organ berkembang...",
+      categoryRoute: "trimester-2",
     },
     {
+      id: 21,
       category: "Persiapan Persalinan",
-      title: "Tanda-Tanda Persalinan yang Perlu Diketahui",
-      description: "Mengenali kapan saatnya menuju rumah sakit.",
+      title: "Persiapan Persalinan",
+      description: "Panduan lengkap mempersiapkan diri menjelang persalinan",
       preview:
-        "Menjelang persalinan, tubuh akan memberikan berbagai sinyal yang perlu dipahami...",
+        "Trimester ketiga adalah waktu untuk mempersiapkan persalinan...",
+      categoryRoute: "trimester-3",
+    },
+    {
+      id: 31,
+      category: "Imunisasi",
+      title: "Jadwal Imunisasi Ibu Hamil",
+      description: "Vaksin yang aman dan diperlukan selama kehamilan",
+      preview:
+        "Imunisasi selama kehamilan penting untuk melindungi ibu dan bayi...",
+      categoryRoute: "imunisasi",
     },
   ];
 
@@ -178,16 +192,20 @@ const EdukasiPage: React.FC = () => {
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-6">
               Rekomendasi untuk Anda!
-            </h3>
-
+            </h3>{" "}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {articles.map((article, index) => (
                 <ArticleCard
                   key={index}
+                  id={article.id}
                   category={article.category}
                   title={article.title}
                   description={article.description}
                   preview={article.preview}
+                  categoryRoute={article.categoryRoute}
+                  onClick={() =>
+                    navigate(`/edukasi/${article.categoryRoute}/${article.id}`)
+                  }
                 />
               ))}
             </div>

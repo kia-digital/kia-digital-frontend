@@ -39,6 +39,24 @@ interface LeopoldData {
 }
 
 const PemeriksaanLeopold: React.FC = () => {
+  // Simulasi usia kehamilan pasien dalam minggu
+  const [currentPregnancyWeek] = useState(17); // 17 minggu saat ini
+  
+  // Function untuk menentukan Leopold mana yang dapat dilakukan
+  const canPerformLeopold = (leopoldNumber: number) => {
+    switch (leopoldNumber) {
+      case 1:
+        return currentPregnancyWeek >= 12; // Sejak trimester 1 (12 minggu)
+      case 2:
+      case 3:
+        return currentPregnancyWeek >= 28; // Mulai akhir trimester 2 (28 minggu)
+      case 4:
+        return currentPregnancyWeek >= 36; // Setelah 36 minggu
+      default:
+        return false;
+    }
+  };
+  
   const [formData, setFormData] = useState<LeopoldData>({
     tanggalPemeriksaan: "",
     usiaKehamilan: "",
@@ -316,40 +334,9 @@ const PemeriksaanLeopold: React.FC = () => {
       saran:
         "Lanjutkan ANC rutin sesuai jadwal. Monitor pergerakan janin. Persiapan persalinan normal.",
       pemeriksa: "Dr. Bidan Praktek",
-    };
-    setFormData(normalTemplate);
-  };
-  // Function untuk menghitung progress form
-  const calculateProgress = () => {
-    const fields = [
-      formData.tanggalPemeriksaan,
-      formData.usiaKehamilan,
-      formData.tinggiSimpulUteri,
-      formData.leopold1.posisiBagianAtas,
-      formData.leopold1.konsistensi,
-      formData.leopold2.posisiPunggungJanin,
-      formData.leopold2.ekstremitas,
-      formData.leopold3.posisiBagianBawah,
-      formData.leopold3.engagement,
-      formData.leopold4.konvergenDivergen,
-      formData.leopold4.masukPanggul,
-      formData.denyutJantungJanin.frekuensi,
-      formData.denyutJantungJanin.lokasi,
-      formData.denyutJantungJanin.kualitas,
-      formData.gerakanJanin,
-      formData.estimasiBeratJanin,
-      formData.presentasi,
-      formData.posisi,
-      formData.pemeriksa,
-    ];
-
-    const filledFields = fields.filter(
-      (field) => field && field.trim() !== ""
-    ).length;
-    return Math.round((filledFields / fields.length) * 100);
+    };    setFormData(normalTemplate);
   };
 
-  const progress = calculateProgress();
   // Effect untuk keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -467,55 +454,85 @@ const PemeriksaanLeopold: React.FC = () => {
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Quick Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">32</div>
-              <div className="text-sm text-blue-600">Minggu Kehamilan</div>
+          </div>          {/* Panduan Pemeriksaan Leopold */}
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              📋 Panduan Pemeriksaan Leopold
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className={`p-4 rounded-lg border-2 ${canPerformLeopold(1) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className="flex items-center mb-2">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold mr-2 ${canPerformLeopold(1) ? 'bg-green-500 text-white' : 'bg-gray-400 text-white'}`}>
+                    1
+                  </div>
+                  <h4 className="font-semibold text-sm">Leopold I</h4>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">Fundus Uteri</p>
+                <p className="text-xs text-gray-500">Mulai: 12 minggu</p>
+                {canPerformLeopold(1) ? (
+                  <div className="mt-2 text-xs text-green-600 font-medium">✅ Dapat dilakukan</div>
+                ) : (
+                  <div className="mt-2 text-xs text-gray-500">⏳ Belum saatnya</div>
+                )}
+              </div>
+              
+              <div className={`p-4 rounded-lg border-2 ${canPerformLeopold(2) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className="flex items-center mb-2">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold mr-2 ${canPerformLeopold(2) ? 'bg-green-500 text-white' : 'bg-gray-400 text-white'}`}>
+                    2
+                  </div>
+                  <h4 className="font-semibold text-sm">Leopold II</h4>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">Posisi Punggung</p>
+                <p className="text-xs text-gray-500">Mulai: 28 minggu</p>
+                {canPerformLeopold(2) ? (
+                  <div className="mt-2 text-xs text-green-600 font-medium">✅ Dapat dilakukan</div>
+                ) : (
+                  <div className="mt-2 text-xs text-gray-500">⏳ Belum saatnya</div>
+                )}
+              </div>
+              
+              <div className={`p-4 rounded-lg border-2 ${canPerformLeopold(3) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className="flex items-center mb-2">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold mr-2 ${canPerformLeopold(3) ? 'bg-green-500 text-white' : 'bg-gray-400 text-white'}`}>
+                    3
+                  </div>
+                  <h4 className="font-semibold text-sm">Leopold III</h4>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">Bagian Bawah</p>
+                <p className="text-xs text-gray-500">Mulai: 28 minggu</p>
+                {canPerformLeopold(3) ? (
+                  <div className="mt-2 text-xs text-green-600 font-medium">✅ Dapat dilakukan</div>
+                ) : (
+                  <div className="mt-2 text-xs text-gray-500">⏳ Belum saatnya</div>
+                )}
+              </div>
+              
+              <div className={`p-4 rounded-lg border-2 ${canPerformLeopold(4) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className="flex items-center mb-2">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold mr-2 ${canPerformLeopold(4) ? 'bg-green-500 text-white' : 'bg-gray-400 text-white'}`}>
+                    4
+                  </div>
+                  <h4 className="font-semibold text-sm">Leopold IV</h4>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">Engagement</p>
+                <p className="text-xs text-gray-500">Mulai: 36 minggu</p>
+                {canPerformLeopold(4) ? (
+                  <div className="mt-2 text-xs text-green-600 font-medium">✅ Dapat dilakukan</div>
+                ) : (
+                  <div className="mt-2 text-xs text-gray-500">⏳ Belum saatnya</div>
+                )}
+              </div>
             </div>
-            <div className="bg-green-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">142</div>
-              <div className="text-sm text-green-600">DJJ (bpm)</div>
+            
+            <div className="mt-4 p-3 bg-blue-100 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Usia kehamilan saat ini: {currentPregnancyWeek} minggu</strong>
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                Pemeriksaan Leopold dilakukan secara bertahap sesuai perkembangan kehamilan
+              </p>
             </div>
-            <div className="bg-purple-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">32</div>
-              <div className="text-sm text-purple-600">TFU (cm)</div>
-            </div>{" "}
-            <div className="bg-pink-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-pink-600">1800</div>
-              <div className="text-sm text-pink-600">Est. Berat (gr)</div>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">
-                Progress Pengisian Form
-              </span>
-              <span className="text-sm text-gray-500">{progress}% Selesai</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  progress < 30
-                    ? "bg-red-500"
-                    : progress < 70
-                    ? "bg-yellow-500"
-                    : "bg-green-500"
-                }`}
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {progress < 50
-                ? "Lengkapi data dasar pemeriksaan Leopold"
-                : progress < 90
-                ? "Hampir selesai! Tambahkan kesimpulan dan saran"
-                : "Form siap untuk disimpan"}
-            </p>
           </div>
         </div>
 
@@ -579,26 +596,47 @@ const PemeriksaanLeopold: React.FC = () => {
                     />
                   </div>
                 </div>
-              </div>
-
-              {/* Leopold 1 */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    1
+              </div>              {/* Leopold 1 */}
+              <div className={`bg-white rounded-xl shadow-sm border p-6 ${!canPerformLeopold(1) ? 'opacity-60' : ''}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 ${canPerformLeopold(1) ? 'bg-blue-500 text-white' : 'bg-gray-400 text-white'}`}>
+                      1
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Leopold I - Pemeriksaan Fundus Uteri
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Leopold I - Pemeriksaan Fundus Uteri
-                  </h3>
+                  {!canPerformLeopold(1) && (
+                    <div className="flex items-center text-orange-600 bg-orange-100 px-3 py-1 rounded-full text-sm">
+                      <span className="mr-1">🔒</span>
+                      Belum dapat dilakukan
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
                   Menentukan bagian janin yang ada di fundus uteri (kepala atau
                   bokong)
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Posisi Bagian Atas
+                
+                {!canPerformLeopold(1) ? (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                    <div className="text-4xl mb-2">⏳</div>
+                    <h4 className="font-semibold text-orange-800 mb-2">Pemeriksaan Belum Dapat Dilakukan</h4>
+                    <p className="text-sm text-orange-700 mb-3">
+                      Leopold I dapat dilakukan mulai usia kehamilan 12 minggu
+                    </p>
+                    <p className="text-xs text-orange-600">
+                      Usia kehamilan saat ini: {currentPregnancyWeek} minggu<br/>
+                      Dapat dilakukan dalam: {Math.max(0, 12 - currentPregnancyWeek)} minggu lagi
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Posisi Bagian Atas
                     </label>
                     <select
                       value={formData.leopold1.posisiBagianAtas}
@@ -638,8 +676,7 @@ const PemeriksaanLeopold: React.FC = () => {
                       <option value="kenyal">Kenyal</option>
                     </select>
                   </div>
-                </div>
-                <div className="mt-4">
+                </div>                <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Keterangan Tambahan
                   </label>
@@ -657,25 +694,48 @@ const PemeriksaanLeopold: React.FC = () => {
                     placeholder="Keterangan tambahan..."
                   />
                 </div>
-              </div>
-
-              {/* Leopold 2 */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    2
+                  </>
+                )}
+              </div>              {/* Leopold 2 */}
+              <div className={`bg-white rounded-xl shadow-sm border p-6 ${!canPerformLeopold(2) ? 'opacity-60' : ''}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 ${canPerformLeopold(2) ? 'bg-green-500 text-white' : 'bg-gray-400 text-white'}`}>
+                      2
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Leopold II - Pemeriksaan Samping Uterus
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Leopold II - Pemeriksaan Samping Uterus
-                  </h3>
+                  {!canPerformLeopold(2) && (
+                    <div className="flex items-center text-orange-600 bg-orange-100 px-3 py-1 rounded-full text-sm">
+                      <span className="mr-1">🔒</span>
+                      Belum dapat dilakukan
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
                   Menentukan posisi punggung janin dan letak ekstremitas
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Posisi Punggung Janin
+                
+                {!canPerformLeopold(2) ? (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                    <div className="text-4xl mb-2">⏳</div>
+                    <h4 className="font-semibold text-orange-800 mb-2">Pemeriksaan Belum Dapat Dilakukan</h4>
+                    <p className="text-sm text-orange-700 mb-3">
+                      Leopold II dapat dilakukan mulai usia kehamilan 28 minggu (akhir trimester 2)
+                    </p>
+                    <p className="text-xs text-orange-600">
+                      Usia kehamilan saat ini: {currentPregnancyWeek} minggu<br/>
+                      Dapat dilakukan dalam: {Math.max(0, 28 - currentPregnancyWeek)} minggu lagi
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Posisi Punggung Janin
                     </label>
                     <select
                       value={formData.leopold2.posisiPunggungJanin}
@@ -716,8 +776,7 @@ const PemeriksaanLeopold: React.FC = () => {
                       <option value="tidak_teraba">Tidak Teraba</option>
                     </select>
                   </div>
-                </div>
-                <div className="mt-4">
+                </div>                <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Keterangan Tambahan
                   </label>
@@ -735,25 +794,48 @@ const PemeriksaanLeopold: React.FC = () => {
                     placeholder="Keterangan tambahan..."
                   />
                 </div>
-              </div>
-
-              {/* Leopold 3 */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    3
+                  </>
+                )}
+              </div>              {/* Leopold 3 */}
+              <div className={`bg-white rounded-xl shadow-sm border p-6 ${!canPerformLeopold(3) ? 'opacity-60' : ''}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 ${canPerformLeopold(3) ? 'bg-purple-500 text-white' : 'bg-gray-400 text-white'}`}>
+                      3
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Leopold III - Pemeriksaan Bagian Bawah
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Leopold III - Pemeriksaan Bagian Bawah
-                  </h3>
+                  {!canPerformLeopold(3) && (
+                    <div className="flex items-center text-orange-600 bg-orange-100 px-3 py-1 rounded-full text-sm">
+                      <span className="mr-1">🔒</span>
+                      Belum dapat dilakukan
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
                   Menentukan bagian janin yang ada di segmen bawah rahim
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Posisi Bagian Bawah
+                
+                {!canPerformLeopold(3) ? (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                    <div className="text-4xl mb-2">⏳</div>
+                    <h4 className="font-semibold text-orange-800 mb-2">Pemeriksaan Belum Dapat Dilakukan</h4>
+                    <p className="text-sm text-orange-700 mb-3">
+                      Leopold III dapat dilakukan mulai usia kehamilan 28 minggu (akhir trimester 2)
+                    </p>
+                    <p className="text-xs text-orange-600">
+                      Usia kehamilan saat ini: {currentPregnancyWeek} minggu<br/>
+                      Dapat dilakukan dalam: {Math.max(0, 28 - currentPregnancyWeek)} minggu lagi
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Posisi Bagian Bawah
                     </label>
                     <select
                       value={formData.leopold3.posisiBagianBawah}
@@ -793,8 +875,7 @@ const PemeriksaanLeopold: React.FC = () => {
                       <option value="sudah_masuk">Sudah Masuk PAP</option>
                     </select>
                   </div>
-                </div>
-                <div className="mt-4">
+                </div>                <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Keterangan Tambahan
                   </label>
@@ -812,25 +893,48 @@ const PemeriksaanLeopold: React.FC = () => {
                     placeholder="Keterangan tambahan..."
                   />
                 </div>
-              </div>
-
-              {/* Leopold 4 */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    4
+                  </>
+                )}
+              </div>              {/* Leopold 4 */}
+              <div className={`bg-white rounded-xl shadow-sm border p-6 ${!canPerformLeopold(4) ? 'opacity-60' : ''}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 ${canPerformLeopold(4) ? 'bg-orange-500 text-white' : 'bg-gray-400 text-white'}`}>
+                      4
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Leopold IV - Pemeriksaan Perlimaan Pawlik
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Leopold IV - Pemeriksaan Perlimaan Pawlik
-                  </h3>
+                  {!canPerformLeopold(4) && (
+                    <div className="flex items-center text-orange-600 bg-orange-100 px-3 py-1 rounded-full text-sm">
+                      <span className="mr-1">🔒</span>
+                      Belum dapat dilakukan
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
                   Menentukan seberapa jauh bagian terbawah janin masuk panggul
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Konvergen/Divergen
+                
+                {!canPerformLeopold(4) ? (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                    <div className="text-4xl mb-2">⏳</div>
+                    <h4 className="font-semibold text-orange-800 mb-2">Pemeriksaan Belum Dapat Dilakukan</h4>
+                    <p className="text-sm text-orange-700 mb-3">
+                      Leopold IV dapat dilakukan mulai usia kehamilan 36 minggu (engagement assessment)
+                    </p>
+                    <p className="text-xs text-orange-600">
+                      Usia kehamilan saat ini: {currentPregnancyWeek} minggu<br/>
+                      Dapat dilakukan dalam: {Math.max(0, 36 - currentPregnancyWeek)} minggu lagi
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Konvergen/Divergen
                     </label>
                     <select
                       value={formData.leopold4.konvergenDivergen}
@@ -873,8 +977,7 @@ const PemeriksaanLeopold: React.FC = () => {
                       <option value="5/5">5/5 (Sudah masuk)</option>
                     </select>
                   </div>
-                </div>
-                <div className="mt-4">
+                </div>                <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Keterangan Tambahan
                   </label>
@@ -892,6 +995,8 @@ const PemeriksaanLeopold: React.FC = () => {
                     placeholder="Keterangan tambahan..."
                   />
                 </div>
+                  </>
+                )}
               </div>
 
               {/* DJJ dan Data Lainnya */}
@@ -1133,93 +1238,8 @@ const PemeriksaanLeopold: React.FC = () => {
                 </div>
               </div>
             </form>
-          </div>
-
-          {/* Sidebar - Panduan & Riwayat */}
+          </div>          {/* Sidebar - Ilustrasi, Referensi & Riwayat */}
           <div className="space-y-6">
-            {" "}
-            {/* Panduan Leopold */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                📋 Panduan Pemeriksaan Leopold
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    1
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-gray-800">
-                      Leopold I - Fundus Uteri
-                    </p>
-                    <p className="text-xs text-gray-600 mb-2">
-                      Menentukan bagian janin di fundus
-                    </p>
-                    <ul className="text-xs text-gray-500 space-y-1">
-                      <li>• Kepala: Keras, bulat, dapat digerakkan</li>
-                      <li>
-                        • Bokong: Lunak, tidak bulat, tidak dapat digerakkan
-                      </li>
-                      <li>• Kosong: Janin melintang/miring</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    2
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-gray-800">
-                      Leopold II - Samping Uterus
-                    </p>
-                    <p className="text-xs text-gray-600 mb-2">
-                      Menentukan posisi punggung janin
-                    </p>
-                    <ul className="text-xs text-gray-500 space-y-1">
-                      <li>• Punggung: Datar, keras, tahanan besar</li>
-                      <li>• Ekstremitas: Kecil-kecil, bergerak</li>
-                      <li>• Posisi: Kiri/kanan maternal</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    3
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-gray-800">
-                      Leopold III - Bagian Bawah
-                    </p>
-                    <p className="text-xs text-gray-600 mb-2">
-                      Menentukan bagian terbawah janin
-                    </p>
-                    <ul className="text-xs text-gray-500 space-y-1">
-                      <li>• Kepala: Keras, bulat, ballotement (+)</li>
-                      <li>• Bokong: Lunak, tidak bulat</li>
-                      <li>• Engagement: Masuk/belum masuk PAP</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    4
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-gray-800">
-                      Leopold IV - Perlimaan Pawlik
-                    </p>
-                    <p className="text-xs text-gray-600 mb-2">
-                      Menentukan seberapa dalam janin masuk panggul
-                    </p>
-                    <ul className="text-xs text-gray-500 space-y-1">
-                      <li>• Divergen: Kepala belum masuk PAP (0-1/5)</li>
-                      <li>• Sejajar: Kepala masuk sebagian (2-3/5)</li>
-                      <li>• Konvergen: Kepala sudah masuk PAP (4-5/5)</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
             {/* Ilustrasi Posisi Janin */}
             <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border">
               <h4 className="font-semibold text-gray-800 mb-3 flex items-center">

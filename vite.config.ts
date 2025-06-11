@@ -5,7 +5,10 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    allowedHosts: ["magnetic-freely-cougar.ngrok-free.app"],
+    allowedHosts: [
+      "magnetic-freely-cougar.ngrok-free.app",
+      "exotic-reindeer-quick.ngrok-free.app",
+    ],
     proxy: {
       "/api": {
         target: "https://api.nugrahanggarasiregar.my.id",
