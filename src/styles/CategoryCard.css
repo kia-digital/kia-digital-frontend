@@ -1,0 +1,78 @@
+/* Category Card Hover Animation Styles - Simple & Smooth */
+.category-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  background: white;
+  transform: translateY(0) scale(1);
+  border-radius: 12px;
+}
+
+/* Smooth main card hover effects */
+.category-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradient background on hover for each card */
+.category-card:nth-child(1):hover {
+  background: linear-gradient(135deg, #ec4899, #f472b6);
+}
+
+.category-card:nth-child(2):hover {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.category-card:nth-child(3):hover {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+}
+
+.category-card:nth-child(4):hover {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.category-card:nth-child(5):hover {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.category-card:nth-child(6):hover {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+}
+
+/* Icon animation with smooth scaling */
+.category-card:hover .text-4xl {
+  transform: scale(1.15);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Text color changes on hover */
+.category-card:hover h3 {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.category-card:hover p,
+.category-card:hover span {
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.3s ease;
+}
+
+/* Smooth text transitions */
+.category-card * {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gentle press effect */
+.category-card:active {
+  transform: translateY(-4px) scale(1.01);
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Emoji icon specific enhancement */
+.emoji-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-card:hover .emoji-icon {
+  transform: scale(1.15);
+}

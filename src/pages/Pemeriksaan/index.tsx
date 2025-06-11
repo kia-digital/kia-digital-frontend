@@ -34,10 +34,9 @@ const Pemeriksaan: React.FC = () => {
         subtitle="Selamat datang di halaman Pemeriksaan ibu!"
         showLembarPemantauan={true}
         showUserAvatar={true}
-      />
-
+      />{" "}
       {/* Tabs */}
-      <div className="px-6">
+      <div className="px-6 bg-gray-100">
         <nav className="flex space-x-1">
           {tabs.map((tab) => {
             const isActive = tab.key === activeTab;
@@ -57,9 +56,8 @@ const Pemeriksaan: React.FC = () => {
           })}
         </nav>
       </div>
-
-      {/* Main Content */}
-      {renderMainContent()}
+      {/* Main Content with proper scroll container */}
+      <div className="bg-gray-100 min-h-screen">{renderMainContent()}</div>
     </>
   );
 };

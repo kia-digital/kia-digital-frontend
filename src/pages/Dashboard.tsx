@@ -5,6 +5,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -171,9 +172,8 @@ const Dashboard = () => {
       color: "bg-yellow-400",
     },
   ];
-
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
       <div className="flex-1 flex bg-gray-100">
         {/* Content Area */}
@@ -201,7 +201,6 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
           <div className="px-8 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column */}
@@ -240,44 +239,31 @@ const Dashboard = () => {
                     Eksplorasi kategori artikel yang Anda ingin pelajari
                   </h2>{" "}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-6">
-                    {" "}
                     {categories.map((category) => (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category.slug)}
-                        className="bg-white rounded-xl shadow-lg overflow-hidden p-6 cursor-pointer hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col items-center justify-center text-center"
+                        className="category-card relative rounded-xl shadow-lg overflow-hidden p-6 cursor-pointer border border-gray-100 group flex flex-col items-center justify-center text-center"
                       >
-                        <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
-                          {category.icon}
-                        </div>
-                        <p className="text-gray-500 font-medium text-sm mb-1">
-                          Tentang
-                        </p>
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                          {category.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-3">
-                          {category.description}
-                        </p>
-                        <div className="flex items-center justify-center w-full">
-                          <span className="text-xs font-medium text-primary-500">
-                            {category.articleCount} artikel
-                          </span>
-                          {/* <button className="text-pink-500 hover:text-pink-700 transition-colors">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 5l7 7-7 7"
-                              />
-                            </svg>
-                          </button> */}
+                        {/* Content with z-index for layering */}
+                        <div className="relative z-10 flex flex-col items-center justify-center text-center w-full">
+                          <div className="text-4xl mb-4 transition-all duration-300 ease-out emoji-icon">
+                            {category.icon}
+                          </div>
+                          <p className="text-gray-500 group-hover:text-pink-100 font-medium text-sm mb-1 transition-colors duration-300">
+                            Tentang
+                          </p>
+                          <h3 className="font-semibold text-gray-800 group-hover:text-white mb-2 transition-colors duration-300">
+                            {category.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 group-hover:text-pink-100 mb-3 transition-colors duration-300">
+                            {category.description}
+                          </p>
+                          <div className="flex items-center justify-center w-full">
+                            <span className="text-xs font-medium text-primary-500 group-hover:text-pink-200 transition-colors duration-300">
+                              {category.articleCount} artikel
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -409,7 +395,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>{" "}
         </div>
       </div>
     </div>
