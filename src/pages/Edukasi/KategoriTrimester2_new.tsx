@@ -172,8 +172,9 @@ const KategoriTrimester2: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
+          {" "}
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/dashboard")}
             className="flex items-center text-gray-600 hover:text-gray-800 mb-4 transition-colors"
           >
             <svg
@@ -191,7 +192,6 @@ const KategoriTrimester2: React.FC = () => {
             </svg>
             Kembali ke Dashboard
           </button>
-
           <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl p-8 text-white">
             <div className="flex items-center mb-4">
               <div className="text-6xl mr-6">👶</div>

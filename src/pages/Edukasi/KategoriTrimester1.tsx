@@ -143,10 +143,10 @@ const KategoriTrimester1: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header */}{" "}
         <div className="mb-8">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/dashboard")}
             className="flex items-center text-gray-600 hover:text-gray-800 mb-4 transition-colors"
           >
             <svg
@@ -160,7 +160,7 @@ const KategoriTrimester1: React.FC = () => {
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d="M15 19l-7-7 7-7"
-              />
+              />{" "}
             </svg>
             Kembali ke Dashboard
           </button>

@@ -21,12 +21,14 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
 }) => {
   return (
     <div
-      className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
+      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
       onClick={onClick}
     >
       <div className="p-6">
         <div className="mb-3">
-          <span className="text-pink-400 text-sm font-medium">{category}</span>
+          <span className="text-primary-500 text-sm font-medium">
+            {category}
+          </span>
         </div>
         <h3 className="text-gray-900 font-semibold text-lg mb-3 leading-tight">
           {title}
@@ -45,7 +47,7 @@ const EdukasiPage: React.FC = () => {
   const articles = [
     {
       id: 1,
-      category: "Trimester Pertama",
+      category: "Trimester I",
       title: "Perubahan Tubuh di Trimester Pertama",
       description:
         "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
@@ -55,7 +57,7 @@ const EdukasiPage: React.FC = () => {
     },
     {
       id: 11,
-      category: "Trimester Kedua",
+      category: "Trimester II",
       title: "Perkembangan Janin Trimester 2",
       description: "Milestone penting perkembangan bayi di usia 13-27 minggu",
       preview:
@@ -64,7 +66,7 @@ const EdukasiPage: React.FC = () => {
     },
     {
       id: 21,
-      category: "Trimester Ketiga",
+      category: "Trimester III",
       title: "Persiapan Persalinan",
       description: "Panduan lengkap mempersiapkan diri menjelang persalinan",
       preview:
@@ -92,27 +94,61 @@ const EdukasiPage: React.FC = () => {
       />
 
       <div className="bg-gray-100 min-h-screen">
+        {" "}
         <div className="p-6">
           {/* Banner Section */}
-          <div className="relative bg-gradient-to-r from-pink-100 to-pink-400 rounded-2xl overflow-hidden mb-8 h-64">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-1/2 p-8">
-                {/* <div className="w-32 h-32 bg-white bg-opacity-20 rounded-full mb-4 flex items-center justify-center">
-                  <span className="text-4xl">📚</span>
-                </div> */}
-                <img src="" alt="" />
+          <div className="relative bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 rounded-3xl overflow-hidden mb-8 shadow-xl">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+              <div className="absolute top-1/4 right-1/4 w-20 h-20 bg-white rounded-full"></div>
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
+              <div className="absolute bottom-1/3 left-1/4 w-16 h-16 bg-white rounded-full"></div>
+            </div>
+
+            <div className="relative flex items-center min-h-[280px]">
+              {/* Left Side - Icon/Visual */}
+              <div className="w-1/2 p-8 flex justify-center">
+                <div className="relative">
+                  {/* Main Circle Background */}
+                  <div className="w-40 h-40 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
+                    <div className="w-32 h-32 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                      <span className="text-6xl">📚</span>
+                    </div>
+                  </div>
+
+                  {/* Floating Icons */}
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <span className="text-xl">💡</span>
+                  </div>
+                  <div className="absolute -bottom-2 -left-6 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <span className="text-lg">🤱</span>
+                  </div>
+                  <div className="absolute top-1/2 -right-8 w-8 h-8 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <span className="text-sm">❤️</span>
+                  </div>
+                </div>
               </div>
+
+              {/* Right Side - Content */}
               <div className="w-1/2 p-8 text-white">
-                <h3 className="text-2xl font-bold mb-4">
-                  Edukasi Kesehatan Ibu
-                </h3>
-                <p className="text-pink-100 leading-relaxed">
-                  Jangan biarkan mitos seputar kehamilan membuatmu bingung.
-                  Temukan informasi terpercaya dan rekomendasi artikel edukatif
-                  sesuai dengan kondisi kesehatanmu
-                </p>
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-4xl font-bold mb-2 leading-tight">
+                      Edukasi Kesehatan
+                    </h2>
+                    <h3 className="text-2xl font-semibold text-primary-100">
+                      untuk Ibu & Anak
+                    </h3>
+                  </div>
+                  <p className="text-primary-50 leading-relaxed text-lg">
+                    Jangan biarkan mitos seputar kehamilan membuatmu bingung.
+                    Temukan informasi terpercaya dan rekomendasi artikel
+                    edukatif sesuai dengan kondisi kesehatanmu.
+                  </p>
+                </div>
               </div>
-            </div>{" "}
+            </div>
           </div>
 
           {/* Recommendations Section */}

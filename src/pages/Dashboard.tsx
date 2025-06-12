@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useRole } from "../contexts/RoleContext";
 import DashboardPetugas from "./DashboardPetugas";
+import LembarPemantauanModal from "../components/LembarPemantauanModal";
 import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
@@ -16,12 +17,20 @@ const Dashboard = () => {
   if (currentUser.role === "petugas_kesehatan") {
     return <DashboardPetugas />;
   }
-
   // Dashboard untuk role Ibu (existing dashboard)
   const navigate = useNavigate();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today); // Start with today's date
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   // Generate calendar days
   const generateCalendarDays = () => {
     const year = currentDate.getFullYear();
@@ -193,7 +202,10 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <h2 className="text-3xl font-bold text-primary-500">Dashboard</h2>
               <div className="flex items-center space-x-4">
-                <button className="bg-pink-400 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-500 transition-colors flex items-center">
+                <button
+                  onClick={handleOpenModal}
+                  className="bg-pink-400 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-500 transition-colors flex items-center"
+                >
                   <svg
                     className="w-4 h-4 mr-2"
                     fill="currentColor"
@@ -215,34 +227,57 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column */}
               <div className="lg:col-span-2 space-y-8">
+                {" "}
                 {/* Welcome Card */}
-                <div className="bg-gradient rounded-xl shadow-sm h-[270px] flex items-center justify-between p-8">
-                  <div className="text-white flex-1">
-                    <h2 className="text-3xl font-bold mb-4">Selamat Datang!</h2>
-                    <p className="text-base text-pink-100 leading-relaxed max-w-2xl text-justify mr-20">
-                      Pendamping kehamilan Anda dalam bentuk digital yang
-                      praktis dan mudah digunakan. Nikmati fitur-fitur seperti
-                      pengingat cek up, edukasi seputar kehamilan, dan lembar
-                      pemantauan kesehatan Ibu selama kehamilan
-                    </p>
+                <div className="relative bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 rounded-3xl shadow-xl overflow-hidden">
+                  {/* Background Pattern */}
+                  <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+                    <div className="absolute top-1/4 right-1/4 w-20 h-20 bg-white rounded-full"></div>
+                    <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
+                    <div className="absolute bottom-1/3 left-1/4 w-16 h-16 bg-white rounded-full"></div>
                   </div>
-                  <div className="flex-shrink-0">
-                    <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-16 h-16 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+
+                  <div className="relative flex items-center min-h-[280px] p-8">
+                    {/* Left Side - Content */}
+                    <div className="w-2/3 text-white space-y-6">
+                      <div>
+                        <h2 className="text-4xl font-bold mb-2 leading-tight">
+                          Selamat Datang!
+                        </h2>
+                        <h3 className="text-xl font-semibold text-primary-100 mb-4">
+                          KIA Digital - Pendamping Kehamilan Anda
+                        </h3>
+                      </div>
+                      <p className="text-primary-50 leading-relaxed text-base">
+                        Pendamping kehamilan Anda dalam bentuk digital yang
+                        praktis dan mudah digunakan. Nikmati fitur-fitur seperti
+                        pengingat cek up, edukasi seputar kehamilan, dan lembar
+                        pemantauan kesehatan Ibu selama kehamilan.
+                      </p>
+                    </div>
+
+                    {/* Right Side - Visual */}
+                    <div className="w-1/3 flex justify-center">
+                      <div className="relative">
+                        {/* Main Circle Background */}
+                        <div className="w-32 h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
+                          <div className="w-24 h-24 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                            <span className="text-4xl">🤱</span>
+                          </div>
+                        </div>
+
+                        {/* Floating Icons */}
+                        <div className="absolute -top-3 -right-3 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                          <span className="text-lg">💝</span>
+                        </div>
+                        <div className="absolute -bottom-2 -left-4 w-8 h-8 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                          <span className="text-sm">👶</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-
                 {/* Articles Section */}
                 <div className="space-y-6">
                   <h2 className="text-xl text-gray-800 font-bold">
@@ -404,10 +439,13 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div>{" "}
           </div>{" "}
         </div>
       </div>
+
+      {/* Lembar Pemantauan Modal */}
+      <LembarPemantauanModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

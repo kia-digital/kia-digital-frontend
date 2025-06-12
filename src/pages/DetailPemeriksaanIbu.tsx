@@ -51,10 +51,10 @@ const DetailPemeriksaanIbu: React.FC = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Data Tidak Ditemukan
-          </h2>
+          </h2>{" "}
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
           >
             Kembali ke Dashboard
           </button>
@@ -109,8 +109,8 @@ const DetailPemeriksaanIbu: React.FC = () => {
                 onClick={() => handlePemeriksaan("anc")}
                 className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
                   effectiveActiveMode === "anc"
-                    ? "bg-blue-600 text-white shadow-lg scale-105"
-                    : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md"
+                    ? "bg-primary-600 text-white shadow-lg scale-105"
+                    : "bg-primary-500 text-white hover:bg-primary-600 hover:shadow-md"
                 }`}
               >
                 {effectiveActiveMode === "anc" && (
@@ -173,11 +173,11 @@ const DetailPemeriksaanIbu: React.FC = () => {
             </div>
             {/* Data Medis */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              {" "}
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <span className="w-2 h-6 bg-blue-500 rounded mr-3"></span>
+                <span className="w-2 h-6 bg-primary-500 rounded mr-3"></span>
                 Data Medis
               </h3>
-
               <div className="space-y-3">
                 <div>
                   <label className="text-sm text-gray-500">
@@ -246,13 +246,12 @@ const DetailPemeriksaanIbu: React.FC = () => {
                       day: "numeric",
                     })}
                   </p>
-                </div>
-
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <label className="text-sm text-blue-600">
+                </div>{" "}
+                <div className="p-3 bg-primary-50 rounded-lg border border-primary-200">
+                  <label className="text-sm text-primary-600">
                     Pemeriksaan Selanjutnya
                   </label>
-                  <p className="font-medium text-blue-800">
+                  <p className="font-medium text-primary-800">
                     {new Date(ibu.nextCheckup).toLocaleDateString("id-ID", {
                       weekday: "long",
                       year: "numeric",
@@ -304,9 +303,9 @@ const DetailPemeriksaanIbu: React.FC = () => {
                     </td>
                     <td className="p-3 text-sm text-gray-700">
                       Dr. Sarah Putri
-                    </td>
+                    </td>{" "}
                     <td className="p-3">
-                      <button className="text-blue-500 hover:text-blue-700 text-sm">
+                      <button className="text-primary-500 hover:text-primary-700 text-sm">
                         Lihat Detail
                       </button>
                     </td>
@@ -323,7 +322,7 @@ const DetailPemeriksaanIbu: React.FC = () => {
                       Dr. Sarah Putri
                     </td>{" "}
                     <td className="p-3">
-                      <button className="text-blue-500 hover:text-blue-700 text-sm">
+                      <button className="text-primary-500 hover:text-primary-700 text-sm">
                         Lihat Detail
                       </button>
                     </td>
@@ -340,8 +339,9 @@ const DetailPemeriksaanIbu: React.FC = () => {
             <div className="mt-6">
               <div className="mb-4 pb-4 border-b border-gray-200">
                 <div className="flex items-center justify-between">
+                  {" "}
                   <div>
-                    <h2 className="text-xl font-semibold text-blue-600">
+                    <h2 className="text-xl font-semibold text-primary-600">
                       Pemeriksaan ANC
                     </h2>
                     <p className="text-sm text-gray-600 mt-1">

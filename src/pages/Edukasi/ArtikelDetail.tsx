@@ -1,13 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faClock,
-  faTag,
-  faHeart,
-  faShare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faClock } from "@fortawesome/free-solid-svg-icons";
 import PageHeader from "../../components/PageHeader";
 
 interface Article {
@@ -572,12 +566,11 @@ const ArtikelDetail: React.FC = () => {
       </>
     );
   }
-
   const getCategoryName = (cat: string) => {
     const categoryNames: Record<string, string> = {
-      "trimester-1": "Trimester 1",
-      "trimester-2": "Trimester 2",
-      "trimester-3": "Trimester 3",
+      "trimester-1": "Trimester I",
+      "trimester-2": "Trimester II",
+      "trimester-3": "Trimester III",
       imunisasi: "Imunisasi",
       "asupan-gizi": "Asupan Gizi",
       "kesehatan-mental": "Kesehatan Mental",
@@ -585,10 +578,10 @@ const ArtikelDetail: React.FC = () => {
     return categoryNames[cat] || cat;
   };
 
-  // Artikel terkait (dari kategori yang sama)
-  const relatedArticles = categoryArticles
-    .filter((art) => art.id !== article.id)
-    .slice(0, 3);
+  const getCategoryRoute = (cat: string) => {
+    return `/edukasi/${cat}`;
+  };
+  // Artikel terkait (dari kategori yang sama) - removed for cleaner design
 
   return (
     <>
@@ -603,70 +596,49 @@ const ArtikelDetail: React.FC = () => {
 
       <div className="bg-gray-100 min-h-screen">
         <div className="max-w-4xl mx-auto p-6">
+          {" "}
           {/* Back Button */}
           <button
-            onClick={() => navigate(`/edukasi/${category}`)}
-            className="flex items-center space-x-2 text-gray-600 hover:text-pink-500 mb-6 transition-colors"
+            onClick={() => navigate("/edukasi")}
+            className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 mb-6 transition-colors"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Kembali ke {getCategoryName(category || "")}</span>
+            <span>Kembali ke Edukasi</span>
           </button>
-
           {/* Article Header */}
           <div className="bg-white rounded-lg shadow-sm mb-6">
             <div className="p-8">
+              {" "}
               <div className="flex items-center space-x-4 mb-6">
                 <span className="text-4xl">{article.image}</span>
                 <div>
-                  <span className="inline-block bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm font-medium mb-2">
-                    {article.category}
-                  </span>
-                  {article.isPopular && (
-                    <span className="inline-block bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-sm font-medium mb-2 ml-2">
-                      Popular
-                    </span>
-                  )}
+                  <button
+                    onClick={() => navigate(getCategoryRoute(category || ""))}
+                    className="inline-block bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-medium mb-2 hover:bg-blue-200 transition-colors"
+                  >
+                    {getCategoryName(category || "")}
+                  </button>
                 </div>
               </div>
-
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
                 {article.title}
               </h1>
-
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 {article.excerpt}
-              </p>
-
+              </p>{" "}
               {/* Article Meta */}
-              <div className="flex items-center space-x-6 text-sm text-gray-500 border-b border-gray-200 pb-6">
+              <div className="flex items-center space-x-6 text-sm text-gray-500 pb-6">
                 <div className="flex items-center space-x-2">
                   <FontAwesomeIcon icon={faClock} />
                   <span>{article.readTime}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <FontAwesomeIcon icon={faTag} />
-                  <span>{article.category}</span>
-                </div>
                 <div>Oleh: {article.author}</div>
                 <div>{article.publishDate}</div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center space-x-4 pt-6">
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors">
-                  <FontAwesomeIcon icon={faHeart} />
-                  <span>Simpan</span>
-                </button>
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition-colors">
-                  <FontAwesomeIcon icon={faShare} />
-                  <span>Bagikan</span>
-                </button>
-              </div>
             </div>
-          </div>
-
+          </div>{" "}
           {/* Article Content */}
-          <div className="bg-white rounded-lg shadow-sm mb-8">
+          <div className="bg-white rounded-lg shadow-sm">
             <div className="p-8">
               <div
                 className="prose prose-lg max-w-none"
@@ -676,54 +648,6 @@ const ArtikelDetail: React.FC = () => {
               />
             </div>
           </div>
-
-          {/* Tags */}
-          {article.tags && (
-            <div className="bg-white rounded-lg shadow-sm mb-8 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm hover:bg-pink-100 hover:text-pink-600 cursor-pointer transition-colors"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Related Articles */}
-          {relatedArticles.length > 0 && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                Artikel Terkait
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {relatedArticles.map((relatedArticle) => (
-                  <div
-                    key={relatedArticle.id}
-                    onClick={() =>
-                      navigate(`/edukasi/${category}/${relatedArticle.id}`)
-                    }
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                  >
-                    <div className="text-2xl mb-3">{relatedArticle.image}</div>
-                    <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {relatedArticle.title}
-                    </h4>
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                      {relatedArticle.excerpt}
-                    </p>
-                    <div className="text-xs text-gray-500">
-                      {relatedArticle.readTime}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>

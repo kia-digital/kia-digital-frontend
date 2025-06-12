@@ -44,13 +44,13 @@ const Card: React.FC<CardProps> = ({
   >
     <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
       <div className="flex items-center">
-        <div className="w-1 h-8 bg-blue-400 rounded-full mr-4"></div>
+        <div className="w-1 h-8 bg-primary-500 rounded-full mr-4"></div>
         <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
       </div>
       {onEditClick && (
         <button
           onClick={onEditClick}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
+          className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer"
         >
           Edit
         </button>
@@ -183,7 +183,7 @@ const InformasiIbu = () => {
   return (
     <div className="flex flex-col bg-gray-50 p-7 flex-1 min-h-0 overflow-auto">
       <h1 className="text-2xl font-bold mb-2">Informasi Ibu</h1>
-      <p className="text-sm text-blue-600 mb-6">
+      <p className="text-sm text-primary-500 mb-6">
         Data Pribadi dan Medis Ibu Hamil
       </p>
 
