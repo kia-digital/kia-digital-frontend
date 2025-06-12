@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRole } from "../../../contexts/RoleContext";
 
 interface LeopoldData {
   tanggalPemeriksaan: string;
@@ -39,6 +40,9 @@ interface LeopoldData {
 }
 
 const PemeriksaanLeopold: React.FC = () => {
+  const { currentUser } = useRole();
+  const isHealthcareWorker = currentUser.role === "petugas_kesehatan";
+
   // Simulasi usia kehamilan pasien dalam minggu
   const [currentPregnancyWeek] = useState(17); // 17 minggu saat ini
 
@@ -321,7 +325,61 @@ const PemeriksaanLeopold: React.FC = () => {
               </div>
             ))}
           </div>
-        )}{" "}
+        )}
+
+        {/* Role-based Information for Mothers */}
+        {!isHealthcareWorker && (
+          <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-6 mb-6 border border-pink-200">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">👩‍⚕️</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-semibold text-pink-800 mb-2">
+                  Informasi Pemeriksaan Leopold
+                </h3>
+                <p className="text-pink-700 mb-3">
+                  Pemeriksaan Leopold adalah teknik pemeriksaan fisik yang
+                  dilakukan oleh tenaga kesehatan untuk menentukan posisi,
+                  presentasi, dan kondisi janin dalam kandungan.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-white/50 rounded-lg p-3">
+                    <h4 className="font-medium text-pink-800 mb-1">
+                      📋 Tujuan Pemeriksaan
+                    </h4>
+                    <ul className="text-pink-700 text-xs space-y-1">
+                      <li>• Menentukan posisi dan presentasi janin</li>
+                      <li>• Memperkirakan berat janin</li>
+                      <li>• Menilai engagement (masuknya janin ke panggul)</li>
+                    </ul>
+                  </div>
+                  <div className="bg-white/50 rounded-lg p-3">
+                    <h4 className="font-medium text-pink-800 mb-1">
+                      ⏰ Waktu Pemeriksaan
+                    </h4>
+                    <ul className="text-pink-700 text-xs space-y-1">
+                      <li>• Leopold I: Mulai 12 minggu</li>
+                      <li>• Leopold II & III: Mulai 28 minggu</li>
+                      <li>• Leopold IV: Mulai 36 minggu</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-3 p-3 bg-pink-100 rounded-lg">
+                  <p className="text-xs text-pink-800">
+                    <strong>Catatan:</strong> Halaman ini menampilkan hasil
+                    pemeriksaan Leopold yang telah dilakukan oleh tenaga
+                    kesehatan. Untuk pemeriksaan baru, silakan konsultasi dengan
+                    bidan atau dokter kandungan.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header Info */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
@@ -503,50 +561,68 @@ const PemeriksaanLeopold: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Tanggal Pemeriksaan
                     </label>
-                    <input
-                      type="date"
-                      value={formData.tanggalPemeriksaan}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "tanggalPemeriksaan",
-                          "",
-                          e.target.value
-                        )
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    />
+                    {isHealthcareWorker ? (
+                      <input
+                        type="date"
+                        value={formData.tanggalPemeriksaan}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "tanggalPemeriksaan",
+                            "",
+                            e.target.value
+                          )
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                      />
+                    ) : (
+                      <div className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                        {formData.tanggalPemeriksaan || "-"}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Usia Kehamilan
                     </label>
-                    <input
-                      type="text"
-                      placeholder="32 minggu 3 hari"
-                      value={formData.usiaKehamilan}
-                      onChange={(e) =>
-                        handleInputChange("usiaKehamilan", "", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    />
+                    {isHealthcareWorker ? (
+                      <input
+                        type="text"
+                        placeholder="32 minggu 3 hari"
+                        value={formData.usiaKehamilan}
+                        onChange={(e) =>
+                          handleInputChange("usiaKehamilan", "", e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                      />
+                    ) : (
+                      <div className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                        {formData.usiaKehamilan || "-"}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       TFU (cm)
                     </label>
-                    <input
-                      type="text"
-                      placeholder="32"
-                      value={formData.tinggiSimpulUteri}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "tinggiSimpulUteri",
-                          "",
-                          e.target.value
-                        )
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    />
+                    {isHealthcareWorker ? (
+                      <input
+                        type="text"
+                        placeholder="32"
+                        value={formData.tinggiSimpulUteri}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "tinggiSimpulUteri",
+                            "",
+                            e.target.value
+                          )
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                      />
+                    ) : (
+                      <div className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700">
+                        {formData.tinggiSimpulUteri || "-"}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>{" "}
@@ -615,9 +691,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold1}
+                          disabled={!editMode.leopold1 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold1
+                            !editMode.leopold1 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -641,9 +717,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold1}
+                          disabled={!editMode.leopold1 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold1
+                            !editMode.leopold1 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -655,7 +731,6 @@ const PemeriksaanLeopold: React.FC = () => {
                         </select>
                       </div>{" "}
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -670,10 +745,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold1}
+                          disabled={!editMode.leopold1 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold1
+                            !editMode.leopold1 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -692,47 +767,48 @@ const PemeriksaanLeopold: React.FC = () => {
                               leopold1: e.target.value,
                             }))
                           }
-                          disabled={!editMode.leopold1}
+                          disabled={!editMode.leopold1 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold1
+                            !editMode.leopold1 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
                           placeholder="Saran berdasarkan hasil Leopold I..."
                         />
                       </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                      {editMode.leopold1 ? (
-                        <>
+                    </div>{" "}
+                    {/* Action Buttons - Only visible for healthcare workers */}
+                    {isHealthcareWorker && (
+                      <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                        {editMode.leopold1 ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleCancelLeopold(1)}
+                              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              Batal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSaveLeopold(1)}
+                              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                            >
+                              Simpan Leopold I
+                            </button>
+                          </>
+                        ) : (
                           <button
                             type="button"
-                            onClick={() => handleCancelLeopold(1)}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            onClick={() => handleEditLeopold(1)}
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
                           >
-                            Batal
+                            Ubah Data
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSaveLeopold(1)}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
-                          >
-                            Simpan Leopold I
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleEditLeopold(1)}
-                          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
-                        >
-                          Ubah Data
-                        </button>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </>
                 )}
               </div>{" "}
@@ -801,9 +877,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold2}
+                          disabled={!editMode.leopold2 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold2
+                            !editMode.leopold2 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -828,9 +904,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold2}
+                          disabled={!editMode.leopold2 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold2
+                            !editMode.leopold2 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -857,10 +933,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold2}
+                          disabled={!editMode.leopold2 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold2
+                            !editMode.leopold2 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -879,10 +955,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               leopold2: e.target.value,
                             }))
                           }
-                          disabled={!editMode.leopold2}
+                          disabled={!editMode.leopold2 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold2
+                            !editMode.leopold2 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -892,34 +968,36 @@ const PemeriksaanLeopold: React.FC = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                      {editMode.leopold2 ? (
-                        <>
+                    {isHealthcareWorker && (
+                      <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                        {editMode.leopold2 ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleCancelLeopold(2)}
+                              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              Batal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSaveLeopold(2)}
+                              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
+                            >
+                              Simpan Leopold II
+                            </button>
+                          </>
+                        ) : (
                           <button
                             type="button"
-                            onClick={() => handleCancelLeopold(2)}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            onClick={() => handleEditLeopold(2)}
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
                           >
-                            Batal
+                            Ubah Data
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSaveLeopold(2)}
-                            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
-                          >
-                            Simpan Leopold II
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleEditLeopold(2)}
-                          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
-                        >
-                          Ubah Data
-                        </button>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -988,9 +1066,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold3}
+                          disabled={!editMode.leopold3 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold3
+                            !editMode.leopold3 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1014,9 +1092,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold3}
+                          disabled={!editMode.leopold3 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold3
+                            !editMode.leopold3 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1043,10 +1121,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold3}
+                          disabled={!editMode.leopold3 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold3
+                            !editMode.leopold3 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1065,10 +1143,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               leopold3: e.target.value,
                             }))
                           }
-                          disabled={!editMode.leopold3}
+                          disabled={!editMode.leopold3 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold3
+                            !editMode.leopold3 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1078,34 +1156,36 @@ const PemeriksaanLeopold: React.FC = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                      {editMode.leopold3 ? (
-                        <>
+                    {isHealthcareWorker && (
+                      <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                        {editMode.leopold3 ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleCancelLeopold(3)}
+                              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              Batal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSaveLeopold(3)}
+                              className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm"
+                            >
+                              Simpan Leopold III
+                            </button>
+                          </>
+                        ) : (
                           <button
                             type="button"
-                            onClick={() => handleCancelLeopold(3)}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            onClick={() => handleEditLeopold(3)}
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
                           >
-                            Batal
+                            Ubah Data
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSaveLeopold(3)}
-                            className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm"
-                          >
-                            Simpan Leopold III
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleEditLeopold(3)}
-                          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
-                        >
-                          Ubah Data
-                        </button>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -1174,9 +1254,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold4}
+                          disabled={!editMode.leopold4 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold4
+                            !editMode.leopold4 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1200,9 +1280,9 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold4}
+                          disabled={!editMode.leopold4 || !isHealthcareWorker}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold4
+                            !editMode.leopold4 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1232,10 +1312,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               e.target.value
                             )
                           }
-                          disabled={!editMode.leopold4}
+                          disabled={!editMode.leopold4 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold4
+                            !editMode.leopold4 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1254,10 +1334,10 @@ const PemeriksaanLeopold: React.FC = () => {
                               leopold4: e.target.value,
                             }))
                           }
-                          disabled={!editMode.leopold4}
+                          disabled={!editMode.leopold4 || !isHealthcareWorker}
                           rows={2}
                           className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
-                            !editMode.leopold4
+                            !editMode.leopold4 || !isHealthcareWorker
                               ? "bg-gray-100 cursor-not-allowed"
                               : ""
                           }`}
@@ -1267,34 +1347,36 @@ const PemeriksaanLeopold: React.FC = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
-                      {editMode.leopold4 ? (
-                        <>
+                    {isHealthcareWorker && (
+                      <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                        {editMode.leopold4 ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleCancelLeopold(4)}
+                              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              Batal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSaveLeopold(4)}
+                              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm"
+                            >
+                              Simpan Leopold IV
+                            </button>
+                          </>
+                        ) : (
                           <button
                             type="button"
-                            onClick={() => handleCancelLeopold(4)}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                            onClick={() => handleEditLeopold(4)}
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
                           >
-                            Batal
+                            Ubah Data
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSaveLeopold(4)}
-                            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm"
-                          >
-                            Simpan Leopold IV
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleEditLeopold(4)}
-                          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
-                        >
-                          Ubah Data
-                        </button>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </>
                 )}
               </div>

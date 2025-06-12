@@ -16,6 +16,8 @@ export interface AppFormData {
   beratBadan: string;
   statusImunisasi?: string;
   riwayatKehamilan?: string;
+  // HPHT (Hari Pertama Haid Terakhir)
+  hpht?: string;
   // Kontak Darurat
   namaKontak: string;
   hubunganKontak: string;
@@ -23,7 +25,12 @@ export interface AppFormData {
   alamatKontak?: string;
 }
 
-export type ModalType = "dataDiri" | "dataMedis" | "kontakDarurat" | "";
+export type ModalType =
+  | "dataDiri"
+  | "dataMedis"
+  | "kontakDarurat"
+  | "hpht"
+  | "";
 
 export interface SelectOption {
   value: string;
