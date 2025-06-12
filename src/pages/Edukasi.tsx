@@ -45,7 +45,7 @@ const EdukasiPage: React.FC = () => {
   const articles = [
     {
       id: 1,
-      category: "Kesehatan Ibu Hamil",
+      category: "Trimester Pertama",
       title: "Perubahan Tubuh di Trimester Pertama",
       description:
         "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
@@ -55,7 +55,7 @@ const EdukasiPage: React.FC = () => {
     },
     {
       id: 11,
-      category: "Nutrisi Kehamilan",
+      category: "Trimester Kedua",
       title: "Perkembangan Janin Trimester 2",
       description: "Milestone penting perkembangan bayi di usia 13-27 minggu",
       preview:
@@ -64,7 +64,7 @@ const EdukasiPage: React.FC = () => {
     },
     {
       id: 21,
-      category: "Persiapan Persalinan",
+      category: "Trimester Ketiga",
       title: "Persiapan Persalinan",
       description: "Panduan lengkap mempersiapkan diri menjelang persalinan",
       preview:
@@ -79,51 +79,6 @@ const EdukasiPage: React.FC = () => {
       preview:
         "Imunisasi selama kehamilan penting untuk melindungi ibu dan bayi...",
       categoryRoute: "imunisasi",
-    },
-  ];
-
-  const categories = [
-    {
-      title: "Trimester 1",
-      emoji: "🤱",
-      description: "Panduan lengkap 12 minggu pertama kehamilan",
-      articleCount: "12 artikel",
-      route: "/edukasi/trimester-1",
-    },
-    {
-      title: "Trimester 2",
-      emoji: "🤰",
-      description: "Informasi penting untuk usia 13-27 minggu",
-      articleCount: "15 artikel",
-      route: "/edukasi/trimester-2",
-    },
-    {
-      title: "Trimester 3",
-      emoji: "👶",
-      description: "Persiapan persalinan dan minggu terakhir",
-      articleCount: "10 artikel",
-      route: "/edukasi/trimester-3",
-    },
-    {
-      title: "Imunisasi",
-      emoji: "💉",
-      description: "Jadwal dan informasi vaksinasi penting",
-      articleCount: "8 artikel",
-      route: "/edukasi/imunisasi",
-    },
-    {
-      title: "Asupan Gizi",
-      emoji: "🥗",
-      description: "Nutrisi seimbang untuk ibu dan bayi",
-      articleCount: "20 artikel",
-      route: "/edukasi/asupan-gizi",
-    },
-    {
-      title: "Kesehatan Mental",
-      emoji: "🧘‍♀️",
-      description: "Dukungan psikologis selama kehamilan",
-      articleCount: "6 artikel",
-      route: "/edukasi/kesehatan-mental",
     },
   ];
 
@@ -157,35 +112,7 @@ const EdukasiPage: React.FC = () => {
                   sesuai dengan kondisi kesehatanmu
                 </p>
               </div>
-            </div>
-          </div>
-
-          {/* Categories Section */}
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
-              Kategori Edukasi
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {categories.map((category, index) => (
-                <div
-                  key={index}
-                  onClick={() => navigate(category.route)}
-                  className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
-                >
-                  <div className="text-4xl mb-4">{category.emoji}</div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {category.title}
-                  </h4>
-                  <p className="text-gray-600 text-sm mb-3 leading-relaxed">
-                    {category.description}
-                  </p>
-                  <p className="text-pink-500 text-sm font-medium">
-                    {category.articleCount}
-                  </p>
-                </div>
-              ))}
-            </div>
+            </div>{" "}
           </div>
 
           {/* Recommendations Section */}

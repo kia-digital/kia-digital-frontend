@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useRole } from "../contexts/RoleContext";
 import PemeriksaanANC from "./Pemeriksaan/subpages/PemeriksaanANC";
 import PemeriksaanLeopold from "./Pemeriksaan/subpages/PemeriksaanLeopold";
 
@@ -29,7 +30,18 @@ const mockIbuData = {
 const DetailPemeriksaanIbu: React.FC = () => {
   const { ibuId } = useParams<{ ibuId: string }>();
   const navigate = useNavigate();
+  const { currentUser } = useRole();
   const [activeMode, setActiveMode] = useState<PemeriksaanMode>("detail");
+  // Reset activeMode ke "detail" ketika role berubah ke "ibu"
+  useEffect(() => {
+    if (currentUser.role === "ibu") {
+      setActiveMode("detail");
+    }
+  }, [currentUser.role]);
+
+  // Juga pastikan activeMode selalu "detail" untuk role ibu saat component render
+  const effectiveActiveMode =
+    currentUser.role === "ibu" ? "detail" : activeMode;
 
   const ibu = mockIbuData[parseInt(ibuId || "1") as keyof typeof mockIbuData];
 
@@ -86,47 +98,52 @@ const DetailPemeriksaanIbu: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-800">
               Detail Pemeriksaan
             </h1>
-            <p className="text-gray-600">{ibu.nama}</p>
-          </div>{" "}
-          <div className="flex space-x-3">
-            <button
-              onClick={() => handlePemeriksaan("anc")}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
-                activeMode === "anc"
-                  ? "bg-blue-600 text-white shadow-lg scale-105"
-                  : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md"
-              }`}
-            >
-              {activeMode === "anc" && (
-                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-              )}
-              <span>Pemeriksaan ANC</span>
-            </button>
-            <button
-              onClick={() => handlePemeriksaan("leopold")}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
-                activeMode === "leopold"
-                  ? "bg-purple-600 text-white shadow-lg scale-105"
-                  : "bg-purple-500 text-white hover:bg-purple-600 hover:shadow-md"
-              }`}
-            >
-              {activeMode === "leopold" && (
-                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-              )}
-              <span>Pemeriksaan Leopold</span>
-            </button>
-            {activeMode !== "detail" && (
+            <p className="text-gray-600">{ibu.nama}</p>{" "}
+          </div>
+
+          {/* Tombol Pemeriksaan - Hanya untuk Petugas Kesehatan */}
+          {currentUser.role === "petugas_kesehatan" && (
+            <div className="flex space-x-3">
+              {" "}
               <button
-                onClick={handleBackToDetail}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                onClick={() => handlePemeriksaan("anc")}
+                className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                  effectiveActiveMode === "anc"
+                    ? "bg-blue-600 text-white shadow-lg scale-105"
+                    : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md"
+                }`}
               >
-                Kembali ke Detail
+                {effectiveActiveMode === "anc" && (
+                  <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                )}
+                <span>Pemeriksaan ANC</span>
               </button>
-            )}
-          </div>{" "}
-        </div>
+              <button
+                onClick={() => handlePemeriksaan("leopold")}
+                className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                  effectiveActiveMode === "leopold"
+                    ? "bg-purple-600 text-white shadow-lg scale-105"
+                    : "bg-purple-500 text-white hover:bg-purple-600 hover:shadow-md"
+                }`}
+              >
+                {effectiveActiveMode === "leopold" && (
+                  <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                )}
+                <span>Pemeriksaan Leopold</span>
+              </button>
+              {effectiveActiveMode !== "detail" && (
+                <button
+                  onClick={handleBackToDetail}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                  Kembali ke Detail
+                </button>
+              )}
+            </div>
+          )}
+        </div>{" "}
         {/* Detail Cards - Hanya tampil pada mode detail */}
-        {activeMode === "detail" && (
+        {effectiveActiveMode === "detail" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Data Pribadi */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -247,9 +264,9 @@ const DetailPemeriksaanIbu: React.FC = () => {
               </div>{" "}
             </div>
           </div>
-        )}
+        )}{" "}
         {/* Riwayat Pemeriksaan - Hanya tampil pada mode detail */}
-        {activeMode === "detail" && (
+        {effectiveActiveMode === "detail" && (
           <div className="mt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Riwayat Pemeriksaan
@@ -315,50 +332,54 @@ const DetailPemeriksaanIbu: React.FC = () => {
               </table>
             </div>
           </div>
-        )}
-        {/* Konten Pemeriksaan - Muncul ketika mode ANC atau Leopold */}{" "}
-        {activeMode === "anc" && (
-          <div className="mt-6">
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-blue-600">
-                    Pemeriksaan ANC
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {ibu.nama} • {ibu.usiaKehamilan} •{" "}
-                    {new Date().toLocaleDateString("id-ID")}
-                  </p>
-                </div>
-                <div className="text-sm text-gray-500">
-                  Petugas: Dr. Sarah Putri
-                </div>
-              </div>
-            </div>
-            <PemeriksaanANC />
-          </div>
-        )}
-        {activeMode === "leopold" && (
-          <div className="mt-6">
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-purple-600">
-                    Pemeriksaan Leopold
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {ibu.nama} • {ibu.usiaKehamilan} •{" "}
-                    {new Date().toLocaleDateString("id-ID")}
-                  </p>
-                </div>
-                <div className="text-sm text-gray-500">
-                  Petugas: Dr. Sarah Putri
+        )}{" "}
+        {/* Konten Pemeriksaan - Hanya untuk Petugas Kesehatan */}
+        {currentUser.role === "petugas_kesehatan" &&
+          effectiveActiveMode !== "detail" &&
+          effectiveActiveMode === "anc" && (
+            <div className="mt-6">
+              <div className="mb-4 pb-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-blue-600">
+                      Pemeriksaan ANC
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {ibu.nama} • {ibu.usiaKehamilan} •{" "}
+                      {new Date().toLocaleDateString("id-ID")}
+                    </p>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Petugas: Dr. Sarah Putri
+                  </div>
                 </div>
               </div>
+              <PemeriksaanANC />
             </div>
-            <PemeriksaanLeopold />
-          </div>
-        )}
+          )}
+        {currentUser.role === "petugas_kesehatan" &&
+          effectiveActiveMode !== "detail" &&
+          effectiveActiveMode === "leopold" && (
+            <div className="mt-6">
+              <div className="mb-4 pb-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-purple-600">
+                      Pemeriksaan Leopold
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {ibu.nama} • {ibu.usiaKehamilan} •{" "}
+                      {new Date().toLocaleDateString("id-ID")}
+                    </p>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Petugas: Dr. Sarah Putri
+                  </div>
+                </div>
+              </div>
+              <PemeriksaanLeopold />
+            </div>
+          )}
       </div>
     </div>
   );

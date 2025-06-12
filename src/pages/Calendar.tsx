@@ -141,7 +141,7 @@ const Calendar: React.FC = () => {
       event: "Jadwal pemeriksaan Leopold ke-2",
       time: "10:30",
       location: "Klinik Ibu & Anak",
-      color: "bg-yellow-400",
+      color: "bg-purple-400",
       type: "Leopold",
     },
     {
@@ -328,69 +328,50 @@ const Calendar: React.FC = () => {
                   </div>
                 )}
               </div>
-            )}
-
+            )}{" "}
             {/* Upcoming Events */}
             <div className="bg-white rounded-xl p-6 shadow-lg">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Jadwal Mendatang
               </h3>
               <div className="space-y-4">
-                {scheduleItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className={`w-4 h-16 ${item.color} rounded`}></div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm text-gray-800 mb-1">
-                          {item.event}
-                        </p>
-                        <p className="text-xs text-gray-600 mb-1">
-                          📅 {item.date}
-                        </p>
-                        <p className="text-xs text-gray-600 mb-1">
-                          🕐 {item.time}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          📍 {item.location}
-                        </p>
-                        <span
-                          className={`inline-block mt-2 px-2 py-1 text-xs rounded-full ${
-                            item.type === "ANC"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : item.type === "Leopold"
-                              ? "bg-orange-100 text-orange-800"
-                              : item.type === "Kontrol"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
-                          {item.type}
-                        </span>
+                {scheduleItems
+                  .filter(
+                    (item) => item.type === "ANC" || item.type === "Leopold"
+                  )
+                  .map((item, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`w-4 h-16 ${item.color} rounded`}></div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {item.event}
+                          </p>
+                          <p className="text-xs text-gray-600 mb-1">
+                            📅 {item.date}
+                          </p>
+                          <p className="text-xs text-gray-600 mb-1">
+                            🕐 {item.time}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            📍 {item.location}
+                          </p>{" "}
+                          <span
+                            className={`inline-block mt-2 px-2 py-1 text-xs rounded-full ${
+                              item.type === "ANC"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-purple-100 text-purple-800"
+                            }`}
+                          >
+                            {item.type}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white rounded-xl p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Aksi Cepat
-              </h3>
-              <div className="space-y-3">
-                <button className="w-full bg-pink-100 hover:bg-pink-200 text-pink-700 font-medium py-3 px-4 rounded-lg transition-colors text-sm">
-                  + Tambah Jadwal Baru
-                </button>
-                <button className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium py-3 px-4 rounded-lg transition-colors text-sm">
-                  📋 Lihat Riwayat Pemeriksaan
-                </button>
-                <button className="w-full bg-green-100 hover:bg-green-200 text-green-700 font-medium py-3 px-4 rounded-lg transition-colors text-sm">
-                  🔔 Atur Pengingat
-                </button>
+                  ))}
               </div>
             </div>
           </div>

@@ -9,14 +9,6 @@ import KontakDaruratForm from "../../../components/forms/KontakDaruratForm";
 import DataDiriForm from "../../../components/forms/DataDiriForm";
 import DataMedisForm from "../../../components/forms/DataMedisForm";
 
-interface PlaceholderProps {
-  className?: string;
-}
-
-const IconPlaceholder: React.FC<PlaceholderProps> = ({
-  className = "w-5 h-5",
-}) => <div className={`bg-gray-400 rounded ${className}`}></div>;
-
 interface InfoRowProps {
   label: string;
   value?: string; // Value can be optional if data is missing
@@ -28,19 +20,14 @@ const InfoRow: React.FC<InfoRowProps> = ({
   value,
   showSeparator = true,
 }) => (
-  <div
-    className={`mb-2 ${
-      showSeparator ? "pb-2 border-b border-pink-500 " : "" // Adjusted border color to match theme
-    }`}
-  >
-    <p className="text-xs text-gray-500 mb-0.5">{label}</p>
-    <p className="text-sm font-medium text-gray-800">{value || "-"}</p>
+  <div className={`mb-4 ${showSeparator ? "pb-2" : ""}`}>
+    <h4 className="text-sm font-medium text-gray-600 mb-1">{label}</h4>
+    <p className="text-gray-800">{value || "-"}</p>
   </div>
 );
 
 interface CardProps {
   title: string;
-  icon?: ReactNode;
   children: ReactNode;
   className?: string;
   onEditClick?: () => void;
@@ -48,26 +35,22 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({
   title,
-  icon,
   children,
   className = "",
   onEditClick,
 }) => (
   <div
-    className={`bg-white p-4 rounded-xl shadow-sm border border-gray-200 ${className}`}
+    className={`w-full p-6 bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
   >
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
       <div className="flex items-center">
-        <div className="bg-pink-500 w-[3px] h-4 rounded-sm mr-2"></div>
-        <h2 className="text-base font-semibold text-gray-900 flex items-center">
-          {icon}
-          <span className={icon ? "ml-2" : ""}>{title}</span>
-        </h2>
+        <div className="w-1 h-8 bg-blue-400 rounded-full mr-4"></div>
+        <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
       </div>
       {onEditClick && (
         <button
           onClick={onEditClick}
-          className="bg-pink-50 text-pink-600 px-3 py-1 rounded-lg text-xs font-medium hover:bg-pink-100"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
         >
           Edit
         </button>
@@ -197,20 +180,16 @@ const InformasiIbu = () => {
         return null;
     }
   };
-
   return (
-    <div className="flex flex-col lg:flex-row lg:space-x-6 bg-gray-50 p-7 flex-1 min-h-0">
-      {/* Kolom Kiri */}
-      <div className="flex-1 space-y-4 min-h-0">
-        <Card
-          title="Data Diri"
-          icon={
-            <IconPlaceholder className="text-pink-500 w-4 h-4" />
-          } /* Adjusted color */
-          className="flex-1"
-          onEditClick={() => openModal("dataDiri")}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+    <div className="flex flex-col bg-gray-50 p-7 flex-1 min-h-0 overflow-auto">
+      <h1 className="text-2xl font-bold mb-2">Informasi Ibu</h1>
+      <p className="text-sm text-blue-600 mb-6">
+        Data Pribadi dan Medis Ibu Hamil
+      </p>
+
+      <div className="space-y-6">
+        <Card title="Data Diri" onEditClick={() => openModal("dataDiri")}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <InfoRow label="Nama" value={currentData.nama} />
               <InfoRow label="Tempat Lahir" value={currentData.tempatLahir} />
@@ -237,15 +216,8 @@ const InformasiIbu = () => {
           </div>
         </Card>
 
-        <Card
-          title="Data Medis"
-          icon={
-            <IconPlaceholder className="text-pink-500 w-4 h-4" />
-          } /* Adjusted color */
-          className="flex-1"
-          onEditClick={() => openModal("dataMedis")}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+        <Card title="Data Medis" onEditClick={() => openModal("dataMedis")}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <InfoRow
                 label="Riwayat Penyakit"
@@ -272,37 +244,28 @@ const InformasiIbu = () => {
             </div>
           </div>
         </Card>
-      </div>
 
-      {/* Kolom Kanan (Sidebar) */}
-      <div className="w-full lg:w-1/3 mt-4 lg:mt-0">
         <Card
           title="Informasi Kontak Darurat"
-          icon={
-            <IconPlaceholder className="text-pink-500 w-4 h-4" />
-          } /* Adjusted color */
           onEditClick={() => openModal("kontakDarurat")}
         >
-          <InfoRow
-            label="Nama"
-            value={currentData.namaKontak}
-            showSeparator={false}
-          />
-          <InfoRow
-            label="Hubungan"
-            value={currentData.hubunganKontak}
-            showSeparator={false}
-          />
-          <InfoRow
-            label="Nomor Telepon"
-            value={currentData.nomorTeleponKontak}
-            showSeparator={false}
-          />
-          <InfoRow
-            label="Alamat Kontak Darurat"
-            value={currentData.alamatKontak}
-            showSeparator={false}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <InfoRow label="Nama" value={currentData.namaKontak} />
+              <InfoRow label="Hubungan" value={currentData.hubunganKontak} />
+            </div>
+            <div>
+              <InfoRow
+                label="Nomor Telepon"
+                value={currentData.nomorTeleponKontak}
+              />
+              <InfoRow
+                label="Alamat Kontak Darurat"
+                value={currentData.alamatKontak}
+                showSeparator={false}
+              />
+            </div>
+          </div>
         </Card>
       </div>
 
