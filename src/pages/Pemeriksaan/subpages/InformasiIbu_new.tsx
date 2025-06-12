@@ -1,5 +1,4 @@
 import { useState, useEffect, type ReactNode } from "react";
-import toast from "react-hot-toast";
 import { useRole } from "../../../contexts/RoleContext";
 import type { AppFormData, ModalType } from "../types";
 import Modal from "../../../components/Modal";
@@ -80,6 +79,8 @@ const InformasiIbu = () => {
   // UI State
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Utility functions for HPHT calculations
   const calculatePregnancyInfo = (hpht: string) => {
@@ -164,6 +165,8 @@ const InformasiIbu = () => {
     setIsModalOpen(false);
     setModalType("");
     setModalFormData({});
+    setSuccessMessage("");
+    setErrorMessage("");
   };
 
   const openModal = (type: ModalType) => {
@@ -216,16 +219,18 @@ const InformasiIbu = () => {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSuccessMessage("");
+    setErrorMessage("");
 
     if (modalType === "dataDiri") {
       try {
         if (!modalFormData.nama?.trim()) {
-          toast.error("Nama tidak boleh kosong");
+          setErrorMessage("Nama tidak boleh kosong");
           return;
         }
 
         if (!modalFormData.nomorTelepon?.trim()) {
-          toast.error("Nomor telepon tidak boleh kosong");
+          setErrorMessage("Nomor telepon tidak boleh kosong");
           return;
         }
 
@@ -261,19 +266,38 @@ const InformasiIbu = () => {
           ...prev,
           ...(modalFormData as AppFormData),
         }));
+        setSuccessMessage("Data diri berhasil diperbarui!");
 
         setTimeout(() => {
           closeModal();
         }, 1500);
       } catch (error) {
         console.error("Failed to update user information:", error);
-        // Error handling is now done via toast notifications in the hook
+
+        let errorMsg = "Gagal memperbarui data diri. Silakan coba lagi.";
+
+        if (error instanceof Error) {
+          if (error.message.includes("Network Error")) {
+            errorMsg =
+              "Koneksi ke server terputus. Periksa koneksi internet Anda.";
+          } else if (error.message.includes("500")) {
+            errorMsg =
+              "Terjadi kesalahan pada server. Silakan coba lagi nanti.";
+          } else if (error.message.includes("CORS")) {
+            errorMsg = "Terjadi masalah konfigurasi. Silakan restart aplikasi.";
+          } else {
+            errorMsg = error.message;
+          }
+        }
+
+        setErrorMessage(errorMsg);
       }
     } else {
       setCurrentData((prev) => ({
         ...prev,
         ...(modalFormData as AppFormData),
       }));
+      setSuccessMessage("Data berhasil diperbarui!");
 
       setTimeout(() => {
         closeModal();
@@ -286,7 +310,51 @@ const InformasiIbu = () => {
 
     return (
       <div>
-        {/* Loading State */}
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center">
+              <div className="text-green-500 mr-3">
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p className="text-green-800 font-medium">{successMessage}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex items-center">
+              <div className="text-red-500 mr-3">
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p className="text-red-800 font-medium">{errorMessage}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Loading Spinner */}
         {isLoading && (
           <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center">

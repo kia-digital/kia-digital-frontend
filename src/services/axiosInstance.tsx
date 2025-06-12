@@ -1,10 +1,9 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 import { getToken, removeToken } from "../utils/auth";
 
 // Use proxy path for development, full URL for production
-const baseURL = import.meta.env.DEV
-  ? "/api/v1" // This will be proxied to the actual API in development
-  : "https://api.nugrahanggarasiregar.my.id/api/v1";
+const baseURL = "http://141.11.190.106:15000/api/v1";
 
 const axiosInstance = axios.create({
   baseURL,
@@ -35,14 +34,22 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Handle token expiration
+// Handle token expiration and errors
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      toast.error("Sesi telah berakhir, silakan login kembali");
       removeToken();
       window.location.href = "/auth";
+    } else if (error.response?.status === 403) {
+      toast.error("Anda tidak memiliki akses untuk melakukan tindakan ini");
+    } else if (error.response?.status >= 500) {
+      toast.error("Terjadi kesalahan server. Coba lagi nanti.");
+    } else if (error.code === "NETWORK_ERROR" || !error.response) {
+      toast.error("Koneksi bermasalah. Periksa koneksi internet Anda.");
     }
+
     return Promise.reject(error);
   }
 );

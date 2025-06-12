@@ -71,8 +71,13 @@ export const removeToken = (): void => {
 export const logout = (): void => {
   removeToken();
   // Clear any other user-related data from localStorage if needed
-  // localStorage.removeItem("user");
-  // localStorage.removeItem("userRole");
+  localStorage.removeItem("user");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("userInformation");
+
+  // Clear any React Query cache by triggering a page reload
+  // This ensures all cached data is cleared
+  window.location.href = "/auth";
 };
 
 export const getCurrentUser = () => {
