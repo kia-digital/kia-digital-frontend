@@ -59,6 +59,10 @@ interface UpdateResponse {
   };
 }
 
+interface UpdateHPHTRequest {
+  hpht: string;
+}
+
 class InquiryService {
   async getUserInformation(): Promise<InformationResponse> {
     try {
@@ -88,6 +92,22 @@ class InquiryService {
       throw error;
     }
   }
+
+  async updateHPHT(hphtData: UpdateHPHTRequest): Promise<UpdateResponse> {
+    try {
+      console.log("Sending HPHT update request with data:", hphtData);
+      const response = await axiosInstance.put(
+        "/inquiry/information/update-hpht",
+        hphtData
+      );
+      const data: UpdateResponse = response.data;
+      console.log("HPHT update response:", data);
+      return data;
+    } catch (error) {
+      console.error("Update HPHT error:", error);
+      throw error;
+    }
+  }
 }
 
 export default new InquiryService();
@@ -98,4 +118,5 @@ export type {
   EmergencyContact,
   UpdateUserRequest,
   UpdateResponse,
+  UpdateHPHTRequest,
 };

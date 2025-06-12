@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { useRole } from "../../../contexts/RoleContext";
+import {
+  useANCRecords,
+  type ANCCheckupData,
+} from "../../../hooks/useANCRecords";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 interface ANCFormData {
   checkupNumber: number;
@@ -14,22 +19,6 @@ interface ANCFormData {
   hemoglobin: string;
   proteinUrine: string;
   notes: string;
-}
-
-interface ANCCheckupData {
-  checkupNumber: number;
-  scheduledDate: string;
-  location: string;
-  officer: string;
-  weight: string;
-  bloodPressure: string;
-  fundalHeight: string;
-  fetalHeartRate: string;
-  bloodSugar: string;
-  hemoglobin: string;
-  proteinUrine: string;
-  notes: string;
-  isCompleted: boolean;
 }
 
 const ANCInputForm: React.FC = () => {
@@ -336,18 +325,34 @@ interface ANCCheckupCardProps {
 
 const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
   const getStatusBadge = () => {
-    if (data.isCompleted) {
+    const status = data.status || "Dijadwalkan";
+    const isCompleted = status === "Terlaksana";
+
+    if (isCompleted) {
       return (
         <span className="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">
-          Selesai
+          {status}
         </span>
       );
     } else {
       return (
         <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-sm font-medium rounded-full">
-          Dijadwalkan
+          {status}
         </span>
       );
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      return dateString;
     }
   };
 
@@ -358,31 +363,27 @@ const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
         <div className="flex items-center">
           <div
             className={`w-1 h-8 rounded-full mr-4 ${
-              data.isCompleted ? "bg-green-400" : "bg-yellow-400"
+              data.status === "Terlaksana" ? "bg-green-400" : "bg-yellow-400"
             }`}
           ></div>
           <h2 className="text-xl font-semibold text-gray-800">
-            Pemeriksaan ANC ke-{data.checkupNumber}
+            Pemeriksaan ANC
           </h2>
         </div>
         {getStatusBadge()}
       </div>
 
       {/* Schedule Info */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">
-            Dijadwalkan pada tanggal
+            Tanggal Pemeriksaan
           </h3>
-          <p className="text-gray-800">{data.scheduledDate || "-"}</p>
+          <p className="text-gray-800">{formatDate(data.scheduledDate)}</p>
         </div>
         <div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Lokasi</h3>
           <p className="text-gray-800">{data.location || "-"}</p>
-        </div>
-        <div>
-          <h3 className="text-sm font-medium text-gray-600 mb-1">Petugas</h3>
-          <p className="text-gray-800">{data.officer || "-"}</p>
         </div>
       </div>
 
@@ -400,7 +401,7 @@ const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
               Berat Badan
             </h4>
             <p className="text-gray-800">
-              {data.weight ? `${data.weight} kg` : "-"}
+              {data.bodyWeight ? `${data.bodyWeight} kg` : "-"}
             </p>
           </div>
           <div>
@@ -416,7 +417,9 @@ const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
               Tinggi Fundus Uteri (TFU)
             </h4>
             <p className="text-gray-800">
-              {data.fundalHeight ? `${data.fundalHeight} cm` : "-"}
+              {data.uterineFundusHeight
+                ? `${data.uterineFundusHeight} cm`
+                : "-"}
             </p>
           </div>
         </div>
@@ -427,7 +430,7 @@ const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
               Detak Jantung Janin (DJJ)
             </h4>
             <p className="text-gray-800">
-              {data.fetalHeartRate ? `${data.fetalHeartRate} bpm` : "-"}
+              {data.heartRate ? `${data.heartRate} bpm` : "-"}
             </p>
           </div>
           <div>
@@ -440,30 +443,13 @@ const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-600 mb-1">
-              Hemoglobin (Hb)
+              Suhu Tubuh
             </h4>
             <p className="text-gray-800">
-              {data.hemoglobin ? `${data.hemoglobin} g/dL` : "-"}
+              {data.bodyTemperature ? `${data.bodyTemperature}°C` : "-"}
             </p>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <h4 className="text-sm font-medium text-gray-600 mb-1">
-              Protein Urin
-            </h4>
-            <p className="text-gray-800">{data.proteinUrine || "-"}</p>
-          </div>
-        </div>
-      </div>
-
-      <hr className="border-gray-200 mb-4" />
-
-      {/* Notes */}
-      <div>
-        <h3 className="text-lg font-medium text-gray-800 mb-2">Catatan:</h3>
-        <p className="text-gray-600">{data.notes || "Belum ada catatan"}</p>
       </div>
     </div>
   );
@@ -472,40 +458,13 @@ const ANCCheckupCard: React.FC<ANCCheckupCardProps> = ({ data }) => {
 const PemeriksaanANC: React.FC = () => {
   const { currentUser } = useRole();
 
-  // Sample data for mother's view - in real app this would come from API
-  const sampleCheckupData: ANCCheckupData[] = [
-    {
-      checkupNumber: 1,
-      scheduledDate: "15 Januari 2024",
-      location: "Puskesmas Kecamatan ABC",
-      officer: "dr. Sarah Wijaya",
-      weight: "65",
-      bloodPressure: "120/80",
-      fundalHeight: "28",
-      fetalHeartRate: "140",
-      bloodSugar: "95",
-      hemoglobin: "12.5",
-      proteinUrine: "negative",
-      notes:
-        "Kondisi ibu dan janin dalam keadaan sehat. Disarankan untuk tetap menjaga pola makan yang sehat dan rutin berolahraga ringan.",
-      isCompleted: true,
-    },
-    {
-      checkupNumber: 2,
-      scheduledDate: "20 Februari 2024",
-      location: "Puskesmas Kecamatan ABC",
-      officer: "dr. Sarah Wijaya",
-      weight: "",
-      bloodPressure: "",
-      fundalHeight: "",
-      fetalHeartRate: "",
-      bloodSugar: "",
-      hemoglobin: "",
-      proteinUrine: "",
-      notes: "",
-      isCompleted: false,
-    },
-  ];
+  // API Integration for ANC records
+  const {
+    data: ancRecords,
+    isLoading: isLoadingANC,
+    error: ancError,
+    isError: isANCError,
+  } = useANCRecords();
 
   if (currentUser?.role === "petugas_kesehatan") {
     // Healthcare worker view - form to input data
@@ -551,16 +510,84 @@ const PemeriksaanANC: React.FC = () => {
         <li>Tata laksana kasus</li>
       </ol>
 
-      <h2 className="text-xl font-semibold mb-4">Jadwal Pemeriksaan ANC</h2>
+      <h2 className="text-xl font-semibold mb-4">Riwayat Pemeriksaan ANC</h2>
 
-      {sampleCheckupData.map((checkup) => (
-        <ANCCheckupCard key={checkup.checkupNumber} data={checkup} />
-      ))}
-
-      {sampleCheckupData.length === 0 && (
-        <div className="w-full p-8 bg-white rounded-lg border border-gray-200 shadow-sm text-center">
-          <p className="text-gray-500">Belum ada jadwal pemeriksaan ANC</p>
+      {/* Loading State */}
+      {isLoadingANC ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="text-center">
+            <LoadingSpinner
+              size="lg"
+              message="Memuat data pemeriksaan ANC..."
+            />
+          </div>
         </div>
+      ) : isANCError ? (
+        <div className="w-full p-8 bg-white rounded-lg border border-red-200 shadow-sm">
+          <div className="text-center">
+            <div className="text-red-500 mb-4">
+              <svg
+                className="w-16 h-16 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Gagal Memuat Data ANC
+            </h3>
+            <p className="text-red-600 mb-4">
+              {ancError?.message ||
+                "Terjadi kesalahan saat mengambil data pemeriksaan ANC"}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {ancRecords && ancRecords.length > 0 ? (
+            ancRecords.map((checkup) => (
+              <ANCCheckupCard key={checkup.id} data={checkup} />
+            ))
+          ) : (
+            <div className="w-full p-8 bg-white rounded-lg border border-gray-200 shadow-sm text-center">
+              <div className="text-gray-400 mb-4">
+                <svg
+                  className="w-16 h-16 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Belum Ada Data Pemeriksaan ANC
+              </h3>
+              <p className="text-gray-500">
+                Hubungi petugas kesehatan untuk melakukan pemeriksaan ANC
+                pertama Anda.
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
