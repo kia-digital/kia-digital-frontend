@@ -153,26 +153,27 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-sm"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
     >
-      <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl">
+      <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-5xl h-[95vh] sm:h-auto sm:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-primary-500 to-primary-600 px-8 py-6">
-          {" "}
+        <div className="relative bg-gradient-to-r from-primary-500 to-primary-600 px-4 sm:px-8 py-4 sm:py-6 flex-shrink-0">
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-600 hover:bg-opacity-100 hover:text-gray-800 transition-all"
+            className="absolute top-3 sm:top-6 right-3 sm:right-6 w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center text-gray-600 hover:bg-opacity-100 hover:text-gray-800 transition-all"
           >
             <FontAwesomeIcon icon={faTimes} className="w-4 h-4" />
           </button>
-          <div className="flex items-center gap-4 text-white">
-            <div className="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <span className="text-2xl">📋</span>
+          <div className="flex items-center gap-3 sm:gap-4 text-white pr-12 sm:pr-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+              <span className="text-xl sm:text-2xl">📋</span>
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Lembar Pemantauan</h2>
-              <p className="text-primary-100 mt-1">
+              <h2 className="text-lg sm:text-2xl font-bold">
+                Lembar Pemantauan
+              </h2>
+              <p className="text-primary-100 mt-1 text-sm sm:text-base">
                 Pantau kondisi kesehatan Ibu secara berkala
               </p>
             </div>
@@ -180,8 +181,8 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-200px)]">
-          <div className="px-8 py-6 space-y-8">
+        <div className="overflow-y-auto flex-1 min-h-0">
+          <div className="px-4 sm:px-8 py-4 sm:py-6 space-y-6 sm:space-y-8">
             {/* Warning Banner */}
             <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl p-6">
               <div className="flex items-start gap-4">
@@ -330,19 +331,21 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-4">
-          <button
-            onClick={onClose}
-            className="px-6 py-3 text-gray-600 bg-white border border-gray-300 rounded-xl font-medium hover:bg-gray-50 transition-colors"
-          >
-            Batalkan
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-6 py-3 text-white bg-primary-500 rounded-xl font-medium hover:bg-primary-600 transition-colors shadow-sm"
-          >
-            Simpan Perubahan
-          </button>
+        <div className="px-4 sm:px-8 py-4 sm:py-6 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 sm:justify-end">
+            <button
+              onClick={onClose}
+              className="w-full sm:w-auto px-6 py-3 min-h-[44px] text-gray-600 bg-white border border-gray-300 rounded-xl font-medium hover:bg-gray-50 transition-colors text-center order-2 sm:order-1"
+            >
+              Batalkan
+            </button>
+            <button
+              onClick={handleSave}
+              className="w-full sm:w-auto px-6 py-3 min-h-[44px] text-white bg-primary-500 rounded-xl font-medium hover:bg-primary-600 transition-colors shadow-sm text-center order-1 sm:order-2"
+            >
+              Simpan Perubahan
+            </button>
+          </div>
         </div>
       </div>
     </div>

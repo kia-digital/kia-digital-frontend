@@ -71,17 +71,17 @@ const DetailPemeriksaanIbu: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6">
           <div>
             <button
               onClick={() => navigate("/dashboard")}
               className="flex items-center text-gray-600 hover:text-gray-800 mb-4"
             >
               <svg
-                className="w-5 h-5 mr-2"
+                className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -95,7 +95,7 @@ const DetailPemeriksaanIbu: React.FC = () => {
               </svg>
               Kembali ke Dashboard
             </button>
-            <h1 className="text-3xl font-bold text-gray-800">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
               Detail Pemeriksaan
             </h1>
             <p className="text-gray-600">{ibu.nama}</p>{" "}
@@ -103,11 +103,11 @@ const DetailPemeriksaanIbu: React.FC = () => {
 
           {/* Tombol Pemeriksaan - Hanya untuk Petugas Kesehatan */}
           {currentUser.role === "petugas_kesehatan" && (
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               {" "}
               <button
                 onClick={() => handlePemeriksaan("anc")}
-                className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                className={`w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg transition-all duration-200 flex items-center justify-center sm:justify-start space-x-2 min-h-[44px] ${
                   effectiveActiveMode === "anc"
                     ? "bg-primary-600 text-white shadow-lg scale-105"
                     : "bg-primary-500 text-white hover:bg-primary-600 hover:shadow-md"
@@ -120,7 +120,7 @@ const DetailPemeriksaanIbu: React.FC = () => {
               </button>
               <button
                 onClick={() => handlePemeriksaan("leopold")}
-                className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 ${
+                className={`w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg transition-all duration-200 flex items-center justify-center sm:justify-start space-x-2 min-h-[44px] ${
                   effectiveActiveMode === "leopold"
                     ? "bg-purple-600 text-white shadow-lg scale-105"
                     : "bg-purple-500 text-white hover:bg-purple-600 hover:shadow-md"
@@ -134,7 +134,7 @@ const DetailPemeriksaanIbu: React.FC = () => {
               {effectiveActiveMode !== "detail" && (
                 <button
                   onClick={handleBackToDetail}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                  className="w-full sm:w-auto bg-gray-500 text-white px-4 py-3 sm:py-2 rounded-lg hover:bg-gray-600 transition-colors min-h-[44px]"
                 >
                   Kembali ke Detail
                 </button>

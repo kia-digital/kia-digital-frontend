@@ -2,14 +2,21 @@ import React from "react";
 import { useRole } from "../contexts/RoleContext";
 import type { UserRole } from "../contexts/RoleContext";
 
-const RoleSwitcher: React.FC = () => {
+interface RoleSwitcherProps {
+  className?: string;
+}
+
+const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ className = "" }) => {
   const { currentUser, switchRole } = useRole();
   const handleRoleChange = (role: UserRole) => {
     switchRole(role);
     // No need to reload - role will persist automatically
   };
+
   return (
-    <div className="fixed top-4 right-4 z-50 bg-white rounded-lg shadow-md border p-3 w-48">
+    <div
+      className={`bg-gray-100 rounded-lg border border-gray-200 p-3 ${className}`}
+    >
       <div className="text-xs font-medium text-gray-600 mb-2">Dev Mode</div>
       <div className="text-xs text-gray-500 mb-2">
         <span className="font-medium text-gray-700">{currentUser.name}</span>

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { DashboardContext } from "../contexts/DashboardContext";
 import { useRole } from "../contexts/RoleContext";
+import RoleSwitcher from "./RoleSwitcher";
 
 // Assets
 import strollerIcon from "../assets/stroller.svg";
@@ -15,7 +16,11 @@ import pemeriksaanActiveIcon from "../assets/pemeriksaan_active.svg";
 import edukasiIcon from "../assets/edukasi.svg";
 import edukasiActiveIcon from "../assets/edukasi_active.svg";
 
-function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+function Sidebar({ onClose }: SidebarProps) {
   const context = useContext(DashboardContext);
   const { currentUser } = useRole();
   const navigate = useNavigate();
@@ -74,6 +79,10 @@ function Sidebar() {
   const handleMenuClick = (item: (typeof menuItems)[0]) => {
     setActiveTab(item.id);
     navigate(item.route);
+    // Close mobile menu when item is clicked
+    if (onClose) {
+      onClose();
+    }
   };
 
   // Sync activeTab with current URL on component mount and route changes
@@ -88,12 +97,42 @@ function Sidebar() {
   }, [location.pathname, activeTab, setActiveTab, menuItems]);
 
   return (
-    <div className="w-64 bg-gray-50 min-h-screen shadow-lg">
+    <div
+      className={`w-64 min-h-screen shadow-lg relative ${
+        onClose ? "bg-gray-50/95 backdrop-blur-sm" : "bg-gray-50"
+      }`}
+    >
+      {/* Mobile Close Button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 z-10"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      )}
+
       {/* Logo Section */}
       <div className="p-6 pb-8">
         <div className="flex items-center space-x-3">
-          <img src={strollerIcon} alt="Stroller Icon" className="w-10 h-10" />
-          <h1 className="font-bold text-lg text-gradient leading-tight">
+          <img
+            src={strollerIcon}
+            alt="Stroller Icon"
+            className="w-8 h-8 sm:w-10 sm:h-10"
+          />
+          <h1 className="font-bold text-base sm:text-lg text-gradient leading-tight">
             <span className="block">Kesehatan</span>
             <span className="block">Ibu dan Anak</span>
           </h1>
@@ -150,9 +189,9 @@ function Sidebar() {
         })}
       </nav>
 
-      {/* Bottom section for additional content if needed */}
+      {/* Bottom section with RoleSwitcher */}
       <div className="mt-auto p-4">
-        {/* You can add user profile or other content here */}
+        <RoleSwitcher />
       </div>
     </div>
   );

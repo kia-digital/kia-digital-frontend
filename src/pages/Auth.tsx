@@ -113,29 +113,29 @@ const Auth: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-grey-50 rounded-2xl shadow-xl p-8">
+        <div className="bg-grey-50 rounded-2xl shadow-xl p-6 sm:p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-500 rounded-full mb-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary-500 rounded-full mb-3 sm:mb-4">
               <FontAwesomeIcon
                 icon={faHeart}
-                className="text-grey-50 text-2xl"
+                className="text-grey-50 text-lg sm:text-2xl"
               />
             </div>
-            <h1 className="text-2xl font-bold text-primary-600 mb-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-primary-600 mb-2">
               Aplikasi KIA Digital
             </h1>
-            <p className="text-grey-600">
+            <p className="text-grey-600 text-sm sm:text-base">
               Welcome! Please sign in or create an account.
             </p>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex mb-6">
+          <div className="flex mb-4 sm:mb-6">
             <button
               type="button"
               onClick={() => handleTabChange("login")}
-              className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+              className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 text-center font-medium transition-colors text-sm sm:text-base ${
                 activeTab === "login"
                   ? "text-primary-600 border-b-2 border-primary-600"
                   : "text-grey-500 hover:text-grey-700"
@@ -146,7 +146,7 @@ const Auth: React.FC = () => {
             <button
               type="button"
               onClick={() => handleTabChange("register")}
-              className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+              className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 text-center font-medium transition-colors text-sm sm:text-base ${
                 activeTab === "register"
                   ? "text-primary-600 border-b-2 border-primary-600"
                   : "text-grey-500 hover:text-grey-700"
@@ -180,7 +180,10 @@ const Auth: React.FC = () => {
           )}
 
           {/* Form - Menggunakan handleSubmit dari React Hook Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 sm:space-y-6"
+          >
             {/* Name Field (Hanya untuk Register) */}
             {activeTab === "register" && (
               <div className="relative">
@@ -190,21 +193,21 @@ const Auth: React.FC = () => {
                 >
                   Name
                 </label>
-                <div className="absolute left-3 top-10 text-grey-400">
-                  <FontAwesomeIcon icon={faUser} />
+                <div className="absolute left-3 top-9 sm:top-10 text-grey-400">
+                  <FontAwesomeIcon icon={faUser} size="sm" />
                 </div>
                 <input
                   id="name"
                   {...register("name", { required: "Name is required" })}
                   placeholder="Your Name"
-                  className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
+                  className={`w-full px-8 sm:px-10 py-2 sm:py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm sm:text-base ${
                     formErrors.name
                       ? "border-error-500 bg-error-100"
                       : "border-grey-300 hover:border-grey-400"
                   }`}
                 />
                 {formErrors.name && (
-                  <p className="mt-1 text-sm text-error-600">
+                  <p className="mt-1 text-xs sm:text-sm text-error-600">
                     {formErrors.name.message}
                   </p>
                 )}
@@ -219,8 +222,8 @@ const Auth: React.FC = () => {
               >
                 Email Address
               </label>
-              <div className="absolute left-3 top-10 text-grey-400">
-                <FontAwesomeIcon icon={faEnvelope} />
+              <div className="absolute left-3 top-9 sm:top-10 text-grey-400">
+                <FontAwesomeIcon icon={faEnvelope} size="sm" />
               </div>
               <input
                 type="email"
@@ -233,14 +236,14 @@ const Auth: React.FC = () => {
                   },
                 })}
                 placeholder="you@example.com"
-                className={`w-full px-10 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
+                className={`w-full px-8 sm:px-10 py-2 sm:py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm sm:text-base ${
                   formErrors.email
                     ? "border-error-500 bg-error-100"
                     : "border-grey-300 hover:border-grey-400"
                 }`}
               />
               {formErrors.email && (
-                <p className="mt-1 text-sm text-error-600">
+                <p className="mt-1 text-xs sm:text-sm text-error-600">
                   {formErrors.email.message}
                 </p>
               )}
@@ -267,7 +270,7 @@ const Auth: React.FC = () => {
               </div>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-grey-400">
-                  <FontAwesomeIcon icon={faLock} />
+                  <FontAwesomeIcon icon={faLock} size="sm" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -280,7 +283,7 @@ const Auth: React.FC = () => {
                     },
                   })}
                   placeholder="••••••••"
-                  className={`w-full px-10 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
+                  className={`w-full px-8 sm:px-10 py-2 sm:py-3 pr-10 sm:pr-12 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm sm:text-base ${
                     formErrors.password
                       ? "border-error-500 bg-error-100"
                       : "border-grey-300 hover:border-grey-400"
@@ -291,11 +294,14 @@ const Auth: React.FC = () => {
                   onClick={togglePasswordVisibility}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-grey-500 hover:text-grey-700"
                 >
-                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                  <FontAwesomeIcon
+                    icon={showPassword ? faEyeSlash : faEye}
+                    size="sm"
+                  />
                 </button>
               </div>
               {formErrors.password && (
-                <p className="mt-1 text-sm text-error-600">
+                <p className="mt-1 text-xs sm:text-sm text-error-600">
                   {formErrors.password.message}
                 </p>
               )}
@@ -303,9 +309,9 @@ const Auth: React.FC = () => {
 
             {/* Submit Button */}
             <button
-              type="submit" // Ubah menjadi 'submit'
+              type="submit"
               disabled={isLoading}
-              className={`w-full py-3 px-4 rounded-lg font-medium text-grey-50 transition-all ${
+              className={`w-full py-2 sm:py-3 px-4 rounded-lg font-medium text-grey-50 transition-all text-sm sm:text-base ${
                 isLoading
                   ? "bg-grey-400 cursor-not-allowed"
                   : "bg-primary-600 hover:bg-primary-700 active:transform active:scale-95"
@@ -313,8 +319,12 @@ const Auth: React.FC = () => {
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
-                  <FontAwesomeIcon icon={faSpinner} className="fa-spin mr-2" />
-                  Processing...
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="fa-spin mr-2"
+                    size="sm"
+                  />
+                  <span className="text-sm sm:text-base">Processing...</span>
                 </div>
               ) : activeTab === "login" ? (
                 "Sign In"
@@ -325,8 +335,8 @@ const Auth: React.FC = () => {
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-grey-600">
+          <div className="mt-4 sm:mt-6 text-center">
+            <p className="text-grey-600 text-sm sm:text-base">
               {activeTab === "login"
                 ? "Don't have an account? "
                 : "Already have an account? "}

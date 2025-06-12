@@ -69,15 +69,15 @@ const Pemeriksaan: React.FC = () => {
     <>
       {/* Header untuk Petugas Kesehatan */}
       {currentUser.role === "petugas_kesehatan" && selectedIbu && (
-        <div className="bg-blue-50 border-b border-blue-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="bg-blue-50 border-b border-blue-200 px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <button
                 onClick={() => navigate("/dashboard")}
-                className="flex items-center text-blue-600 hover:text-blue-800"
+                className="flex items-center text-blue-600 hover:text-blue-800 self-start"
               >
                 <svg
-                  className="w-5 h-5 mr-2"
+                  className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -89,19 +89,21 @@ const Pemeriksaan: React.FC = () => {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                Kembali ke Dashboard
+                <span className="text-sm sm:text-base">
+                  Kembali ke Dashboard
+                </span>
               </button>
-              <div className="h-6 w-px bg-blue-300"></div>
+              <div className="hidden sm:block h-6 w-px bg-blue-300"></div>
               <div>
-                <h3 className="font-semibold text-blue-800">
+                <h3 className="font-semibold text-blue-800 text-sm sm:text-base">
                   Pemeriksaan untuk: {selectedIbu.nama}
                 </h3>
-                <p className="text-sm text-blue-600">
+                <p className="text-xs sm:text-sm text-blue-600">
                   {selectedIbu.usia} tahun • {selectedIbu.usiaKehamilan}
                 </p>
               </div>
             </div>
-            <div className="text-xs text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+            <div className="text-xs text-blue-600 bg-blue-100 px-2 sm:px-3 py-1 rounded-full self-start sm:self-center">
               Petugas: {currentUser.name}
             </div>
           </div>
@@ -118,15 +120,15 @@ const Pemeriksaan: React.FC = () => {
         showUserAvatar={true}
       />{" "}
       {/* Tabs */}
-      <div className="px-6 bg-gray-100">
-        <nav className="flex space-x-1">
+      <div className="px-4 sm:px-6 bg-gray-100">
+        <nav className="flex space-x-1 overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => {
             const isActive = tab.key === activeTab;
             return (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2 rounded-t-lg font-medium text-sm focus:outline-none ${
+                className={`px-3 sm:px-4 py-2 rounded-t-lg font-medium text-xs sm:text-sm focus:outline-none whitespace-nowrap flex-shrink-0 ${
                   isActive
                     ? "bg-gray-50 text-pink-500"
                     : "text-gray-500 hover:bg-gray-100"

@@ -95,75 +95,79 @@ const DashboardPetugas: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
               Dashboard Petugas Kesehatan
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base">
               Kelola dan pantau kondisi kesehatan ibu hamil
             </p>
           </div>{" "}
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
               <div className="flex items-center">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <span className="text-2xl">👥</span>
+                <div className="p-2 sm:p-3 bg-blue-100 rounded-lg">
+                  <span className="text-xl sm:text-2xl">👥</span>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-2xl font-bold text-gray-800">
+                <div className="ml-3 sm:ml-4">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
                     {mockIbuData.length}
                   </h3>
-                  <p className="text-gray-600 text-sm">Total Ibu</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">Total Ibu</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
               <div className="flex items-center">
-                <div className="p-3 bg-green-100 rounded-lg">
-                  <span className="text-2xl">✅</span>
+                <div className="p-2 sm:p-3 bg-green-100 rounded-lg">
+                  <span className="text-xl sm:text-2xl">✅</span>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-2xl font-bold text-green-600">
+                <div className="ml-3 sm:ml-4">
+                  <h3 className="text-xl sm:text-2xl font-bold text-green-600">
                     {
                       mockIbuData.filter((ibu) => ibu.kondisi === "Sehat")
                         .length
                     }
                   </h3>
-                  <p className="text-gray-600 text-sm">Kondisi Sehat</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
+                    Kondisi Sehat
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
               <div className="flex items-center">
-                <div className="p-3 bg-yellow-100 rounded-lg">
-                  <span className="text-2xl">⚠️</span>
+                <div className="p-2 sm:p-3 bg-yellow-100 rounded-lg">
+                  <span className="text-xl sm:text-2xl">⚠️</span>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-2xl font-bold text-yellow-600">
+                <div className="ml-3 sm:ml-4">
+                  <h3 className="text-xl sm:text-2xl font-bold text-yellow-600">
                     {
                       mockIbuData.filter(
                         (ibu) => ibu.kondisi === "Perlu Perhatian"
                       ).length
                     }
                   </h3>
-                  <p className="text-gray-600 text-sm">Perlu Perhatian</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
+                    Perlu Perhatian
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
               <div className="flex items-center">
-                <div className="p-3 bg-pink-100 rounded-lg">
-                  <span className="text-2xl">📅</span>
+                <div className="p-2 sm:p-3 bg-pink-100 rounded-lg">
+                  <span className="text-xl sm:text-2xl">📅</span>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-2xl font-bold text-pink-600">
+                <div className="ml-3 sm:ml-4">
+                  <h3 className="text-xl sm:text-2xl font-bold text-pink-600">
                     {
                       mockIbuData.filter((ibu) => {
                         const nextDate = new Date(ibu.nextCheckup);
@@ -176,14 +180,16 @@ const DashboardPetugas: React.FC = () => {
                       }).length
                     }
                   </h3>
-                  <p className="text-gray-600 text-sm">Checkup Minggu Ini</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
+                    Checkup Minggu Ini
+                  </p>
                 </div>
               </div>
             </div>
           </div>{" "}
           {/* Search and Filter */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
-            <div className="flex flex-col md:flex-row gap-4">
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200 mb-4 sm:mb-6">
+            <div className="flex flex-col gap-4">
               <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Cari Ibu
@@ -196,7 +202,7 @@ const DashboardPetugas: React.FC = () => {
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
-              <div className="md:w-48">
+              <div className="w-full sm:w-48">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Filter Kondisi
                 </label>
@@ -213,9 +219,10 @@ const DashboardPetugas: React.FC = () => {
               </div>
             </div>
           </div>
-          {/* Table */}
+          {/* Data List - Mobile Cards + Desktop Table */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
@@ -274,7 +281,7 @@ const DashboardPetugas: React.FC = () => {
                       </td>
                       <td className="p-4 text-gray-700">
                         {new Date(ibu.nextCheckup).toLocaleDateString("id-ID")}
-                      </td>{" "}
+                      </td>
                       <td className="p-4">
                         <button
                           onClick={() => handleViewDetail(ibu.id)}
@@ -289,6 +296,84 @@ const DashboardPetugas: React.FC = () => {
               </table>
             </div>
 
+            {/* Mobile Card View */}
+            <div className="lg:hidden">
+              {filteredData.map((ibu, index) => (
+                <div
+                  key={ibu.id}
+                  className={`p-4 ${
+                    index !== filteredData.length - 1
+                      ? "border-b border-gray-200"
+                      : ""
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-800 text-lg">
+                        {ibu.nama}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {ibu.telepon}
+                      </p>
+                    </div>
+                    <div className="ml-3">
+                      <span
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getKondisiBadge(
+                          ibu.kondisi
+                        )}`}
+                      >
+                        {ibu.kondisi === "Perlu Perhatian"
+                          ? "⚠️ Perlu Perhatian"
+                          : ibu.kondisi}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        Usia
+                      </p>
+                      <p className="text-sm text-gray-800 mt-1">
+                        {ibu.usia} tahun
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        Usia Kehamilan
+                      </p>
+                      <p className="text-sm text-gray-800 mt-1">
+                        {ibu.usiaKehamilan}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        Checkup Terakhir
+                      </p>
+                      <p className="text-sm text-gray-800 mt-1">
+                        {new Date(ibu.lastCheckup).toLocaleDateString("id-ID")}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        Checkup Selanjutnya
+                      </p>
+                      <p className="text-sm text-gray-800 mt-1">
+                        {new Date(ibu.nextCheckup).toLocaleDateString("id-ID")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleViewDetail(ibu.id)}
+                    className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors font-medium min-h-[44px]"
+                  >
+                    Lihat Detail
+                  </button>
+                </div>
+              ))}
+            </div>
+
             {filteredData.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-gray-400 mb-4">
@@ -297,7 +382,7 @@ const DashboardPetugas: React.FC = () => {
                 <h3 className="text-lg font-medium text-gray-600 mb-2">
                   Tidak ada data ditemukan
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-gray-500 text-sm px-4">
                   Coba ubah kata kunci pencarian atau filter yang digunakan
                 </p>
               </div>

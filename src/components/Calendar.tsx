@@ -159,17 +159,17 @@ const Calendar = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6">
-      <h2 className="text-xl font-semibold mb-6 text-gray-800">
+    <div className="max-w-full sm:max-w-md mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-6">
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">
         Jadwal Pemeriksaan Ibu
       </h2>
 
       {/* Calendar Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-medium text-pink-500 text-lg">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
+        <h3 className="font-medium text-pink-500 text-base sm:text-lg text-center sm:text-left">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h3>
-        <div className="flex space-x-1">
+        <div className="flex space-x-1 justify-center sm:justify-end">
           <button
             onClick={() => navigateMonth(-1)}
             className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
@@ -186,15 +186,18 @@ const Calendar = () => {
       </div>
 
       {/* Calendar Grid */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         {/* Day Names */}
         <div className="grid grid-cols-7 gap-1 mb-2">
-          {dayNames.map((day) => (
+          {dayNames.map((day, index) => (
             <div
               key={day}
               className="text-center text-xs text-gray-500 py-2 font-medium"
             >
-              {day}
+              <span className="hidden sm:inline">{day}</span>
+              <span className="sm:hidden">
+                {["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"][index]}
+              </span>
             </div>
           ))}
         </div>
@@ -206,7 +209,7 @@ const Calendar = () => {
               key={index}
               onClick={() => handleDateClick(dayData)}
               className={`
-                relative text-center text-sm py-3 rounded-lg transition-all duration-200 hover:scale-105
+                relative text-center text-xs sm:text-sm py-2 sm:py-3 rounded-lg transition-all duration-200 hover:scale-105 min-h-[40px] sm:min-h-[auto]
                 ${
                   dayData.isCurrentMonth
                     ? dayData.isToday
@@ -239,18 +242,20 @@ const Calendar = () => {
       </div>
 
       {/* Schedule List */}
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {scheduleData.map((schedule, index) => (
           <div
             key={index}
-            className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
+            className="flex items-start space-x-3 p-2 sm:p-3 bg-gray-50 rounded-lg"
           >
-            <div className="w-1 h-12 bg-yellow-400 rounded-full flex-shrink-0"></div>
-            <div className="flex-1">
-              <p className="font-medium text-sm text-gray-800">
+            <div className="w-1 h-8 sm:h-12 bg-yellow-400 rounded-full flex-shrink-0"></div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-xs sm:text-sm text-gray-800">
                 {formatScheduleDate(schedule.date)}
               </p>
-              <p className="text-xs text-gray-600 mt-1">{schedule.title}</p>
+              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                {schedule.title}
+              </p>
             </div>
           </div>
         ))}
@@ -258,8 +263,8 @@ const Calendar = () => {
 
       {/* Selected Date Info */}
       {selectedDate && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-700">
+        <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs sm:text-sm text-blue-700">
             <span className="font-medium">Tanggal dipilih:</span>{" "}
             {selectedDate.day} {monthNames[selectedDate.date.getMonth()]}{" "}
             {selectedDate.date.getFullYear()}

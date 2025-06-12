@@ -198,16 +198,18 @@ const Dashboard = () => {
         {/* Content Area */}
         <div className="flex-1">
           {/* Header */}
-          <div className="bg-gray-100 px-8 py-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold text-primary-500">Dashboard</h2>
+          <div className="bg-gray-100 px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+              <h2 className="text-2xl sm:text-3xl font-bold text-primary-500">
+                Dashboard
+              </h2>
               <div className="flex items-center space-x-4">
                 <button
                   onClick={handleOpenModal}
-                  className="bg-pink-400 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-500 transition-colors flex items-center"
+                  className="bg-pink-400 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-pink-500 transition-colors flex items-center"
                 >
                   <svg
-                    className="w-4 h-4 mr-2"
+                    className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -217,17 +219,17 @@ const Dashboard = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Lembar Pemantauan
+                  <span className="hidden sm:inline">Lembar Pemantauan</span>
+                  <span className="sm:hidden">Pemantauan</span>
                 </button>
                 <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
               </div>
             </div>
           </div>
-          <div className="px-8 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
               {/* Left Column */}
-              <div className="lg:col-span-2 space-y-8">
-                {" "}
+              <div className="lg:col-span-2 space-y-6 lg:space-y-8">
                 {/* Welcome Card */}
                 <div className="relative bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 rounded-3xl shadow-xl overflow-hidden">
                   {/* Background Pattern */}
@@ -238,18 +240,18 @@ const Dashboard = () => {
                     <div className="absolute bottom-1/3 left-1/4 w-16 h-16 bg-white rounded-full"></div>
                   </div>
 
-                  <div className="relative flex items-center min-h-[280px] p-8">
-                    {/* Left Side - Content */}
-                    <div className="w-2/3 text-white space-y-6">
+                  <div className="relative flex flex-col sm:flex-row items-center min-h-[200px] sm:min-h-[280px] p-4 sm:p-8">
+                    {/* Content */}
+                    <div className="w-full sm:w-2/3 text-white space-y-4 sm:space-y-6 text-center sm:text-left">
                       <div>
-                        <h2 className="text-4xl font-bold mb-2 leading-tight">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 leading-tight">
                           Selamat Datang!
                         </h2>
-                        <h3 className="text-xl font-semibold text-primary-100 mb-4">
+                        <h3 className="text-lg sm:text-xl font-semibold text-primary-100 mb-3 sm:mb-4">
                           KIA Digital - Pendamping Kehamilan Anda
                         </h3>
                       </div>
-                      <p className="text-primary-50 leading-relaxed text-base">
+                      <p className="text-primary-50 leading-relaxed text-sm sm:text-base">
                         Pendamping kehamilan Anda dalam bentuk digital yang
                         praktis dan mudah digunakan. Nikmati fitur-fitur seperti
                         pengingat cek up, edukasi seputar kehamilan, dan lembar
@@ -257,51 +259,51 @@ const Dashboard = () => {
                       </p>
                     </div>
 
-                    {/* Right Side - Visual */}
-                    <div className="w-1/3 flex justify-center">
+                    {/* Visual */}
+                    <div className="w-full sm:w-1/3 flex justify-center mt-4 sm:mt-0">
                       <div className="relative">
                         {/* Main Circle Background */}
-                        <div className="w-32 h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
-                          <div className="w-24 h-24 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                            <span className="text-4xl">🤱</span>
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white border-opacity-30">
+                          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                            <span className="text-2xl sm:text-4xl">🤱</span>
                           </div>
                         </div>
 
                         {/* Floating Icons */}
-                        <div className="absolute -top-3 -right-3 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
-                          <span className="text-lg">💝</span>
+                        <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-8 h-8 sm:w-10 sm:h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                          <span className="text-sm sm:text-lg">💝</span>
                         </div>
-                        <div className="absolute -bottom-2 -left-4 w-8 h-8 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
-                          <span className="text-sm">👶</span>
+                        <div className="absolute -bottom-1 -left-3 sm:-bottom-2 sm:-left-4 w-6 h-6 sm:w-8 sm:h-8 bg-white bg-opacity-25 rounded-full flex items-center justify-center backdrop-blur-sm">
+                          <span className="text-xs sm:text-sm">👶</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 {/* Articles Section */}
-                <div className="space-y-6">
-                  <h2 className="text-xl text-gray-800 font-bold">
+                <div className="space-y-4 sm:space-y-6">
+                  <h2 className="text-lg sm:text-xl text-gray-800 font-bold">
                     Eksplorasi kategori artikel yang Anda ingin pelajari
-                  </h2>{" "}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-6">
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {categories.map((category) => (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category.slug)}
-                        className="category-card relative rounded-xl shadow-lg overflow-hidden p-6 cursor-pointer border border-gray-100 group flex flex-col items-center justify-center text-center"
+                        className="category-card relative rounded-xl shadow-lg overflow-hidden p-4 sm:p-6 cursor-pointer border border-gray-100 group flex flex-col items-center justify-center text-center min-h-[180px] sm:min-h-[200px]"
                       >
                         {/* Content with z-index for layering */}
                         <div className="relative z-10 flex flex-col items-center justify-center text-center w-full">
-                          <div className="text-4xl mb-4 transition-all duration-300 ease-out emoji-icon">
+                          <div className="text-3xl sm:text-4xl mb-3 sm:mb-4 transition-all duration-300 ease-out emoji-icon">
                             {category.icon}
                           </div>
-                          <p className="text-gray-500 group-hover:text-pink-100 font-medium text-sm mb-1 transition-colors duration-300">
+                          <p className="text-gray-500 group-hover:text-pink-100 font-medium text-xs sm:text-sm mb-1 transition-colors duration-300">
                             Tentang
                           </p>
-                          <h3 className="font-semibold text-gray-800 group-hover:text-white mb-2 transition-colors duration-300">
+                          <h3 className="font-semibold text-gray-800 group-hover:text-white mb-2 text-sm sm:text-base transition-colors duration-300">
                             {category.title}
                           </h3>
-                          <p className="text-sm text-gray-600 group-hover:text-pink-100 mb-3 transition-colors duration-300">
+                          <p className="text-xs sm:text-sm text-gray-600 group-hover:text-pink-100 mb-3 transition-colors duration-300 line-clamp-2">
                             {category.description}
                           </p>
                           <div className="flex items-center justify-center w-full">
@@ -317,56 +319,56 @@ const Dashboard = () => {
               </div>
 
               {/* Right Column - Schedule */}
-              <div>
+              <div className="space-y-6 lg:space-y-8">
                 {/* Profile Section */}
-                <div className="rounded-xl shadow-lg bg-white w-full h-[270px] flex justify-center items-center flex-col mb-8">
-                  <div className="mb-8 text-center">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                <div className="rounded-xl shadow-lg bg-white w-full min-h-[200px] sm:min-h-[270px] flex justify-center items-center flex-col p-4 sm:p-6">
+                  <div className="mb-6 sm:mb-8 text-center">
+                    <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
                       Ibu Hanifah
                     </h3>
-                    <span className="inline-block bg-green-100 text-green-800 border-2 border-green-400 text-sm px-3 py-1 rounded-sm font-medium">
+                    <span className="inline-block bg-green-100 text-green-800 border-2 border-green-400 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-sm font-medium">
                       Kondisi Ibu Sehat
                     </span>
                   </div>
 
                   <div className="text-center">
-                    <p className="text-lg text-gray-600 mb-2">
+                    <p className="text-base sm:text-lg text-gray-600 mb-2">
                       17 minggu, 1 hari hamil
                     </p>
-                    <h4 className="text-3xl font-bold text-pink-400 mb-4">
+                    <h4 className="text-2xl sm:text-3xl font-bold text-pink-400 mb-4">
                       Hari ke-120
                     </h4>
                   </div>
                 </div>
 
                 {/* Schedule Section */}
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <h3 className="font-semibold text-xl mb-4">
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg">
+                  <h3 className="font-semibold text-lg sm:text-xl mb-4">
                     Jadwal Pemeriksaan Ibu
-                  </h3>{" "}
+                  </h3>
                   {/* Calendar Header */}
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-medium text-pink-500 text-lg">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
+                    <h4 className="font-medium text-pink-500 text-base sm:text-lg">
                       {monthNames[currentDate.getMonth()]}{" "}
                       {currentDate.getFullYear()}
                     </h4>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-between sm:justify-end space-x-2">
                       <button
                         onClick={goToToday}
-                        className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full hover:bg-blue-200 transition-colors font-medium"
+                        className="px-2 sm:px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full hover:bg-blue-200 transition-colors font-medium"
                       >
                         Hari Ini
                       </button>
                       <div className="flex">
                         <button
                           onClick={() => navigateMonth(-1)}
-                          className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 mr-1"
+                          className="w-8 h-8 sm:w-6 sm:h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 mr-1"
                         >
                           <FontAwesomeIcon icon={faChevronLeft} size="xs" />
                         </button>
                         <button
                           onClick={() => navigateMonth(1)}
-                          className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200"
+                          className="w-8 h-8 sm:w-6 sm:h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200"
                         >
                           <FontAwesomeIcon icon={faChevronRight} size="xs" />
                         </button>
@@ -374,12 +376,15 @@ const Dashboard = () => {
                     </div>
                   </div>{" "}
                   <div className="grid grid-cols-7 gap-1 mb-4">
-                    {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((day) => (
+                    {["S", "S", "R", "K", "J", "S", "M"].map((day, index) => (
                       <div
-                        key={day}
+                        key={index}
                         className="text-center text-xs text-gray-500 py-2 font-medium"
                       >
-                        {day}
+                        <span className="hidden sm:inline">
+                          {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"][index]}
+                        </span>
+                        <span className="sm:hidden">{day}</span>
                       </div>
                     ))}
                     {calendarDays.map((date, index) => (
@@ -389,7 +394,7 @@ const Dashboard = () => {
                           handleDateClick(date.date, date.isCurrentMonth)
                         }
                         disabled={!date.isCurrentMonth}
-                        className={`text-center text-sm py-2 rounded transition-all duration-200 ${
+                        className={`text-center text-xs sm:text-sm py-2 rounded transition-all duration-200 min-h-[32px] sm:min-h-[36px] ${
                           date.isCurrentMonth
                             ? date.isToday
                               ? "bg-blue-500 text-white font-bold shadow-md"
@@ -409,7 +414,7 @@ const Dashboard = () => {
                       >
                         {date.day}
                       </button>
-                    ))}{" "}
+                    ))}
                   </div>
                   {/* Selected Date Feedback */}
                   {selectedDate && (
@@ -424,7 +429,7 @@ const Dashboard = () => {
                         })}
                       </p>
                     </div>
-                  )}{" "}
+                  )}
                   {/* Schedule Items */}
                   <div className="space-y-3">
                     {scheduleItems.map((item, index) => (
@@ -439,8 +444,8 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>{" "}
-          </div>{" "}
+            </div>
+          </div>
         </div>
       </div>
 

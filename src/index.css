@@ -88,6 +88,44 @@ body {
   font-family: "Poppins", sans-serif; /* <--- Tambahkan atau modifikasi ini */
 }
 
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+  .text-gradient {
+    font-size: 0.875rem; /* 14px */
+  }
+
+  /* Ensure mobile touch targets are appropriately sized */
+  button,
+  .button,
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+  }
+}
+
+/* Line clamp utilities for text truncation */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* Ensure proper mobile viewport */
+@viewport {
+  width: device-width;
+  initial-scale: 1;
+}
+
 .bg-gradient {
   background: linear-gradient(to right, #ff65ae 0%, #ff8bc7 50%, #ff6fb3 100%);
 }
@@ -98,4 +136,13 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+}
+
+/* Hide scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
