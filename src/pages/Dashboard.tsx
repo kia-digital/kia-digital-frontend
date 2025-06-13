@@ -6,12 +6,15 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRole } from "../contexts/RoleContext";
+import { useDashboardInfo } from "../hooks/useDashboardInfo";
 import DashboardPetugas from "./DashboardPetugas";
 import LembarPemantauanModal from "../components/LembarPemantauanModal";
 import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
   const { currentUser } = useRole();
+  const { userInfo, loading, error, refetch, totalDays, conditionDisplay } =
+    useDashboardInfo();
 
   // Jika user adalah petugas kesehatan, tampilkan dashboard petugas
   if (currentUser.role === "petugas_kesehatan") {
@@ -298,27 +301,84 @@ const Dashboard = () => {
 
               {/* Right Column - Schedule */}
               <div className="space-y-6 lg:space-y-8">
+                {" "}
                 {/* Profile Section */}
                 <div className="rounded-xl shadow-lg bg-white w-full min-h-[200px] sm:min-h-[270px] flex justify-center items-center flex-col p-4 sm:p-6">
-                  <div className="mb-6 sm:mb-8 text-center">
-                    <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
-                      Ibu Hanifah
-                    </h3>
-                    <span className="inline-block bg-green-100 text-green-800 border-2 border-green-400 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-sm font-medium">
-                      Kondisi Ibu Sehat
-                    </span>
-                  </div>
+                  {loading ? (
+                    <div className="text-center">
+                      <div className="spinner-border h-8 w-8 mx-auto mb-4 border-2 border-t-primary-500 border-primary-200 rounded-full animate-spin"></div>
+                      <p className="text-gray-500">Memuat informasi...</p>
+                    </div>
+                  ) : error ? (
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">⚠️</div>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        Gagal Memuat Data
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">{error}</p>
+                      <button
+                        onClick={refetch}
+                        className="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm hover:bg-primary-600 transition-colors"
+                      >
+                        Coba Lagi
+                      </button>
+                    </div>
+                  ) : userInfo ? (
+                    <>
+                      <div className="mb-6 sm:mb-8 text-center">
+                        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+                          {userInfo.name || "Nama Ibu"}
+                        </h3>
+                        <span
+                          className={`inline-block ${conditionDisplay.bgColor} ${conditionDisplay.textColor} border-2 ${conditionDisplay.borderColor} text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-sm font-medium`}
+                        >
+                          {conditionDisplay.text}
+                        </span>
+                      </div>
 
-                  <div className="text-center">
-                    <p className="text-base sm:text-lg text-gray-600 mb-2">
-                      17 minggu, 1 hari hamil
-                    </p>
-                    <h4 className="text-2xl sm:text-3xl font-bold text-pink-400 mb-4">
-                      Hari ke-120
-                    </h4>
-                  </div>
+                      <div className="text-center">
+                        <p className="text-base sm:text-lg text-gray-600 mb-2">
+                          {userInfo.usia_kehamilan ||
+                            "Usia kehamilan tidak tersedia"}
+                        </p>
+                        <h4 className="text-2xl sm:text-3xl font-bold text-pink-400 mb-4">
+                          Hari ke-{totalDays}
+                        </h4>
+                      </div>
+
+                      {!userInfo.kondisi && (
+                        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                          <p className="text-sm text-yellow-700 mb-2">
+                            💡 Lengkapi data diri dan lakukan pemeriksaan ANC
+                            untuk mendapatkan informasi kondisi kesehatan
+                          </p>
+                          <button
+                            onClick={() => navigate("/pemeriksaan")}
+                            className="text-xs text-yellow-800 underline hover:text-yellow-900"
+                          >
+                            Pergi ke Informasi Ibu
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">📋</div>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        Data Tidak Tersedia
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Silakan lengkapi informasi Anda terlebih dahulu
+                      </p>
+                      <button
+                        onClick={() => navigate("/pemeriksaan")}
+                        className="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm hover:bg-primary-600 transition-colors"
+                      >
+                        Lengkapi Data
+                      </button>
+                    </div>
+                  )}
                 </div>
-
                 {/* Schedule Section */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg">
                   <h3 className="font-semibold text-lg sm:text-xl mb-4">
