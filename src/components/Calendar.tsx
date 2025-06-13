@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   faChevronLeft,
   faChevronRight,
@@ -138,8 +138,8 @@ const Calendar = () => {
     console.log("Tanggal dipilih:", dayData.date.toDateString());
 
     // Cek apakah tanggal ini memiliki jadwal
-    const dateString = dayData.date.toISOString().split("T")[0];
-    const schedule = scheduleData.find((s) => s.date === dateString);
+    // const dateString = dayData.date.toISOString().split("T")[0];
+    // const schedule = scheduleData.find((s) => s.date === dateString);
     // if (schedule) {
     //   alert(`Jadwal: ${schedule.title}`);
     // } else {

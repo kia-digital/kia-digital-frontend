@@ -56,14 +56,14 @@ const ExampleANCManagement: React.FC<ExampleANCManagementProps> = ({
       setFormData({
         scheduled: data.scheduled,
         location: data.location,
-        medical_officer: data.medical_officer,
+        medical_officer: data.medical_officer || "",
         weight: data.checkup_result.body_weight.toString(),
         heartRate: data.checkup_result.heart_rate.toString(),
         bloodPressure: data.checkup_result.blood_pressure,
         fundalHeight: data.checkup_result.uterine_fundus_height.toString(),
         bloodSugar: data.checkup_result.blood_sugar.toString(),
-        bodyTemperature: data.checkup_result.body_temperatur.toString(),
-        notes: data.note,
+        bodyTemperature: data.checkup_result.body_temperature.toString(),
+        notes: data.note || "",
       });
     }
   }, [ancData]);
@@ -329,6 +329,7 @@ const ExampleANCManagement: React.FC<ExampleANCManagementProps> = ({
             <p>
               <strong>ID:</strong> {ancData.detail.data.id}
             </p>
+            {/* 
             <p>
               <strong>Dibuat:</strong>{" "}
               {new Date(ancData.detail.data.created_at).toLocaleString("id-ID")}
@@ -337,6 +338,7 @@ const ExampleANCManagement: React.FC<ExampleANCManagementProps> = ({
               <strong>Diupdate:</strong>{" "}
               {new Date(ancData.detail.data.updated_at).toLocaleString("id-ID")}
             </p>
+            */}
           </div>
         </div>
       )}

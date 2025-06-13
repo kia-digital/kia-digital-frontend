@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
 export type UserRole = "ibu" | "petugas_kesehatan";

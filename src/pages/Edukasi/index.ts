@@ -5,4 +5,4 @@ export { default as KategoriTrimester3 } from "./KategoriTrimester3";
 export { default as KategoriImunisasi } from "./KategoriImunisasi";
 export { default as KategoriAsupanGizi } from "./KategoriAsupanGizi";
 export { default as KategoriKesehatanMental } from "./KategoriKesehatanMental";
-export { default as ArtikelDetail } from "./ArtikelDetail";
+export { default as ArtikelDetail } from "./ArtikelDetail_new";

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRole } from "../contexts/RoleContext";
 import PemeriksaanANC from "./Pemeriksaan/subpages/PemeriksaanANC";
-// import PemeriksaanLeopold from "./Pemeriksaan/subpages/PemeriksaanLeopold"; // Sementara disembunyikan
+import PemeriksaanLeopold from "./Pemeriksaan/subpages/PemeriksaanLeopold";
 
 type PemeriksaanMode = "detail" | "anc" | "leopold";
 
@@ -118,8 +118,6 @@ const DetailPemeriksaanIbu: React.FC = () => {
                 )}
                 <span>Pemeriksaan ANC</span>
               </button>
-              {/* Tombol Leopold sementara disembunyikan */}
-              {/* 
               <button
                 onClick={() => handlePemeriksaan("leopold")}
                 className={`w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg transition-all duration-200 flex items-center justify-center sm:justify-start space-x-2 min-h-[44px] ${
@@ -133,7 +131,6 @@ const DetailPemeriksaanIbu: React.FC = () => {
                 )}
                 <span>Pemeriksaan Leopold</span>
               </button>
-              */}
               {effectiveActiveMode !== "detail" && (
                 <button
                   onClick={handleBackToDetail}
@@ -360,8 +357,6 @@ const DetailPemeriksaanIbu: React.FC = () => {
               <PemeriksaanANC />
             </div>
           )}
-        {/* Konten Leopold sementara disembunyikan */}
-        {/* 
         {currentUser.role === "petugas_kesehatan" &&
           effectiveActiveMode !== "detail" &&
           effectiveActiveMode === "leopold" && (
@@ -385,7 +380,6 @@ const DetailPemeriksaanIbu: React.FC = () => {
               <PemeriksaanLeopold />
             </div>
           )}
-        */}
       </div>
     </div>
   );
