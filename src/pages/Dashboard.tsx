@@ -9,6 +9,7 @@ import { useRole } from "../contexts/RoleContext";
 import { useDashboardInfo } from "../hooks/useDashboardInfo";
 import DashboardPetugas from "./DashboardPetugas";
 import LembarPemantauanModal from "../components/LembarPemantauanModal";
+import ArticleRecommendations from "../components/ArticleRecommendations";
 import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
@@ -136,41 +137,6 @@ const Dashboard = () => {
     if (!selectedDate) return false;
     return date.toDateString() === selectedDate.toDateString();
   }; // Recommended articles for the user
-  const recommendedArticles = [
-    {
-      id: 1,
-      category: "Trimester I",
-      title: "Perubahan Tubuh di Trimester Pertama",
-      description:
-        "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
-      preview:
-        "Trimester pertama adalah periode krusial dalam kehamilan dimana terjadi banyak perubahan...",
-    },
-    {
-      id: 11,
-      category: "Trimester II",
-      title: "Perkembangan Janin Trimester 2",
-      description: "Milestone penting perkembangan bayi di usia 13-27 minggu",
-      preview:
-        "Trimester kedua adalah periode emas kehamilan dimana banyak organ berkembang...",
-    },
-    {
-      id: 21,
-      category: "Trimester III",
-      title: "Persiapan Persalinan",
-      description: "Panduan lengkap mempersiapkan diri menjelang persalinan",
-      preview:
-        "Trimester ketiga adalah waktu untuk mempersiapkan persalinan...",
-    },
-    {
-      id: 31,
-      category: "Imunisasi",
-      title: "Jadwal Imunisasi Ibu Hamil",
-      description: "Vaksin yang aman dan diperlukan selama kehamilan",
-      preview:
-        "Imunisasi selama kehamilan penting untuk melindungi ibu dan bayi...",
-    },
-  ];
   const scheduleItems = [
     {
       date: "9 April 2025",
@@ -271,39 +237,10 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                </div>{" "}
-                {/* Articles Recommendations Section */}
-                <div className="space-y-4 sm:space-y-6">
-                  <h2 className="text-lg sm:text-xl text-gray-800 font-bold">
-                    Rekomendasi untuk Anda!
-                  </h2>{" "}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    {recommendedArticles.map((article, index) => (
-                      <div
-                        key={index}
-                        onClick={() => navigate(`/edukasi/${article.id}`)}
-                        className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
-                      >
-                        <div className="p-4 sm:p-6">
-                          <div className="mb-3">
-                            <span className="text-primary-500 text-xs sm:text-sm font-medium">
-                              {article.category}
-                            </span>
-                          </div>
-                          <h3 className="text-gray-900 font-semibold text-base sm:text-lg mb-3 leading-tight">
-                            {article.title}
-                          </h3>
-                          <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2">
-                            {article.description}
-                          </p>
-                          <p className="text-gray-500 text-sm leading-relaxed line-clamp-3">
-                            {article.preview}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
+
+                {/* Articles Recommendations Section */}
+                <ArticleRecommendations className="space-y-4 sm:space-y-6" />
               </div>
 
               {/* Right Column - Schedule */}

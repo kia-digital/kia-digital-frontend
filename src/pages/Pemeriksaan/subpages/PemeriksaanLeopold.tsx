@@ -55,12 +55,12 @@ const PemeriksaanLeopold: React.FC = () => {
   });
 
   // State untuk status completion setiap Leopold
-  const [completedLeopolds, setCompletedLeopolds] = useState({
-    leopold1: false,
-    leopold2: false,
-    leopold3: false,
-    leopold4: false,
-  });
+  // const [completedLeopolds, setCompletedLeopolds] = useState({
+  //   leopold1: false,
+  //   leopold2: false,
+  //   leopold3: false,
+  //   leopold4: false,
+  // });
 
   // Function untuk menentukan Leopold mana yang dapat dilakukan
   const canPerformLeopold = (leopoldNumber: number) => {
@@ -203,15 +203,15 @@ const PemeriksaanLeopold: React.FC = () => {
       ...prev,
       [leopoldKey]: false,
     }));
-    setCompletedLeopolds((prev) => ({
-      ...prev,
-      [leopoldKey]: true,
-    }));
+    // setCompletedLeopolds((prev: any) => ({
+    //   ...prev,
+    //   [leopoldKey]: true,
+    // }));
     console.log(`Leopold ${leopoldNumber} saved:`, formData[leopoldKey]);
   };
   // Function untuk cancel edit Leopold individual
   const handleCancelLeopold = (leopoldNumber: number) => {
-    const leopoldKey = `leopold${leopoldNumber}` as keyof typeof formData;
+    // const leopoldKey = `leopold${leopoldNumber}` as keyof typeof formData;
     // Reset form data ke kosong untuk cancel
     if (leopoldNumber === 1) {
       setFormData((prev) => ({

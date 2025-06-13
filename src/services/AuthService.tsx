@@ -70,7 +70,10 @@ class AuthService {
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
       toast.loading("Mendaftarkan akun...", { id: "register" });
-      const response = await axiosInstance.post("/auth/register", credentials);
+      const response = await axiosInstance.post("/auth/register", {
+        ...credentials,
+        marital_status: 1,
+      });
       const data: RegisterResponse = response.data;
 
       if (data.status === "success") {

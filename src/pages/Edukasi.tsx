@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
+import ArticleRecommendations from "../components/ArticleRecommendations";
 import axiosInstance from "../services/axiosInstance";
 import { normalizeArticleList } from "../utils/articleHelpers";
 import type { Article as ArticleType } from "../utils/articleHelpers";
@@ -200,6 +201,8 @@ const EdukasiPage: React.FC = () => {
               </div>
             </div>
           </div>{" "}
+          {/* Article Recommendations Section */}
+          <ArticleRecommendations className="mb-8" />
           {/* Search Section */}
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -314,6 +317,13 @@ const EdukasiPage: React.FC = () => {
                 )}
               </>
             )}
+          </div>
+          {/* Recommendations Section - Always show the recommendations */}
+          <div className="mt-8">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
+              Artikel Rekomendasi
+            </h2>
+            <ArticleRecommendations />
           </div>
         </div>
       </div>

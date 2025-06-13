@@ -57,12 +57,12 @@ const Auth: React.FC = () => {
 
         console.log("Response: ", response);
 
-        if (response.status === "success") {
+        if (response.detail.status === "success") {
           setMessage("Login successful!");
           // Redirect to dashboard
           navigate("/dashboard", { replace: true });
         } else {
-          setMessage(response.message);
+          setMessage(response.detail.message);
         }
       } else {
         const response = await AuthService.register({

@@ -5,7 +5,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import { useAddANCExamination } from "../hooks/useAddANCExamination";
 import { useUpdateANCExamination } from "../hooks/useANCOperations";
 import { useUserANCRecords, type ANCRecord } from "../hooks/useANCRecords";
-import { useUpdateHPHT } from "../hooks/useUpdateHPHT";
+// import { useUpdateHPHT } from "../hooks/useUpdateHPHT";
 import { calculatePregnancyAge, useUsers } from "../hooks/useUsers";
 
 interface ANCFormData {
@@ -27,15 +27,49 @@ interface ANCFormData {
 const DashboardPetugas: React.FC = () => {
   const navigate = useNavigate();
   const { data: users, isLoading, error } = useUsers();
-  const updateHPHTMutation = useUpdateHPHT();
+  // const updateHPHTMutation = useUpdateHPHT();
   const addANCMutation = useAddANCExamination();
   const updateANCMutation = useUpdateANCExamination();
   const [selectedMother, setSelectedMother] = useState<string | null>(null);
-  const [hphtDate, setHphtDate] = useState<string>("");
+  // const [hphtDate, setHphtDate] = useState<string>("");
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [editingANCId, setEditingANCId] = useState<string | null>(null);
-  const { data: userANCRecords, isLoading: isLoadingANCRecords } =
-    useUserANCRecords(selectedMother);
+  const {
+    data: userANCRecords,
+    isLoading: isLoadingANCRecords,
+    error: ancError,
+    refetch: refetchANCRecords,
+  } = useUserANCRecords(selectedMother);
+
+  // Debug log for ANC records
+  console.log("Debug ANC Records:", {
+    selectedMother,
+    userANCRecords,
+    isLoadingANCRecords,
+    ancError,
+    recordsLength: userANCRecords?.length,
+    isArray: Array.isArray(userANCRecords),
+    hasData:
+      userANCRecords &&
+      Array.isArray(userANCRecords) &&
+      userANCRecords.length > 0,
+  });
+
+  // Additional debugging for render conditions
+  console.log("Render conditions:", {
+    showLoading: isLoadingANCRecords,
+    showError: !!ancError,
+    showData:
+      userANCRecords &&
+      Array.isArray(userANCRecords) &&
+      userANCRecords.length > 0,
+    showEmpty:
+      !isLoadingANCRecords &&
+      !ancError &&
+      (!userANCRecords ||
+        !Array.isArray(userANCRecords) ||
+        userANCRecords.length === 0),
+  });
   // Form state for ANC data
   const [formData, setFormData] = useState<ANCFormData>({
     checkupNumber: 1,
@@ -61,11 +95,11 @@ const DashboardPetugas: React.FC = () => {
   useEffect(() => {
     if (selectedMotherData && selectedMotherData.hpht) {
       // Format date to YYYY-MM-DD for input[type="date"]
-      const date = new Date(selectedMotherData.hpht);
-      const formattedDate = date.toISOString().split("T")[0];
-      setHphtDate(formattedDate);
+      // const date = new Date(selectedMotherData.hpht);
+      // const formattedDate = date.toISOString().split("T")[0];
+      // setHphtDate(formattedDate);
     } else {
-      setHphtDate("");
+      // setHphtDate("");
     }
   }, [selectedMotherData]);
 
@@ -213,9 +247,9 @@ const DashboardPetugas: React.FC = () => {
     }));
   };
 
-  const handleHphtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHphtDate(e.target.value);
-  };
+  // const handleHphtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setHphtDate(e.target.value);
+  // };
 
   const resetForm = () => {
     setFormData({
@@ -292,6 +326,8 @@ const DashboardPetugas: React.FC = () => {
             resetForm();
             setIsEditMode(false);
             setEditingANCId(null);
+            // Manually refetch ANC records to ensure immediate update
+            refetchANCRecords();
           },
           onError: (error) => {
             console.error("ANC update error:", error);
@@ -314,6 +350,8 @@ const DashboardPetugas: React.FC = () => {
             );
             // Reset form after successful submission
             resetForm();
+            // Manually refetch ANC records to ensure immediate update
+            refetchANCRecords();
           },
           onError: (error) => {
             console.error("ANC submission error:", error);
@@ -328,35 +366,59 @@ const DashboardPetugas: React.FC = () => {
     }
   };
 
-  const handleHphtSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedMother) {
-      toast.error("Silakan pilih ibu terlebih dahulu!");
-      return;
-    }
-    if (!hphtDate) {
-      toast.error("Silakan pilih tanggal HPHT!");
-      return;
-    }
+  // const handleHphtSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!selectedMother) {
+  //     toast.error("Silakan pilih ibu terlebih dahulu!");
+  //     return;
+  //   }
+  //   if (!hphtDate) {
+  //     toast.error("Silakan pilih tanggal HPHT!");
+  //     return;
+  //   }
 
-    updateHPHTMutation.mutate(
-      { id: selectedMother, hpht: hphtDate },
-      {
-        onSuccess: () => {
-          toast.success(
-            `Data HPHT untuk ${selectedMotherData?.name} berhasil diperbarui!`
-          );
-        },
-        onError: (error) => {
-          toast.error(
-            `Gagal memperbarui HPHT: ${
-              error instanceof Error ? error.message : "Terjadi kesalahan"
-            }`
-          );
-        },
-      }
-    );
-  };
+  //   updateHPHTMutation.mutate(
+  //     { id: selectedMother, hpht: hphtDate },
+  //     {
+  //       onSuccess: () => {
+  //         toast.success(
+  //           `Data HPHT untuk ${selectedMotherData?.name} berhasil diperbarui!`
+  //         );
+  //       },
+  //       onError: (error) => {
+  //         toast.error(
+  //           `Gagal memperbarui HPHT: ${
+  //             error instanceof Error ? error.message : "Terjadi kesalahan"
+  //           }`
+  //         );
+  //       },
+  //     }
+  //   );
+  // };
+
+  // Effect to refetch ANC records when mutations complete successfully
+  useEffect(() => {
+    if (addANCMutation.isSuccess || updateANCMutation.isSuccess) {
+      console.log("Mutation completed successfully, refetching ANC records...");
+      refetchANCRecords();
+    }
+  }, [
+    addANCMutation.isSuccess,
+    updateANCMutation.isSuccess,
+    refetchANCRecords,
+  ]);
+
+  // Effect to refetch ANC records when selected mother changes
+  useEffect(() => {
+    if (selectedMother) {
+      console.log(
+        "Selected mother changed to:",
+        selectedMother,
+        "- refetching ANC records"
+      );
+      refetchANCRecords();
+    }
+  }, [selectedMother, refetchANCRecords]);
 
   // Loading state
   if (isLoading) {
@@ -499,23 +561,54 @@ const DashboardPetugas: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-800">
                   Riwayat Pemeriksaan ANC
                 </h3>
-                <button
-                  onClick={() => {
-                    setIsEditMode(false);
-                    setEditingANCId(null);
-                    resetForm();
-                  }}
-                  className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                >
-                  + Tambah Pemeriksaan Baru
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => refetchANCRecords()}
+                    disabled={isLoadingANCRecords}
+                    className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoadingANCRecords ? "🔄 Loading..." : "🔄 Refresh"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsEditMode(false);
+                      setEditingANCId(null);
+                      resetForm();
+                    }}
+                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                  >
+                    + Tambah Pemeriksaan Baru
+                  </button>
+                </div>
               </div>
 
               {isLoadingANCRecords ? (
                 <div className="text-center py-4">
                   <LoadingSpinner size="sm" message="Memuat riwayat ANC..." />
                 </div>
-              ) : userANCRecords && userANCRecords.length > 0 ? (
+              ) : ancError ? (
+                <div className="text-center py-8 text-red-500">
+                  <svg
+                    className="w-12 h-12 mx-auto mb-3 text-red-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p>Terjadi kesalahan saat memuat data ANC</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {ancError.message || "Error tidak diketahui"}
+                  </p>
+                </div>
+              ) : userANCRecords &&
+                Array.isArray(userANCRecords) &&
+                userANCRecords.length > 0 ? (
                 <div className="space-y-3">
                   {userANCRecords.map((record: ANCRecord, index: number) => (
                     <div

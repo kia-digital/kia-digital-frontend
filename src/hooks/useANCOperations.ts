@@ -15,12 +15,21 @@ export const useUpdateANCExamination = () => {
   return useMutation({
     mutationFn: ({ idAnc, ancData }: UpdateANCParams) =>
       InquiryService.updateANCExamination(idAnc, ancData),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       console.log("ANC examination updated successfully:", data);
       // Invalidate and refetch any related queries
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      // Invalidate all user-anc-records queries
       queryClient.invalidateQueries({ queryKey: ["user-anc-records"] });
       queryClient.invalidateQueries({ queryKey: ["anc-records"] });
+      queryClient.invalidateQueries({ queryKey: ["ancRecords"] });
+      // Invalidate specific ANC record
+      queryClient.invalidateQueries({
+        queryKey: ["anc-record", variables.idAnc],
+      });
+
+      // Force refetch all user-anc-records
+      queryClient.refetchQueries({ queryKey: ["user-anc-records"] });
     },
     onError: (error) => {
       console.error("Failed to update ANC examination:", error);

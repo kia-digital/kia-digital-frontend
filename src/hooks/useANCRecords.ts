@@ -67,30 +67,45 @@ export const useUserANCRecords = (userId: string | null) => {
   return useQuery({
     queryKey: ["user-anc-records", userId],
     queryFn: async (): Promise<ANCRecord[]> => {
-      if (!userId) return [];
+      if (!userId) {
+        console.log("No userId provided, returning empty array");
+        return [];
+      }
 
       try {
+        console.log("Fetching ANC records for user:", userId);
         // Get ANC records for specific user
         const response = await axiosInstance.get<ANCRecordsResponse>(
           `/inquiry/anc/?id=${userId}`
         );
 
+        console.log("ANC Records API Response:", response.data);
+
         if (response.data.detail.status === "success") {
-          return response.data.detail.data || [];
+          const records = response.data.detail.data || [];
+          console.log("Parsed ANC Records:", records);
+          console.log("Records count:", records.length);
+          return records;
         }
 
+        console.warn(
+          "ANC API returned non-success status:",
+          response.data.detail
+        );
         throw new Error(
           response.data.detail.message || "Failed to fetch user ANC records"
         );
       } catch (error) {
         console.error("User ANC records fetch error:", error);
-        // Return empty array if no records found or any error occurs
-        // This is expected for users without ANC records
-        return [];
+        // Don't return empty array on error, let React Query handle the error state
+        throw error;
       }
     },
     enabled: !!userId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Always consider data stale to ensure fresh data
+    gcTime: 1 * 60 * 1000, // 1 minute garbage collection time - shorter to ensure fresh data
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Always refetch on mount
     retry: false, // Don't retry to avoid unnecessary API calls
   });
 };
