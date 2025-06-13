@@ -7,11 +7,36 @@ interface RoleSwitcherProps {
 }
 
 const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ className = "" }) => {
-  const { currentUser, switchRole } = useRole();
+  const { currentUser, switchRole, isApiRole } = useRole();
+
   const handleRoleChange = (role: UserRole) => {
-    switchRole(role);
-    // No need to reload - role will persist automatically
+    // Only allow role switching if not using API role
+    if (!isApiRole) {
+      switchRole(role);
+    }
   };
+
+  // Don't show role switcher if user is logged in with API role
+  if (isApiRole) {
+    return (
+      <div
+        className={`bg-blue-50 rounded-lg border border-blue-200 p-3 ${className}`}
+      >
+        <div className="text-xs font-medium text-blue-700 mb-2">
+          🔐 API Role Active
+        </div>
+        <div className="text-xs text-blue-600 mb-2">
+          <span className="font-medium">{currentUser.name}</span>
+        </div>
+        <div className="text-xs text-blue-500">
+          Role: {currentUser.role === "ibu" ? "👩 Ibu" : "👩‍⚕️ Petugas Kesehatan"}
+        </div>
+        <div className="mt-2 pt-2 border-t border-blue-200">
+          <div className="text-xs text-blue-400">From Server</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

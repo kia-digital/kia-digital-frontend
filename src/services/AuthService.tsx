@@ -7,11 +7,17 @@ interface LoginCredentials {
   password: string;
 }
 
+interface RoleInfo {
+  id: number;
+  "role-name": string;
+}
+
 interface LoginResponse {
   detail: {
     status: string;
     message: string;
     token?: string;
+    role?: RoleInfo;
   };
 }
 
@@ -35,6 +41,13 @@ class AuthService {
       const data: LoginResponse = response.data;
       if (data.detail.status === "success" && data.detail.token) {
         setToken(data.detail.token);
+
+        // Store role information if available
+        if (data.detail.role) {
+          localStorage.setItem("userRole", data.detail.role["role-name"]);
+          localStorage.setItem("roleId", data.detail.role.id.toString());
+        }
+
         toast.success("Login berhasil!", { id: "login" });
       } else {
         toast.error(data.detail.message || "Login gagal", { id: "login" });
@@ -93,6 +106,9 @@ class AuthService {
       removeToken();
       // Clear any other user-related data
       localStorage.removeItem("user");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("roleId");
+      localStorage.removeItem("currentRole"); // Clear development role as well
       localStorage.removeItem("userRole");
       localStorage.removeItem("userInformation");
 

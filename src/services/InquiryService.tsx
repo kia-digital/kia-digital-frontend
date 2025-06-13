@@ -76,7 +76,7 @@ class InquiryService {
   ): Promise<UpdateResponse> {
     try {
       console.log("Sending update request with data:", userData);
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         "/inquiry/information/update-users",
         userData
       );

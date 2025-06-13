@@ -11,13 +11,7 @@ import Edukasi from "./pages/Edukasi";
 import Calendar from "./pages/Calendar";
 import AuthRedirect from "./components/AuthRedirect";
 import Layout from "./components/Layout";
-import KategoriTrimester1 from "./pages/Edukasi/KategoriTrimester1";
-import KategoriTrimester2 from "./pages/Edukasi/KategoriTrimester2";
-import KategoriTrimester3 from "./pages/Edukasi/KategoriTrimester3";
-import KategoriImunisasi from "./pages/Edukasi/KategoriImunisasi";
-import KategoriAsupanGizi from "./pages/Edukasi/KategoriAsupanGizi";
-import KategoriKesehatanMental from "./pages/Edukasi/KategoriKesehatanMental";
-import ArtikelDetail from "./pages/Edukasi/ArtikelDetail";
+import ArtikelDetail from "./pages/Edukasi/ArtikelDetail_new";
 import DetailPemeriksaanIbu from "./pages/DetailPemeriksaanIbu";
 
 function App() {
@@ -97,57 +91,9 @@ function App() {
             // </ProtectedRoute>
           }
         />
-        <Route
-          path="/edukasi/trimester-1"
-          element={
-            <Layout>
-              <KategoriTrimester1 />
-            </Layout>
-          }
-        />
-        <Route
-          path="/edukasi/trimester-2"
-          element={
-            <Layout>
-              <KategoriTrimester2 />
-            </Layout>
-          }
-        />
-        <Route
-          path="/edukasi/trimester-3"
-          element={
-            <Layout>
-              <KategoriTrimester3 />
-            </Layout>
-          }
-        />
-        <Route
-          path="/edukasi/imunisasi"
-          element={
-            <Layout>
-              <KategoriImunisasi />
-            </Layout>
-          }
-        />
-        <Route
-          path="/edukasi/asupan-gizi"
-          element={
-            <Layout>
-              <KategoriAsupanGizi />
-            </Layout>
-          }
-        />{" "}
-        <Route
-          path="/edukasi/kesehatan-mental"
-          element={
-            <Layout>
-              <KategoriKesehatanMental />
-            </Layout>
-          }
-        />
         {/* Route untuk detail artikel */}
         <Route
-          path="/edukasi/:category/:id"
+          path="/edukasi/:id"
           element={
             <Layout>
               <ArtikelDetail />

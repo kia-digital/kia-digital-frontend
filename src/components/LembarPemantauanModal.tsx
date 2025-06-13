@@ -5,6 +5,9 @@ import {
   faChevronDown,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import type { MonitoringData } from "../services/MonitoringService";
+import { useRole } from "../contexts/RoleContext";
+import { useAddWeeklyMonitoring } from "../hooks/useMonitoring";
 
 interface LembarPemantauanModalProps {
   isOpen: boolean;
@@ -31,9 +34,13 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { currentUser } = useRole();
+  const isMotherRole = currentUser.role === "ibu";
+  const addMonitoringMutation = useAddWeeklyMonitoring();
   const [selectedWeek, setSelectedWeek] = useState<string>("23");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const serviceOptions: ServiceOption[] = [
     {
@@ -53,63 +60,63 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
   ];
   const symptomOptions: SymptomOption[] = [
     {
-      id: "demam",
+      id: "fever",
       name: "Demam lebih dari 2 hari",
       icon: "🌡️",
       bgColor: "bg-red-100",
       iconColor: "text-red-600",
     },
     {
-      id: "pusing",
+      id: "headache",
       name: "Pusing/Sakit Kepala Berat",
       icon: "😵",
       bgColor: "bg-orange-100",
       iconColor: "text-orange-600",
     },
     {
-      id: "tidur",
+      id: "insomnia_or_anxiety",
       name: "Sulit Tidur/Cemas Berlebih",
       icon: "😴",
       bgColor: "bg-blue-100",
       iconColor: "text-blue-600",
     },
     {
-      id: "risiko",
+      id: "tb_risk",
       name: "Risiko Batuk > 2 Minggu atau Kontak Serumah dengan Penderita TB",
       icon: "🤧",
       bgColor: "bg-purple-100",
       iconColor: "text-purple-600",
     },
     {
-      id: "gerakan",
+      id: "fetal_movement",
       name: "Gerakan Bayi Tidak Ada atau < 10x dalam 12 Jam Setelah Minggu 24",
       icon: "👶",
       bgColor: "bg-green-100",
       iconColor: "text-green-600",
     },
     {
-      id: "nyeri",
+      id: "abdominal_pain",
       name: "Nyeri Perut Hebat",
       icon: "🤰",
       bgColor: "bg-red-100",
       iconColor: "text-red-600",
     },
     {
-      id: "keluar",
+      id: "discharge",
       name: "Keluar Cairan dari Jalan Lahir Sangat Banyak atau Berbau",
       icon: "💧",
       bgColor: "bg-cyan-100",
       iconColor: "text-cyan-600",
     },
     {
-      id: "sakit",
+      id: "urination_issues",
       name: "Sakit Saat Kencing atau Keluar Keputihan atau Gatal di Area Kemaluan",
       icon: "🚿",
       bgColor: "bg-yellow-100",
       iconColor: "text-yellow-600",
     },
     {
-      id: "diare",
+      id: "diarrhea",
       name: "Diare Berulang",
       icon: "🚽",
       bgColor: "bg-amber-100",
@@ -135,21 +142,73 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
         : [...prev, symptomId]
     );
   };
-  const handleSave = (): void => {
-    // Here you would typically save the data to your backend
-    const data = {
-      week: selectedWeek,
-      services: selectedServices,
-      symptoms: selectedSymptoms,
-      timestamp: new Date().toISOString(),
-    };
+  const handleSave = async (): Promise<void> => {
+    if (isLoading) return;
 
-    console.log("Saving monitoring data:", data);
+    setIsLoading(true);
+    try {
+      // Prepare data for API
+      const monitoringData: MonitoringData = {
+        weekly_pregnantcy: parseInt(selectedWeek),
+        fever: selectedSymptoms.includes("fever"),
+        headache: selectedSymptoms.includes("headache"),
+        insomnia_or_anxiety: selectedSymptoms.includes("insomnia_or_anxiety"),
+        tb_risk: selectedSymptoms.includes("tb_risk"),
+        fetal_movement: selectedSymptoms.includes("fetal_movement"),
+        abdominal_pain: selectedSymptoms.includes("abdominal_pain"),
+        discharge: selectedSymptoms.includes("discharge"),
+        urination_issues: selectedSymptoms.includes("urination_issues"),
+        diarrhea: selectedSymptoms.includes("diarrhea"),
+        type_inquiry: 1, // Fixed value as per API requirement
+      };
 
-    // Show success message or handle the response
-    onClose();
+      console.log("Sending monitoring data:", monitoringData); // Send data to API using mutation hook
+      await addMonitoringMutation.mutateAsync(monitoringData);
+
+      // Close modal after successful submission
+      onClose(); // Reset form data
+      setSelectedWeek("23");
+      setSelectedServices([]);
+      setSelectedSymptoms([]);
+    } catch (error) {
+      console.error("Failed to save monitoring data:", error);
+      // Error handling is done in the service with toast notifications
+    } finally {
+      setIsLoading(false);
+    }
   };
   if (!isOpen) return null;
+
+  // If not mother role, show access denied message
+  if (!isMotherRole && isOpen) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-sm"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      >
+        <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">🚫</span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              Akses Terbatas
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Lembar pemantauan hanya dapat diakses oleh ibu hamil untuk
+              mencatat kondisi kesehatan mingguan.
+            </p>
+            <button
+              onClick={onClose}
+              className="w-full px-6 py-3 bg-primary-500 text-white rounded-xl font-medium hover:bg-primary-600 transition-colors"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -192,19 +251,20 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
                 <div>
                   <h3 className="font-semibold text-orange-800 mb-2">
                     Penting untuk Diperhatikan
-                  </h3>
+                  </h3>{" "}
                   <p className="text-orange-700 text-sm leading-relaxed">
-                    Pilih pilihan di bawah ini setiap periksa ke dokter dan cek
-                    kondisi mingguan Ibu. Jika mengalami kondisi di bawah ini,
-                    segera periksa ke Puskesmas/Rumah Sakit.
+                    Pilih minggu kehamilan dan kondisi yang dialami saat ini.
+                    Data akan disimpan dengan tanggal hari ini secara otomatis.
+                    Jika mengalami kondisi di bawah ini, segera periksa ke
+                    Puskesmas/Rumah Sakit.
                   </p>
-                </div>
+                </div>{" "}
               </div>
-            </div>{" "}
-            {/* Minggu Kehamilan */}
+            </div>
+            {/* Minggu Kehamilan */}{" "}
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">📅</span>
+                <span className="text-2xl">🗓️</span>
                 <label className="block text-gray-800 font-semibold text-lg">
                   Minggu Kehamilan
                 </label>
@@ -333,17 +393,26 @@ const LembarPemantauanModal: React.FC<LembarPemantauanModalProps> = ({
         {/* Footer */}
         <div className="px-4 sm:px-8 py-4 sm:py-6 border-t border-gray-100 bg-gray-50 flex-shrink-0">
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 sm:justify-end">
+            {" "}
             <button
               onClick={onClose}
-              className="w-full sm:w-auto px-6 py-3 min-h-[44px] text-gray-600 bg-white border border-gray-300 rounded-xl font-medium hover:bg-gray-50 transition-colors text-center order-2 sm:order-1"
+              disabled={isLoading}
+              className={`w-full sm:w-auto px-6 py-3 min-h-[44px] text-gray-600 bg-white border border-gray-300 rounded-xl font-medium transition-colors text-center order-2 sm:order-1 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+              }`}
             >
               Batalkan
             </button>
             <button
               onClick={handleSave}
-              className="w-full sm:w-auto px-6 py-3 min-h-[44px] text-white bg-primary-500 rounded-xl font-medium hover:bg-primary-600 transition-colors shadow-sm text-center order-1 sm:order-2"
+              disabled={isLoading}
+              className={`w-full sm:w-auto px-6 py-3 min-h-[44px] text-white bg-primary-500 rounded-xl font-medium transition-colors shadow-sm text-center order-1 sm:order-2 ${
+                isLoading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-primary-600"
+              }`}
             >
-              Simpan Perubahan
+              {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
           </div>
         </div>
