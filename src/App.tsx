@@ -13,6 +13,7 @@ import AuthRedirect from "./components/AuthRedirect";
 import Layout from "./components/Layout";
 import ArtikelDetail from "./pages/Edukasi/ArtikelDetail_new";
 import DetailPemeriksaanIbu from "./pages/DetailPemeriksaanIbu";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -30,21 +31,21 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            // <ProtectedRoute>
-            <Layout>
-              <Dashboard />
-            </Layout>
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </ProtectedRoute>
           }
         />{" "}
         <Route
           path="/pemeriksaan"
           element={
-            // <ProtectedRoute>
-            <Layout>
-              <Pemeriksaan />
-            </Layout>
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Layout>
+                <Pemeriksaan />
+              </Layout>
+            </ProtectedRoute>
           }
         />{" "}
         <Route
@@ -74,21 +75,21 @@ function App() {
         <Route
           path="/calendar"
           element={
-            // <ProtectedRoute>
-            <Layout>
-              <Calendar />
-            </Layout>
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Layout>
+                <Calendar />
+              </Layout>
+            </ProtectedRoute>
           }
         />{" "}
         <Route
           path="/edukasi"
           element={
-            // <ProtectedRoute>
-            <Layout>
-              <Edukasi />
-            </Layout>
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <Layout>
+                <Edukasi />
+              </Layout>
+            </ProtectedRoute>
           }
         />
         {/* Route untuk detail artikel */}
