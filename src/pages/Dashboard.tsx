@@ -13,8 +13,15 @@ import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
   const { currentUser } = useRole();
-  const { userInfo, loading, error, refetch, totalDays, conditionDisplay } =
-    useDashboardInfo();
+  const {
+    userInfo,
+    loading,
+    error,
+    refetch,
+    totalDays,
+    pregnancyAge,
+    conditionDisplay,
+  } = useDashboardInfo();
 
   // Jika user adalah petugas kesehatan, tampilkan dashboard petugas
   if (currentUser.role === "petugas_kesehatan") {
@@ -334,18 +341,15 @@ const Dashboard = () => {
                         >
                           {conditionDisplay.text}
                         </span>
-                      </div>
-
+                      </div>{" "}
                       <div className="text-center">
                         <p className="text-base sm:text-lg text-gray-600 mb-2">
-                          {userInfo.usia_kehamilan ||
-                            "Usia kehamilan tidak tersedia"}
+                          {pregnancyAge}
                         </p>
                         <h4 className="text-2xl sm:text-3xl font-bold text-pink-400 mb-4">
                           Hari ke-{totalDays}
                         </h4>
                       </div>
-
                       {!userInfo.kondisi && (
                         <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
                           <p className="text-sm text-yellow-700 mb-2">

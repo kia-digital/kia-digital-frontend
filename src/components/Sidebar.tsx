@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { DashboardContext } from "../contexts/DashboardContext";
 import { useRole } from "../contexts/RoleContext";
-import RoleSwitcher from "./RoleSwitcher";
 import { useLogout } from "../hooks/useLogout";
 
 // Assets
@@ -128,8 +127,7 @@ function Sidebar({ onClose }: SidebarProps) {
             />
           </svg>
         </button>
-      )}
-
+      )}{" "}
       {/* Logo Section */}
       <div className="p-6 pb-8">
         <div className="flex items-center space-x-3">
@@ -144,20 +142,6 @@ function Sidebar({ onClose }: SidebarProps) {
           </h1>
         </div>
       </div>
-
-      {/* Role Indicator */}
-      <div className="px-6 pb-4">
-        <div className="text-xs text-gray-500 mb-1">Login sebagai:</div>
-        <div
-          className={`text-sm font-medium ${
-            currentUser.role === "ibu" ? "text-pink-600" : "text-blue-600"
-          }`}
-        >
-          {currentUser.role === "ibu" ? "👩 " : "👩‍⚕️ "}
-          {currentUser.name}
-        </div>
-      </div>
-
       {/* Navigation */}
       <nav className="pl-2 space-y-2">
         {menuItems.map((item) => {
@@ -193,12 +177,9 @@ function Sidebar({ onClose }: SidebarProps) {
             </div>
           );
         })}
-      </nav>
-
-      {/* Bottom section with RoleSwitcher and Logout */}
-      <div className="mt-auto p-4 space-y-3">
-        <RoleSwitcher />
-
+      </nav>{" "}
+      {/* Bottom section with Logout */}
+      <div className="mt-auto p-4">
         {/* Logout Button */}
         <button
           onClick={handleLogout}

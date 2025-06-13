@@ -2,9 +2,12 @@ import axiosInstance from "./axiosInstance";
 
 export interface UserInformationData {
   name: string;
-  hpl: string | null;
+  age?: number;
+  hpl?: string | null;
   hpht: string;
-  usia_kehamilan: string;
+  telepon?: string;
+  address?: string;
+  usia_kehamilan?: string;
   kondisi?: "low risk" | "mid risk" | "high risk" | null;
 }
 
@@ -19,19 +22,23 @@ export interface UserInformationResponse {
 class UserInformationService {
   /**
    * Get user information including pregnancy status and health condition
-   */
-  async getUserInformation(userId: string): Promise<UserInformationData> {
+   */ async getUserInformation(userId: string): Promise<UserInformationData> {
     try {
       console.log(`Fetching user information for ID: ${userId}`);
 
-      const response = await axiosInstance.get(`/inquiry/information/hpht`, {
+      const response = await axiosInstance.get(`/inquiry/information/user`, {
         params: { id: userId },
       });
 
       const data: UserInformationResponse = response.data;
-
       if (data.detail.status === "success") {
         console.log("User information fetched successfully:", data.detail.data);
+        console.log(
+          "Kondisi value:",
+          data.detail.data.kondisi,
+          "Type:",
+          typeof data.detail.data.kondisi
+        );
         return data.detail.data;
       } else {
         throw new Error(
@@ -43,7 +50,6 @@ class UserInformationService {
       throw error;
     }
   }
-
   /**
    * Calculate total days of pregnancy from HPHT
    */
@@ -56,14 +62,39 @@ class UserInformationService {
   }
 
   /**
-   * Get condition status display text and styling
+   * Calculate pregnancy age in weeks and days format from HPHT
    */
-  getConditionDisplay(kondisi: string | null): {
+  calculatePregnancyAge(hpht: string): string {
+    const totalDays = this.calculateTotalDays(hpht);
+    if (totalDays <= 0) return "Belum tersedia";
+
+    const weeks = Math.floor(totalDays / 7);
+    const days = totalDays % 7;
+
+    if (weeks === 0) {
+      return `${days} hari`;
+    } else if (days === 0) {
+      return `${weeks} minggu`;
+    } else {
+      return `${weeks} minggu, ${days} hari`;
+    }
+  }
+
+  /**
+   * Get condition status display text and styling
+   */ getConditionDisplay(kondisi: string | null): {
     text: string;
     bgColor: string;
     textColor: string;
     borderColor: string;
   } {
+    console.log(
+      "getConditionDisplay called with:",
+      kondisi,
+      "Type:",
+      typeof kondisi
+    );
+
     switch (kondisi) {
       case "low risk":
         return {

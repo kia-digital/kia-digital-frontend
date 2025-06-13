@@ -8,6 +8,7 @@ interface UseDashboardInfoReturn {
   error: string | null;
   refetch: () => Promise<void>;
   totalDays: number;
+  pregnancyAge: string;
   conditionDisplay: {
     text: string;
     bgColor: string;
@@ -44,16 +45,26 @@ export const useDashboardInfo = (): UseDashboardInfoReturn => {
   useEffect(() => {
     fetchUserInformation();
   }, []);
-
   // Calculate total days of pregnancy
   const totalDays = userInfo?.hpht
     ? UserInformationService.calculateTotalDays(userInfo.hpht)
     : 0;
 
+  // Calculate pregnancy age in weeks and days
+  const pregnancyAge = userInfo?.hpht
+    ? UserInformationService.calculatePregnancyAge(userInfo.hpht)
+    : "Belum tersedia";
   // Get condition display information
   const conditionDisplay = UserInformationService.getConditionDisplay(
     userInfo?.kondisi || null
   );
+
+  // Debug logging
+  console.log("useDashboardInfo Debug:", {
+    userInfo,
+    kondisi: userInfo?.kondisi,
+    conditionDisplay,
+  });
 
   return {
     userInfo,
@@ -61,6 +72,7 @@ export const useDashboardInfo = (): UseDashboardInfoReturn => {
     error,
     refetch: fetchUserInformation,
     totalDays,
+    pregnancyAge,
     conditionDisplay,
   };
 };
