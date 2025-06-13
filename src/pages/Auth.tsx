@@ -123,7 +123,7 @@ const Auth: React.FC = () => {
               />
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-primary-600 mb-2">
-              Aplikasi KIA Digital (This is a netlify test guys)
+              Aplikasi KIA Digital (before upload test)
             </h1>
             <p className="text-grey-600 text-sm sm:text-base">
               Welcome! Please sign in or create an account.
