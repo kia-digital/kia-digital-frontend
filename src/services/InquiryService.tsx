@@ -16,6 +16,7 @@ interface PersonalInfo {
   marital_status: string;
   age: number | null;
   blood_group: string | null;
+  hpht: string | null;
   emergency_contact: EmergencyContact;
 }
 
@@ -50,6 +51,7 @@ interface UpdateUserRequest {
   marital_status_id: number;
   age: number;
   blood_group: string;
+  hpht?: string;
 }
 
 interface UpdateResponse {
@@ -60,7 +62,42 @@ interface UpdateResponse {
 }
 
 interface UpdateHPHTRequest {
+  id: string;
   hpht: string;
+}
+
+interface Relationship {
+  id: number;
+  name: string;
+}
+
+interface RelationshipsResponse {
+  detail: {
+    status: string;
+    message: string;
+    data: Relationship[];
+  };
+}
+
+interface UpdateEmergencyContactRequest {
+  name: string;
+  telp: string;
+  address: string;
+  relationship_id: number;
+}
+
+interface User {
+  id: string;
+  name: string;
+  hpht: string | null;
+}
+
+interface UsersResponse {
+  detail: {
+    status: string;
+    message: string;
+    data: User[];
+  };
 }
 
 class InquiryService {
@@ -80,7 +117,7 @@ class InquiryService {
   ): Promise<UpdateResponse> {
     try {
       console.log("Sending update request with data:", userData);
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         "/inquiry/information/update-users",
         userData
       );
@@ -96,7 +133,7 @@ class InquiryService {
   async updateHPHT(hphtData: UpdateHPHTRequest): Promise<UpdateResponse> {
     try {
       console.log("Sending HPHT update request with data:", hphtData);
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         "/inquiry/information/update-hpht",
         hphtData
       );
@@ -105,6 +142,49 @@ class InquiryService {
       return data;
     } catch (error) {
       console.error("Update HPHT error:", error);
+      throw error;
+    }
+  }
+
+  async getRelationships(): Promise<RelationshipsResponse> {
+    try {
+      const response = await axiosInstance.get("/relationships");
+      const data: RelationshipsResponse = response.data;
+      return data;
+    } catch (error) {
+      console.error("Get relationships error:", error);
+      throw error;
+    }
+  }
+
+  async updateEmergencyContact(
+    contactData: UpdateEmergencyContactRequest
+  ): Promise<UpdateResponse> {
+    try {
+      console.log(
+        "Sending emergency contact update request with data:",
+        contactData
+      );
+      const response = await axiosInstance.patch(
+        "/emergency-contact/update",
+        contactData
+      );
+      const data: UpdateResponse = response.data;
+      console.log("Emergency contact update response:", data);
+      return data;
+    } catch (error) {
+      console.error("Update emergency contact error:", error);
+      throw error;
+    }
+  }
+
+  async getAllUsers(): Promise<UsersResponse> {
+    try {
+      const response = await axiosInstance.get("/users");
+      const data: UsersResponse = response.data;
+      return data;
+    } catch (error) {
+      console.error("Get all users error:", error);
       throw error;
     }
   }
@@ -119,4 +199,9 @@ export type {
   UpdateUserRequest,
   UpdateResponse,
   UpdateHPHTRequest,
+  Relationship,
+  RelationshipsResponse,
+  UpdateEmergencyContactRequest,
+  User,
+  UsersResponse,
 };

@@ -1,6 +1,8 @@
 // src/components/forms/KontakDaruratForm.tsx
 import React from "react";
 import { InputField, SelectField } from "./FormFields"; // Adjust path
+import { useRelationships } from "../../hooks/useRelationships";
+import LoadingSpinner from "../LoadingSpinner";
 import type { AppFormData } from "../../pages/Pemeriksaan/types";
 
 interface KontakDaruratFormProps {
@@ -18,6 +20,19 @@ const KontakDaruratForm: React.FC<KontakDaruratFormProps> = ({
   handleSubmit,
   onCancel,
 }) => {
+  const {
+    data: relationships,
+    isLoading: isLoadingRelationships,
+    isError,
+  } = useRelationships();
+
+  // Convert relationships data to options format
+  const relationshipOptions =
+    relationships?.map((rel) => ({
+      value: rel.id.toString(),
+      label: rel.name,
+    })) || [];
+
   return (
     <form onSubmit={handleSubmit}>
       <h3 className="text-lg font-semibold text-gray-700 mb-6">
@@ -33,21 +48,35 @@ const KontakDaruratForm: React.FC<KontakDaruratFormProps> = ({
             value={formData.namaKontak}
             onChange={handleChange}
           />
-          <SelectField
-            label="Hubungan"
-            name="hubunganKontak"
-            placeholder="Pilih Hubungan"
-            required
-            options={[
-              { value: "Suami", label: "Suami" },
-              { value: "Istri", label: "Istri" },
-              { value: "Orang Tua", label: "Orang Tua" },
-              { value: "Saudara Kandung", label: "Saudara Kandung" },
-              { value: "Lainnya", label: "Lainnya" },
-            ]}
-            value={formData.hubunganKontak}
-            onChange={handleChange}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Hubungan <span className="text-red-500">*</span>
+            </label>
+            {isLoadingRelationships ? (
+              <div className="flex items-center justify-center p-3 border border-gray-300 rounded-md bg-gray-50">
+                <LoadingSpinner size="sm" />
+                <span className="ml-2 text-sm text-gray-500">
+                  Memuat opsi hubungan...
+                </span>
+              </div>
+            ) : isError ? (
+              <div className="p-3 border border-red-300 rounded-md bg-red-50">
+                <span className="text-sm text-red-600">
+                  Gagal memuat data hubungan
+                </span>
+              </div>
+            ) : (
+              <SelectField
+                label=""
+                name="hubunganKontak"
+                placeholder="Pilih Hubungan"
+                required
+                options={relationshipOptions}
+                value={formData.hubunganKontak}
+                onChange={handleChange}
+              />
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField

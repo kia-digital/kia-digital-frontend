@@ -1,8 +1,65 @@
-import React, { useState, useEffect } from "react";
+// filepath: /Users/ptsau/Projects/dicoding-projects/kia-digital-frontend/src/pages/DashboardPetugas.tsx
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUsers, calculatePregnancyAge, type User } from "../hooks/useUsers";
-import { useUpdateHPHT } from "../hooks/useUpdateHPHT";
-import LoadingSpinner from "../components/LoadingSpinner";
+
+// Mock data untuk daftar ibu
+const mockIbuData = [
+  {
+    id: 1,
+    nama: "Ibu Hanifah",
+    usia: 26,
+    usiaKehamilan: "17 minggu 1 hari",
+    kondisi: "Sehat",
+    lastCheckup: "2025-03-15",
+    nextCheckup: "2025-04-09",
+    telepon: "0878111525",
+    alamat: "Jl. Sutera Narada II, Pakulonan",
+  },
+  {
+    id: 2,
+    nama: "Ibu Sari",
+    usia: 28,
+    usiaKehamilan: "24 minggu 3 hari",
+    kondisi: "Sehat",
+    lastCheckup: "2025-03-10",
+    nextCheckup: "2025-04-15",
+    telepon: "0812345678",
+    alamat: "Jl. Merdeka No. 123, Jakarta",
+  },
+  {
+    id: 3,
+    nama: "Ibu Maria",
+    usia: 24,
+    usiaKehamilan: "32 minggu 5 hari",
+    kondisi: "Perlu Perhatian",
+    lastCheckup: "2025-03-08",
+    nextCheckup: "2025-04-05",
+    telepon: "0823456789",
+    alamat: "Jl. Sudirman No. 456, Bandung",
+  },
+  {
+    id: 4,
+    nama: "Ibu Rina",
+    usia: 30,
+    usiaKehamilan: "12 minggu 2 hari",
+    kondisi: "Sehat",
+    lastCheckup: "2025-03-12",
+    nextCheckup: "2025-04-20",
+    telepon: "0834567890",
+    alamat: "Jl. Pahlawan No. 789, Surabaya",
+  },
+  {
+    id: 5,
+    nama: "Ibu Linda",
+    usia: 27,
+    usiaKehamilan: "38 minggu 1 hari",
+    kondisi: "Sehat",
+    lastCheckup: "2025-03-18",
+    nextCheckup: "2025-04-01",
+    telepon: "0845678901",
+    alamat: "Jl. Diponegoro No. 321, Yogyakarta",
+  },
+];
 
 interface ANCFormData {
   checkupNumber: number;
@@ -21,11 +78,7 @@ interface ANCFormData {
 
 const DashboardPetugas: React.FC = () => {
   const navigate = useNavigate();
-  const { data: users, isLoading, error } = useUsers();
-  const updateHPHTMutation = useUpdateHPHT();
-  const [selectedMother, setSelectedMother] = useState<string | null>(null);
-  const [hphtDate, setHphtDate] = useState<string>("");
-  // Form state for ANC data
+  const [selectedMother, setSelectedMother] = useState<number | null>(null);
   const [formData, setFormData] = useState<ANCFormData>({
     checkupNumber: 1,
     scheduledDate: "",
@@ -40,25 +93,13 @@ const DashboardPetugas: React.FC = () => {
     proteinUrine: "",
     notes: "",
   });
-  const selectedMotherData =
-    selectedMother && users
-      ? users.find((user) => user.id === selectedMother)
-      : null;
 
-  // Update HPHT input when a mother is selected
-  useEffect(() => {
-    if (selectedMotherData && selectedMotherData.hpht) {
-      // Format date to YYYY-MM-DD for input[type="date"]
-      const date = new Date(selectedMotherData.hpht);
-      const formattedDate = date.toISOString().split("T")[0];
-      setHphtDate(formattedDate);
-    } else {
-      setHphtDate("");
-    }
-  }, [selectedMotherData]);
+  const selectedMotherData = selectedMother
+    ? mockIbuData.find((ibu) => ibu.id === selectedMother)
+    : null;
 
   const handleMotherSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const motherId = e.target.value;
+    const motherId = parseInt(e.target.value);
     setSelectedMother(motherId || null);
   };
 
@@ -74,10 +115,6 @@ const DashboardPetugas: React.FC = () => {
     }));
   };
 
-  const handleHphtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHphtDate(e.target.value);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMother) {
@@ -85,91 +122,15 @@ const DashboardPetugas: React.FC = () => {
       return;
     }
     console.log(
-      "Data ANC yang disimpan untuk user ID:",
+      "Data ANC yang disimpan untuk ibu ID:",
       selectedMother,
       formData
     );
     // TODO: Implement API call to save ANC data
     alert(
-      `Data pemeriksaan ANC untuk ${selectedMotherData?.name} berhasil disimpan!`
+      `Data pemeriksaan ANC untuk ${selectedMotherData?.nama} berhasil disimpan!`
     );
   };
-
-  const handleHphtSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedMother) {
-      alert("Silakan pilih ibu terlebih dahulu!");
-      return;
-    }
-    if (!hphtDate) {
-      alert("Silakan pilih tanggal HPHT!");
-      return;
-    }
-
-    updateHPHTMutation.mutate(
-      { id: selectedMother, hpht: hphtDate },
-      {
-        onSuccess: () => {
-          alert(
-            `Data HPHT untuk ${selectedMotherData?.name} berhasil diperbarui!`
-          );
-        },
-        onError: (error) => {
-          alert(
-            `Gagal memperbarui HPHT: ${
-              error instanceof Error ? error.message : "Terjadi kesalahan"
-            }`
-          );
-        },
-      }
-    );
-  };
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size="lg" message="Memuat data users..." />
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-red-200">
-          <div className="text-red-500 mb-4">
-            <svg
-              className="w-16 h-16 mx-auto"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-xl font-semibold text-red-800 mb-4">
-            Gagal Memuat Data
-          </h3>
-          <p className="text-red-600 mb-4">
-            {error?.message || "Terjadi kesalahan saat mengambil data users"}
-          </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors"
-          >
-            Coba Lagi
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -202,9 +163,9 @@ const DashboardPetugas: React.FC = () => {
                   required
                 >
                   <option value="">Pilih ibu...</option>
-                  {users?.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name} - {calculatePregnancyAge(user.hpht)}
+                  {mockIbuData.map((ibu) => (
+                    <option key={ibu.id} value={ibu.id}>
+                      {ibu.nama} - {ibu.usiaKehamilan}
                     </option>
                   ))}
                 </select>
@@ -224,7 +185,15 @@ const DashboardPetugas: React.FC = () => {
                     Nama
                   </label>
                   <p className="text-blue-900 font-medium">
-                    {selectedMotherData.name}
+                    {selectedMotherData.nama}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-blue-600">
+                    Usia
+                  </label>
+                  <p className="text-blue-900 font-medium">
+                    {selectedMotherData.usia} tahun
                   </p>
                 </div>
                 <div>
@@ -232,27 +201,39 @@ const DashboardPetugas: React.FC = () => {
                     Usia Kehamilan
                   </label>
                   <p className="text-blue-900 font-medium">
-                    {calculatePregnancyAge(selectedMotherData.hpht)}
+                    {selectedMotherData.usiaKehamilan}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-blue-600">
-                    HPHT
+                    Kondisi
+                  </label>
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                      selectedMotherData.kondisi === "Sehat"
+                        ? "bg-green-100 text-green-800"
+                        : selectedMotherData.kondisi === "Perlu Perhatian"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {selectedMotherData.kondisi}
+                  </span>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-blue-600">
+                    Telepon
                   </label>
                   <p className="text-blue-900 font-medium">
-                    {selectedMotherData.hpht
-                      ? new Date(selectedMotherData.hpht).toLocaleDateString(
-                          "id-ID"
-                        )
-                      : "Belum diisi"}
+                    {selectedMotherData.telepon}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-blue-600">
-                    ID User
+                    Alamat
                   </label>
-                  <p className="text-blue-900 font-medium text-xs">
-                    {selectedMotherData.id}
+                  <p className="text-blue-900 font-medium">
+                    {selectedMotherData.alamat}
                   </p>
                 </div>
               </div>
@@ -517,46 +498,6 @@ const DashboardPetugas: React.FC = () => {
                     className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     Simpan Data ANC
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {/* HPHT Form */}
-          {selectedMother && (
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Form Pengisian HPHT
-              </h2>
-              <form onSubmit={handleHphtSubmit}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    HPHT <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="hpht"
-                    value={hphtDate}
-                    onChange={handleHphtChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-
-                <div className="flex justify-end space-x-3">
-                  <button
-                    type="button"
-                    onClick={() => navigate("/dashboard")}
-                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Simpan HPHT
                   </button>
                 </div>
               </form>

@@ -12,6 +12,9 @@ import {
   useUpdateUserInformation,
   mapMaritalStatusToId,
 } from "../../../hooks/useUserInformation";
+import { useUpdateEmergencyContact } from "../../../hooks/useUpdateEmergencyContact";
+import { useRelationships } from "../../../hooks/useRelationships";
+import { useUpdateUserHPHT } from "../../../hooks/useUpdateUserHPHT";
 
 interface InfoRowProps {
   label: string;
@@ -76,6 +79,9 @@ const InformasiIbu = () => {
     isError,
   } = useUserInformation();
   const updateUserMutation = useUpdateUserInformation();
+  const updateEmergencyContactMutation = useUpdateEmergencyContact();
+  const updateHPHTMutation = useUpdateUserHPHT();
+  const { data: relationships } = useRelationships();
 
   // UI State
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -134,6 +140,11 @@ const InformasiIbu = () => {
   useEffect(() => {
     if (userInformation) {
       const data = userInformation;
+
+      // Log received data for debugging
+      console.log("Received user information from API:", data);
+      console.log("HPHT value from API:", data.personal_info.hpht);
+
       setCurrentData((prev) => ({
         ...prev,
         nama: data.personal_info.name || "",
@@ -144,6 +155,7 @@ const InformasiIbu = () => {
         statusPernikahan: data.personal_info.marital_status || "",
         umur: data.personal_info.age?.toString() || "",
         golonganDarah: data.personal_info.blood_group || "",
+        hpht: data.personal_info.hpht || "2024-10-01", // Use API value if available, fallback to default
         riwayatPenyakit: data.medical_record.disease_history || "",
         riwayatAlergi: data.medical_record.allergies_history || "",
         tinggiBadan: data.medical_record.body_height?.toString() || "",
@@ -168,6 +180,23 @@ const InformasiIbu = () => {
 
   const openModal = (type: ModalType) => {
     setModalType(type);
+
+    // For emergency contact modal, we need to convert relationship name to ID
+    let hubunganKontakValue = currentData.hubunganKontak;
+    if (
+      type === "kontakDarurat" &&
+      relationships &&
+      currentData.hubunganKontak
+    ) {
+      const relationshipObj = relationships.find(
+        (rel) =>
+          rel.name.toLowerCase() === currentData.hubunganKontak.toLowerCase()
+      );
+      hubunganKontakValue = relationshipObj
+        ? relationshipObj.id.toString()
+        : currentData.hubunganKontak;
+    }
+
     setModalFormData({
       nama: currentData.nama,
       nomorTelepon: currentData.nomorTelepon,
@@ -185,7 +214,7 @@ const InformasiIbu = () => {
       riwayatKehamilan: currentData.riwayatKehamilan,
       hpht: currentData.hpht,
       namaKontak: currentData.namaKontak,
-      hubunganKontak: currentData.hubunganKontak,
+      hubunganKontak: hubunganKontakValue,
       nomorTeleponKontak: currentData.nomorTeleponKontak,
       alamatKontak: currentData.alamatKontak,
     });
@@ -205,6 +234,23 @@ const InformasiIbu = () => {
       default:
         return "Edit Informasi";
     }
+  };
+
+  // Helper function to find relationship ID by name or ID
+  const findRelationshipId = (relationshipValue: string): number => {
+    if (!relationships || !relationshipValue) return 1; // Default to first option
+
+    // If the value is already a numeric ID, parse and return it
+    const numericValue = parseInt(relationshipValue);
+    if (!isNaN(numericValue)) {
+      return numericValue;
+    }
+
+    // Otherwise, find by name
+    const found = relationships.find(
+      (rel) => rel.name.toLowerCase() === relationshipValue.toLowerCase()
+    );
+    return found ? found.id : 1;
   };
 
   const handleFormChange = (
@@ -269,6 +315,67 @@ const InformasiIbu = () => {
         console.error("Failed to update user information:", error);
         // Error handling is now done via toast notifications in the hook
       }
+    } else if (modalType === "kontakDarurat") {
+      try {
+        // Validate required fields for emergency contact
+        if (!modalFormData.namaKontak?.trim()) {
+          toast.error("Nama kontak tidak boleh kosong");
+          return;
+        }
+
+        if (!modalFormData.nomorTeleponKontak?.trim()) {
+          toast.error("Nomor telepon kontak tidak boleh kosong");
+          return;
+        }
+
+        if (!modalFormData.hubunganKontak?.trim()) {
+          toast.error("Hubungan kontak harus dipilih");
+          return;
+        }
+
+        const emergencyContactData = {
+          name: modalFormData.namaKontak.trim(),
+          telp: modalFormData.nomorTeleponKontak.trim(),
+          address: modalFormData.alamatKontak?.trim() || "",
+          relationship_id: findRelationshipId(modalFormData.hubunganKontak),
+        };
+
+        await updateEmergencyContactMutation.mutateAsync(emergencyContactData);
+
+        setCurrentData((prev) => ({
+          ...prev,
+          ...(modalFormData as AppFormData),
+        }));
+
+        setTimeout(() => {
+          closeModal();
+        }, 1500);
+      } catch (error) {
+        console.error("Failed to update emergency contact:", error);
+        // Error handling is now done via toast notifications in the hook
+      }
+    } else if (modalType === "hpht") {
+      try {
+        // Validate required field for HPHT
+        if (!modalFormData.hpht) {
+          toast.error("Tanggal HPHT tidak boleh kosong");
+          return;
+        }
+
+        await updateHPHTMutation.mutateAsync({ hpht: modalFormData.hpht });
+
+        setCurrentData((prev) => ({
+          ...prev,
+          ...(modalFormData as AppFormData),
+        }));
+
+        setTimeout(() => {
+          closeModal();
+        }, 1500);
+      } catch (error) {
+        console.error("Failed to update HPHT information:", error);
+        // Error handling is now done via toast notifications in the hook
+      }
     } else {
       setCurrentData((prev) => ({
         ...prev,
@@ -282,7 +389,10 @@ const InformasiIbu = () => {
   };
 
   const renderModalContent = () => {
-    const isLoading = updateUserMutation.isPending;
+    const isLoading =
+      updateUserMutation.isPending ||
+      updateEmergencyContactMutation.isPending ||
+      updateHPHTMutation.isPending;
 
     return (
       <div>
@@ -785,7 +895,7 @@ const InformasiIbu = () => {
           </div>
 
           {/* Update Status Indicator */}
-          {updateUserMutation.isSuccess && (
+          {(updateUserMutation.isSuccess || updateHPHTMutation.isSuccess) && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center">
                 <div className="text-blue-500 mr-3">
@@ -803,7 +913,9 @@ const InformasiIbu = () => {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-blue-800">
-                    Data diri berhasil diperbarui!
+                    {updateHPHTMutation.isSuccess
+                      ? "Data HPHT berhasil diperbarui!"
+                      : "Data diri berhasil diperbarui!"}
                   </p>
                   <p className="text-xs text-blue-600">
                     Perubahan telah disimpan ke server
