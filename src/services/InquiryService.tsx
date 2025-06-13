@@ -100,6 +100,57 @@ interface UsersResponse {
   };
 }
 
+interface CheckupResult {
+  body_weight: number;
+  heart_rate: number;
+  blood_pressure: string;
+  status_inquiry_anc_id: number;
+  uterine_fundus_height: number;
+  blood_sugar: number;
+  body_temperatur: number;
+}
+
+interface AddANCRequest {
+  scheduled: string;
+  location: string;
+  medical_officer: string;
+  checkup_result: CheckupResult;
+  note: string;
+}
+
+interface UpdateANCRequest {
+  scheduled: string;
+  location: string;
+  medical_officer: string;
+  checkup_result: CheckupResult;
+  note: string;
+}
+
+interface ANCRecord {
+  id: string;
+  scheduled: string;
+  location: string;
+  medical_officer?: string; // Optional karena mungkin tidak ada di response
+  checkup_result: {
+    body_weight: number;
+    heart_rate: number;
+    blood_pressure: string;
+    status: string;
+    uterine_fundus_height: number;
+    blood_sugar: number;
+    body_temperature: number;
+  };
+  note?: string; // Optional karena mungkin tidak ada di response
+}
+
+interface GetANCResponse {
+  detail: {
+    status: string;
+    message: string;
+    data: ANCRecord;
+  };
+}
+
 class InquiryService {
   async getUserInformation(): Promise<InformationResponse> {
     try {
@@ -188,6 +239,73 @@ class InquiryService {
       throw error;
     }
   }
+
+  async addANCExamination(
+    id: string,
+    ancData: AddANCRequest
+  ): Promise<UpdateResponse> {
+    try {
+      console.log("Sending ANC examination data:", ancData);
+      const response = await axiosInstance.post(
+        `/inquiry/anc/add?id=${id}`,
+        ancData
+      );
+      const data: UpdateResponse = response.data;
+      console.log("ANC examination response:", data);
+      return data;
+    } catch (error) {
+      console.error("Add ANC examination error:", error);
+      throw error;
+    }
+  }
+
+  async updateANCExamination(
+    idAnc: string,
+    ancData: UpdateANCRequest
+  ): Promise<UpdateResponse> {
+    try {
+      console.log("Sending ANC examination update data:", ancData);
+      const response = await axiosInstance.patch(
+        `/inquiry/anc/update?id_anc=${idAnc}`,
+        ancData
+      );
+      const data: UpdateResponse = response.data;
+      console.log("ANC examination update response:", data);
+      return data;
+    } catch (error) {
+      console.error("Update ANC examination error:", error);
+      throw error;
+    }
+  }
+
+  async getANCExamination(idAnc: string): Promise<GetANCResponse> {
+    try {
+      console.log("Fetching ANC examination with ID:", idAnc);
+      const response = await axiosInstance.get(
+        `/inquiry/anc/id?id_anc=${idAnc}`
+      );
+      console.log("Raw API response for getANCExamination:", response.data);
+
+      const data: GetANCResponse = response.data;
+
+      // Validate response structure
+      if (!data.detail) {
+        console.error("Invalid response: missing detail property");
+        throw new Error("Invalid API response structure");
+      }
+
+      console.log("Parsed ANC examination response:", data);
+      return data;
+    } catch (error) {
+      console.error("Get ANC examination error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as any;
+        console.error("Error response data:", axiosError.response?.data);
+        console.error("Error response status:", axiosError.response?.status);
+      }
+      throw error;
+    }
+  }
 }
 
 export default new InquiryService();
@@ -204,4 +322,9 @@ export type {
   UpdateEmergencyContactRequest,
   User,
   UsersResponse,
+  AddANCRequest,
+  CheckupResult,
+  UpdateANCRequest,
+  ANCRecord,
+  GetANCResponse,
 };

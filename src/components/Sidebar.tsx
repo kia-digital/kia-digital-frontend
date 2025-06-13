@@ -197,7 +197,7 @@ function Sidebar({ onClose }: SidebarProps) {
 
       {/* Bottom section with RoleSwitcher and Logout */}
       <div className="mt-auto p-4 space-y-3">
-        <RoleSwitcher />
+        {/* <RoleSwitcher /> */}
 
         {/* Logout Button */}
         <button

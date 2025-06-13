@@ -2,8 +2,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { getToken, removeToken } from "../utils/auth";
 
-// Direct URL to the API
-const baseURL = "http://141.11.190.106:15000/api/v1";
+// Use proxy in development, direct URL in production
+const baseURL = import.meta.env.DEV
+  ? "/api/v1" // Akan melalui Vite proxy
+  : "http://141.11.190.106:15000/api/v1"; // Direct URL untuk production
 
 const axiosInstance = axios.create({
   baseURL,

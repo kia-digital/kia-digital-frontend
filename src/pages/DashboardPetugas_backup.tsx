@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { useAddANCExamination } from "../hooks/useAddANCExamination";
-import { useUpdateANCExamination } from "../hooks/useANCOperations";
-import { useUserANCRecords, type ANCRecord } from "../hooks/useANCRecords";
+import { useUsers, calculatePregnancyAge, type User } from "../hooks/useUsers";
 import { useUpdateHPHT } from "../hooks/useUpdateHPHT";
-import { calculatePregnancyAge, useUsers } from "../hooks/useUsers";
+import { useAddANCExamination } from "../hooks/useAddANCExamination";
+import { useUpdateANCExamination, useGetANCExamination } from "../hooks/useANCOperations";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface ANCFormData {
   checkupNumber: number;
@@ -16,7 +14,30 @@ interface ANCFormData {
   weight: string;
   bloodPressure: string;
   fundalHeight: string;
-  fetalHeartRate: string;
+  fetalHe                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/dashboard")}
+                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Batal
+                  </button>
+                  {isEditMode && (
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="px-6 py-2 border border-orange-300 text-orange-700 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    >
+                      Batal Edit
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {isEditMode ? "Update Data ANC" : "Simpan Data ANC"}
+                  </button>
+                </div>;
   bloodSugar: string;
   hemoglobin: string;
   proteinUrine: string;
@@ -34,8 +55,7 @@ const DashboardPetugas: React.FC = () => {
   const [hphtDate, setHphtDate] = useState<string>("");
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [editingANCId, setEditingANCId] = useState<string | null>(null);
-  const { data: userANCRecords, isLoading: isLoadingANCRecords } =
-    useUserANCRecords(selectedMother);
+  const { data: ancRecord, isLoading: isLoadingANC } = useGetANCExamination(editingANCId);
   // Form state for ANC data
   const [formData, setFormData] = useState<ANCFormData>({
     checkupNumber: 1,
@@ -69,132 +89,27 @@ const DashboardPetugas: React.FC = () => {
     }
   }, [selectedMotherData]);
 
-  // Fill form with ANC data when editing - using list data with filtering
+  // Fill form with ANC data when editing
   useEffect(() => {
-    if (isEditMode && editingANCId && selectedMother) {
-      if (isLoadingANCRecords) {
-        console.log("Loading ANC list data for mother:", selectedMother);
-        return;
-      }
-
-      // Filter ANC record from the list data
-      if (userANCRecords && userANCRecords.length > 0) {
-        const targetRecord = userANCRecords.find(
-          (record) => record.id === editingANCId
-        );
-
-        if (targetRecord) {
-          console.log("Found ANC record in list:", targetRecord);
-          const data = targetRecord;
-
-          // Debug logging to see the actual structure
-          console.log("ANC Record data structure:", data);
-          console.log("Checkup result:", data.checkup_result);
-          console.log(
-            "Available properties in checkup_result:",
-            data.checkup_result
-              ? Object.keys(data.checkup_result)
-              : "No checkup_result"
-          );
-
-          // More flexible approach to handle different API response structures
-          const checkupResult = data.checkup_result;
-
-          if (checkupResult && typeof checkupResult === "object") {
-            // Validate required fields exist
-            const requiredFields = [
-              "body_weight",
-              "heart_rate",
-              "blood_pressure",
-              "uterine_fundus_height",
-              "blood_sugar",
-            ];
-            const missingFields = requiredFields.filter(
-              (field) => !checkupResult.hasOwnProperty(field)
-            );
-
-            if (missingFields.length === 0) {
-              setFormData({
-                checkupNumber: 1, // Default value
-                scheduledDate: data.scheduled || "",
-                location: data.location || "",
-                officer: data.medical_officer || "", // Now properly typed as optional
-                weight: String(checkupResult.body_weight || ""),
-                bloodPressure: checkupResult.blood_pressure || "",
-                fundalHeight: String(checkupResult.uterine_fundus_height || ""),
-                fetalHeartRate: String(checkupResult.heart_rate || ""),
-                bloodSugar: String(checkupResult.blood_sugar || ""),
-                hemoglobin: "", // Not in API response
-                proteinUrine: "", // Not in API response
-                // Handle both body_temperature and body_temperatur
-                bodyTemperature: String(
-                  checkupResult.body_temperature ||
-                    (checkupResult as any).body_temperatur ||
-                    "36.5"
-                ),
-                notes: data.note || "", // Now properly typed as optional
-              });
-              console.log("Form data populated successfully with values:", {
-                weight: checkupResult.body_weight,
-                heartRate: checkupResult.heart_rate,
-                bloodPressure: checkupResult.blood_pressure,
-                fundalHeight: checkupResult.uterine_fundus_height,
-                bloodSugar: checkupResult.blood_sugar,
-                bodyTemperature:
-                  checkupResult.body_temperature ||
-                  (checkupResult as any).body_temperatur,
-                medicalOfficer: data.medical_officer,
-                note: data.note,
-              });
-            } else {
-              console.error(
-                "ANC record missing required fields:",
-                missingFields
-              );
-              toast.error(
-                `Data ANC tidak lengkap. Field yang hilang: ${missingFields.join(
-                  ", "
-                )}`
-              );
-              handleCancelEdit();
-            }
-          } else {
-            console.warn(
-              "ANC record data is missing or invalid checkup_result:",
-              {
-                data,
-                checkupResultType: typeof checkupResult,
-                checkupResult,
-              }
-            );
-            toast.error(
-              "Data ANC tidak lengkap. Struktur data pemeriksaan tidak valid."
-            );
-            handleCancelEdit();
-          }
-        } else {
-          console.error(
-            "ANC record not found in list. Available records:",
-            userANCRecords?.map((r) => r.id)
-          );
-          toast.error("Data ANC tidak ditemukan dalam daftar pemeriksaan.");
-          handleCancelEdit();
-        }
-      } else {
-        console.error("No ANC records available or still loading");
-        if (!isLoadingANCRecords) {
-          toast.error("Tidak ada data pemeriksaan ANC yang tersedia.");
-          handleCancelEdit();
-        }
-      }
+    if (ancRecord && ancRecord.detail.data && isEditMode) {
+      const data = ancRecord.detail.data;
+      setFormData({
+        checkupNumber: 1, // Default value
+        scheduledDate: data.scheduled,
+        location: data.location,
+        officer: data.medical_officer,
+        weight: data.checkup_result.body_weight.toString(),
+        bloodPressure: data.checkup_result.blood_pressure,
+        fundalHeight: data.checkup_result.uterine_fundus_height.toString(),
+        fetalHeartRate: data.checkup_result.heart_rate.toString(),
+        bloodSugar: data.checkup_result.blood_sugar.toString(),
+        hemoglobin: "", // Not in API response
+        proteinUrine: "", // Not in API response
+        bodyTemperature: data.checkup_result.body_temperatur.toString(),
+        notes: data.note,
+      });
     }
-  }, [
-    userANCRecords,
-    isEditMode,
-    editingANCId,
-    selectedMother,
-    isLoadingANCRecords,
-  ]);
+  }, [ancRecord, isEditMode]);
 
   const handleMotherSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const motherId = e.target.value;
@@ -238,13 +153,6 @@ const DashboardPetugas: React.FC = () => {
   const handleEditANC = (ancId: string) => {
     setEditingANCId(ancId);
     setIsEditMode(true);
-    // Scroll to form
-    setTimeout(() => {
-      const formElement = document.querySelector("form");
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 100);
   };
 
   const handleCancelEdit = () => {
@@ -256,7 +164,7 @@ const DashboardPetugas: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMother) {
-      toast.error("Silakan pilih ibu terlebih dahulu!");
+      alert("Silakan pilih ibu terlebih dahulu!");
       return;
     }
 
@@ -285,7 +193,7 @@ const DashboardPetugas: React.FC = () => {
         { idAnc: editingANCId, ancData: ancRequestData },
         {
           onSuccess: () => {
-            toast.success(
+            alert(
               `Data pemeriksaan ANC untuk ${selectedMotherData?.name} berhasil diperbarui!`
             );
             // Reset form and exit edit mode
@@ -295,7 +203,7 @@ const DashboardPetugas: React.FC = () => {
           },
           onError: (error) => {
             console.error("ANC update error:", error);
-            toast.error(
+            alert(
               `Gagal memperbarui data pemeriksaan ANC: ${
                 error instanceof Error ? error.message : "Terjadi kesalahan"
               }`
@@ -309,7 +217,7 @@ const DashboardPetugas: React.FC = () => {
         { id: selectedMother, ancData: ancRequestData },
         {
           onSuccess: () => {
-            toast.success(
+            alert(
               `Data pemeriksaan ANC untuk ${selectedMotherData?.name} berhasil disimpan!`
             );
             // Reset form after successful submission
@@ -317,7 +225,7 @@ const DashboardPetugas: React.FC = () => {
           },
           onError: (error) => {
             console.error("ANC submission error:", error);
-            toast.error(
+            alert(
               `Gagal menyimpan data pemeriksaan ANC: ${
                 error instanceof Error ? error.message : "Terjadi kesalahan"
               }`
@@ -331,11 +239,11 @@ const DashboardPetugas: React.FC = () => {
   const handleHphtSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMother) {
-      toast.error("Silakan pilih ibu terlebih dahulu!");
+      alert("Silakan pilih ibu terlebih dahulu!");
       return;
     }
     if (!hphtDate) {
-      toast.error("Silakan pilih tanggal HPHT!");
+      alert("Silakan pilih tanggal HPHT!");
       return;
     }
 
@@ -343,12 +251,12 @@ const DashboardPetugas: React.FC = () => {
       { id: selectedMother, hpht: hphtDate },
       {
         onSuccess: () => {
-          toast.success(
+          alert(
             `Data HPHT untuk ${selectedMotherData?.name} berhasil diperbarui!`
           );
         },
         onError: (error) => {
-          toast.error(
+          alert(
             `Gagal memperbarui HPHT: ${
               error instanceof Error ? error.message : "Terjadi kesalahan"
             }`
@@ -492,150 +400,6 @@ const DashboardPetugas: React.FC = () => {
             </div>
           )}
 
-          {/* ANC Records History */}
-          {selectedMother && (
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Riwayat Pemeriksaan ANC
-                </h3>
-                <button
-                  onClick={() => {
-                    setIsEditMode(false);
-                    setEditingANCId(null);
-                    resetForm();
-                  }}
-                  className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                >
-                  + Tambah Pemeriksaan Baru
-                </button>
-              </div>
-
-              {isLoadingANCRecords ? (
-                <div className="text-center py-4">
-                  <LoadingSpinner size="sm" message="Memuat riwayat ANC..." />
-                </div>
-              ) : userANCRecords && userANCRecords.length > 0 ? (
-                <div className="space-y-3">
-                  {userANCRecords.map((record: ANCRecord, index: number) => (
-                    <div
-                      key={record.id}
-                      className={`p-4 border rounded-lg transition-colors ${
-                        editingANCId === record.id
-                          ? "border-blue-300 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
-                          <div>
-                            <label className="text-xs font-medium text-gray-500">
-                              Pemeriksaan ke-{index + 1}
-                            </label>
-                            <p className="text-sm font-medium text-gray-900">
-                              {new Date(record.scheduled).toLocaleDateString(
-                                "id-ID"
-                              )}
-                            </p>
-                          </div>
-                          <div>
-                            <label className="text-xs font-medium text-gray-500">
-                              Lokasi
-                            </label>
-                            <p className="text-sm text-gray-900">
-                              {record.location}
-                            </p>
-                          </div>
-                          <div>
-                            <label className="text-xs font-medium text-gray-500">
-                              Status
-                            </label>
-                            <p className="text-sm text-gray-900">
-                              {record.checkup_result.status}
-                            </p>
-                          </div>
-                          <div>
-                            <label className="text-xs font-medium text-gray-500">
-                              Berat Badan
-                            </label>
-                            <p className="text-sm text-gray-900">
-                              {record.checkup_result.body_weight} kg
-                            </p>
-                          </div>
-                        </div>
-                        <div className="ml-4 flex space-x-2">
-                          <button
-                            onClick={() => handleEditANC(record.id)}
-                            disabled={isEditMode && editingANCId !== record.id}
-                            className={`px-3 py-1 text-xs rounded-md focus:outline-none focus:ring-2 ${
-                              editingANCId === record.id
-                                ? "bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500"
-                                : "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                            }`}
-                          >
-                            {editingANCId === record.id
-                              ? "Sedang Edit"
-                              : "Edit"}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="mt-2 pt-2 border-t border-gray-100">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                          <div>
-                            <span className="text-gray-500">
-                              Tekanan Darah:
-                            </span>
-                            <span className="ml-1 text-gray-700">
-                              {record.checkup_result.blood_pressure}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">TFU:</span>
-                            <span className="ml-1 text-gray-700">
-                              {record.checkup_result.uterine_fundus_height} cm
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">DJJ:</span>
-                            <span className="ml-1 text-gray-700">
-                              {record.checkup_result.heart_rate} bpm
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Suhu:</span>
-                            <span className="ml-1 text-gray-700">
-                              {record.checkup_result.body_temperature}°C
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <svg
-                    className="w-12 h-12 mx-auto mb-3 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  <p>Belum ada riwayat pemeriksaan ANC</p>
-                  <p className="text-sm">
-                    Mulai dengan menambah pemeriksaan pertama
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* ANC Form */}
           {selectedMother && (
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -644,48 +408,9 @@ const DashboardPetugas: React.FC = () => {
                 <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
                   <div className="flex items-center">
                     <div className="w-1 h-8 bg-blue-400 rounded-full mr-4"></div>
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-800">
-                        {isEditMode
-                          ? "Edit Pemeriksaan ANC"
-                          : "Form Pemeriksaan ANC"}
-                      </h2>
-                      {isEditMode && editingANCId && (
-                        <p className="text-sm text-blue-600 mt-1">
-                          Editing ANC ID: {editingANCId}
-                          {isLoadingANCRecords && (
-                            <span className="ml-2 text-xs text-gray-500">
-                              (Loading data...)
-                            </span>
-                          )}
-                        </p>
-                      )}
-                      {isLoadingANCRecords && (
-                        <p className="text-sm text-blue-600 mt-1 flex items-center">
-                          <svg
-                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-600"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          Memuat data ANC...
-                        </p>
-                      )}
-                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Form Pemeriksaan ANC
+                    </h2>
                   </div>
                   <div className="flex items-center space-x-2">
                     <label className="text-sm font-medium text-gray-600">
@@ -943,34 +668,18 @@ const DashboardPetugas: React.FC = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-end space-x-3">
-                  {isEditMode && (
-                    <button
-                      type="button"
-                      onClick={handleCancelEdit}
-                      className="px-6 py-2 border border-orange-300 text-orange-700 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    >
-                      Batal Edit
-                    </button>
-                  )}
                   <button
                     type="button"
                     onClick={() => navigate("/dashboard")}
                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    Kembali
+                    Batal
                   </button>
                   <button
                     type="submit"
-                    disabled={
-                      addANCMutation.isPending || updateANCMutation.isPending
-                    }
-                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    {addANCMutation.isPending || updateANCMutation.isPending
-                      ? "Menyimpan..."
-                      : isEditMode
-                      ? "Update Data ANC"
-                      : "Simpan Data ANC"}
+                    Simpan Data ANC
                   </button>
                 </div>
               </form>
@@ -978,7 +687,7 @@ const DashboardPetugas: React.FC = () => {
           )}
 
           {/* HPHT Form */}
-          {/* {selectedMother && (
+          {selectedMother && (
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Form Pengisian HPHT
@@ -1015,7 +724,7 @@ const DashboardPetugas: React.FC = () => {
                 </div>
               </form>
             </div>
-          )} */}
+          )}
 
           {/* Instructions if no mother selected */}
           {!selectedMother && (

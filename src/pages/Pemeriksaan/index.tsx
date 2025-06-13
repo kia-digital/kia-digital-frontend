@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import InformasiIbu from "./subpages/InformasiIbu";
 import PemeriksaanANC from "./subpages/PemeriksaanANC";
-import PemeriksaanLeopold from "./subpages/PemeriksaanLeopold";
+// import PemeriksaanLeopold from "./subpages/PemeriksaanLeopold"; // Sementara disembunyikan
 import PageHeader from "../../components/PageHeader";
 import { useRole } from "../../contexts/RoleContext";
 
@@ -18,12 +18,18 @@ const Pemeriksaan: React.FC = () => {
   const getInitialTab = (): PemeriksaanTabs => {
     // Priority 1: Check location state (from DetailPemeriksaanIbu navigation)
     if (location.state?.activeTab) {
-      return location.state.activeTab as PemeriksaanTabs;
+      const requestedTab = location.state.activeTab as PemeriksaanTabs;
+      // Redirect Leopold to InformasiIbu (sementara disembunyikan)
+      if (requestedTab === "PemeriksaanLeopold") {
+        return "InformasiIbu";
+      }
+      return requestedTab;
     }
     // Priority 2: Check URL parameters (from petugas navigation)
     const type = searchParams.get("type");
     if (type === "anc") return "PemeriksaanANC";
-    if (type === "leopold") return "PemeriksaanLeopold";
+    // Leopold sementara diarahkan ke InformasiIbu
+    if (type === "leopold") return "InformasiIbu";
     // Default
     return "InformasiIbu";
   };
@@ -54,7 +60,8 @@ const Pemeriksaan: React.FC = () => {
       case "PemeriksaanANC":
         return <PemeriksaanANC />;
       case "PemeriksaanLeopold":
-        return <PemeriksaanLeopold />;
+        // return <PemeriksaanLeopold />; // Sementara disembunyikan
+        return <InformasiIbu />; // Redirect ke InformasiIbu
       default:
         return null;
     }
@@ -63,7 +70,7 @@ const Pemeriksaan: React.FC = () => {
   const tabs: { key: PemeriksaanTabs; label: string }[] = [
     { key: "InformasiIbu", label: "Informasi Ibu" },
     { key: "PemeriksaanANC", label: "Pemeriksaan ANC" },
-    { key: "PemeriksaanLeopold", label: "Pemeriksaan Leopold" },
+    // { key: "PemeriksaanLeopold", label: "Pemeriksaan Leopold" }, // Sementara disembunyikan
   ];
   return (
     <>
