@@ -19,16 +19,15 @@ interface Article {
   tags?: string[];
 }
 
-// Data artikel untuk semua kategori
-const allArticles: Record<string, Article[]> = {
-  "trimester-1": [
+// Semua artikel dalam satu array tanpa pengelompokan kategori
+const allArticles: Article[] = [
     {
       id: 1,
       title: "Perubahan Tubuh di Trimester Pertama",
       excerpt:
         "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
       readTime: "5 menit",
-      category: "Perkembangan",
+      category: "Trimester I",
       image: "🤱",
       isPopular: true,
       content:

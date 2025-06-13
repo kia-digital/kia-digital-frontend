@@ -6,17 +6,28 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRole } from "../contexts/RoleContext";
+import { useDashboardInfo } from "../hooks/useDashboardInfo";
 import DashboardPetugas from "./DashboardPetugas";
 import LembarPemantauanModal from "../components/LembarPemantauanModal";
 import "../styles/CategoryCard.css";
 
 const Dashboard = () => {
   const { currentUser } = useRole();
+  const {
+    userInfo,
+    loading,
+    error,
+    refetch,
+    totalDays,
+    pregnancyAge,
+    conditionDisplay,
+  } = useDashboardInfo();
 
   // Jika user adalah petugas kesehatan, tampilkan dashboard petugas
   if (currentUser.role === "petugas_kesehatan") {
     return <DashboardPetugas />;
   }
+
   // Dashboard untuk role Ibu (existing dashboard)
   const navigate = useNavigate();
   const today = new Date();
@@ -124,61 +135,42 @@ const Dashboard = () => {
   const isDateSelected = (date: Date) => {
     if (!selectedDate) return false;
     return date.toDateString() === selectedDate.toDateString();
-  };
-  const categories = [
+  }; // Recommended articles for the user
+  const recommendedArticles = [
     {
       id: 1,
-      title: "Trimester 1",
-      description: "Informasi dan tips untuk trimester pertama kehamilan",
-      icon: "🤱",
-      articleCount: 12,
-      slug: "/edukasi/trimester-1",
+      category: "Trimester I",
+      title: "Perubahan Tubuh di Trimester Pertama",
+      description:
+        "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
+      preview:
+        "Trimester pertama adalah periode krusial dalam kehamilan dimana terjadi banyak perubahan...",
     },
     {
-      id: 2,
-      title: "Trimester 2",
-      description: "Panduan lengkap untuk trimester kedua kehamilan",
-      icon: "👶",
-      articleCount: 15,
-      slug: "/edukasi/trimester-2",
+      id: 11,
+      category: "Trimester II",
+      title: "Perkembangan Janin Trimester 2",
+      description: "Milestone penting perkembangan bayi di usia 13-27 minggu",
+      preview:
+        "Trimester kedua adalah periode emas kehamilan dimana banyak organ berkembang...",
     },
     {
-      id: 3,
-      title: "Trimester 3",
-      description: "Persiapan persalinan dan trimester ketiga",
-      icon: "🍼",
-      articleCount: 10,
-      slug: "/edukasi/trimester-3",
+      id: 21,
+      category: "Trimester III",
+      title: "Persiapan Persalinan",
+      description: "Panduan lengkap mempersiapkan diri menjelang persalinan",
+      preview:
+        "Trimester ketiga adalah waktu untuk mempersiapkan persalinan...",
     },
     {
-      id: 4,
-      title: "Imunisasi",
-      description: "Jadwal dan informasi imunisasi selama kehamilan",
-      icon: "💉",
-      articleCount: 8,
-      slug: "/edukasi/imunisasi",
-    },
-    {
-      id: 5,
-      title: "Asupan Gizi",
-      description: "Nutrisi penting untuk ibu dan bayi",
-      icon: "🥗",
-      articleCount: 20,
-      slug: "/edukasi/asupan-gizi",
-    },
-    {
-      id: 6,
-      title: "Kesehatan Mental",
-      description: "Menjaga kesehatan mental selama kehamilan",
-      icon: "🧠",
-      articleCount: 6,
-      slug: "/edukasi/kesehatan-mental",
+      id: 31,
+      category: "Imunisasi",
+      title: "Jadwal Imunisasi Ibu Hamil",
+      description: "Vaksin yang aman dan diperlukan selama kehamilan",
+      preview:
+        "Imunisasi selama kehamilan penting untuk melindungi ibu dan bayi...",
     },
   ];
-
-  const handleCategoryClick = (slug: string) => {
-    navigate(slug);
-  };
   const scheduleItems = [
     {
       date: "9 April 2025",
@@ -279,38 +271,34 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-                {/* Articles Section */}
+                </div>{" "}
+                {/* Articles Recommendations Section */}
                 <div className="space-y-4 sm:space-y-6">
                   <h2 className="text-lg sm:text-xl text-gray-800 font-bold">
-                    Eksplorasi kategori artikel yang Anda ingin pelajari
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {categories.map((category) => (
+                    Rekomendasi untuk Anda!
+                  </h2>{" "}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    {recommendedArticles.map((article, index) => (
                       <div
-                        key={category.id}
-                        onClick={() => handleCategoryClick(category.slug)}
-                        className="category-card relative rounded-xl shadow-lg overflow-hidden p-4 sm:p-6 cursor-pointer border border-gray-100 group flex flex-col items-center justify-center text-center min-h-[180px] sm:min-h-[200px]"
+                        key={index}
+                        onClick={() => navigate(`/edukasi/${article.id}`)}
+                        className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
                       >
-                        {/* Content with z-index for layering */}
-                        <div className="relative z-10 flex flex-col items-center justify-center text-center w-full">
-                          <div className="text-3xl sm:text-4xl mb-3 sm:mb-4 transition-all duration-300 ease-out emoji-icon">
-                            {category.icon}
-                          </div>
-                          <p className="text-gray-500 group-hover:text-pink-100 font-medium text-xs sm:text-sm mb-1 transition-colors duration-300">
-                            Tentang
-                          </p>
-                          <h3 className="font-semibold text-gray-800 group-hover:text-white mb-2 text-sm sm:text-base transition-colors duration-300">
-                            {category.title}
-                          </h3>
-                          <p className="text-xs sm:text-sm text-gray-600 group-hover:text-pink-100 mb-3 transition-colors duration-300 line-clamp-2">
-                            {category.description}
-                          </p>
-                          <div className="flex items-center justify-center w-full">
-                            <span className="text-xs font-medium text-primary-500 group-hover:text-pink-200 transition-colors duration-300">
-                              {category.articleCount} artikel
+                        <div className="p-4 sm:p-6">
+                          <div className="mb-3">
+                            <span className="text-primary-500 text-xs sm:text-sm font-medium">
+                              {article.category}
                             </span>
                           </div>
+                          <h3 className="text-gray-900 font-semibold text-base sm:text-lg mb-3 leading-tight">
+                            {article.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2">
+                            {article.description}
+                          </p>
+                          <p className="text-gray-500 text-sm leading-relaxed line-clamp-3">
+                            {article.preview}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -320,27 +308,81 @@ const Dashboard = () => {
 
               {/* Right Column - Schedule */}
               <div className="space-y-6 lg:space-y-8">
+                {" "}
                 {/* Profile Section */}
                 <div className="rounded-xl shadow-lg bg-white w-full min-h-[200px] sm:min-h-[270px] flex justify-center items-center flex-col p-4 sm:p-6">
-                  <div className="mb-6 sm:mb-8 text-center">
-                    <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
-                      Ibu Hanifah
-                    </h3>
-                    <span className="inline-block bg-green-100 text-green-800 border-2 border-green-400 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-sm font-medium">
-                      Kondisi Ibu Sehat
-                    </span>
-                  </div>
-
-                  <div className="text-center">
-                    <p className="text-base sm:text-lg text-gray-600 mb-2">
-                      17 minggu, 1 hari hamil
-                    </p>
-                    <h4 className="text-2xl sm:text-3xl font-bold text-pink-400 mb-4">
-                      Hari ke-120
-                    </h4>
-                  </div>
+                  {loading ? (
+                    <div className="text-center">
+                      <div className="spinner-border h-8 w-8 mx-auto mb-4 border-2 border-t-primary-500 border-primary-200 rounded-full animate-spin"></div>
+                      <p className="text-gray-500">Memuat informasi...</p>
+                    </div>
+                  ) : error ? (
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">⚠️</div>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        Gagal Memuat Data
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">{error}</p>
+                      <button
+                        onClick={refetch}
+                        className="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm hover:bg-primary-600 transition-colors"
+                      >
+                        Coba Lagi
+                      </button>
+                    </div>
+                  ) : userInfo ? (
+                    <>
+                      <div className="mb-6 sm:mb-8 text-center">
+                        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+                          {userInfo.name || "Nama Ibu"}
+                        </h3>
+                        <span
+                          className={`inline-block ${conditionDisplay.bgColor} ${conditionDisplay.textColor} border-2 ${conditionDisplay.borderColor} text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-sm font-medium`}
+                        >
+                          {conditionDisplay.text}
+                        </span>
+                      </div>{" "}
+                      <div className="text-center">
+                        <p className="text-base sm:text-lg text-gray-600 mb-2">
+                          {pregnancyAge}
+                        </p>
+                        <h4 className="text-2xl sm:text-3xl font-bold text-pink-400 mb-4">
+                          Hari ke-{totalDays}
+                        </h4>
+                      </div>
+                      {!userInfo.kondisi && (
+                        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                          <p className="text-sm text-yellow-700 mb-2">
+                            💡 Lengkapi data diri dan lakukan pemeriksaan ANC
+                            untuk mendapatkan informasi kondisi kesehatan
+                          </p>
+                          <button
+                            onClick={() => navigate("/pemeriksaan")}
+                            className="text-xs text-yellow-800 underline hover:text-yellow-900"
+                          >
+                            Pergi ke Informasi Ibu
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">📋</div>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        Data Tidak Tersedia
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Silakan lengkapi informasi Anda terlebih dahulu
+                      </p>
+                      <button
+                        onClick={() => navigate("/pemeriksaan")}
+                        className="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm hover:bg-primary-600 transition-colors"
+                      >
+                        Lengkapi Data
+                      </button>
+                    </div>
+                  )}
                 </div>
-
                 {/* Schedule Section */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg">
                   <h3 className="font-semibold text-lg sm:text-xl mb-4">

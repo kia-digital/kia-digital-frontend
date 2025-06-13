@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
+import { useRole } from "../contexts/RoleContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { setUserFromApi } = useRole();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -15,8 +16,23 @@ function Login() {
     try {
       const response = await AuthService.login({ email, password });
       if (response.detail.status === "success") {
-        // Redirect to dashboard on successful login
-        navigate("/dashboard", { replace: true });
+        // Set user role from API response
+        if (response.detail.role) {
+          setUserFromApi(
+            response.detail.role["role-name"] as
+              | "Ibu Hamil"
+              | "Petugas Kesehatan",
+            response.detail.role.id
+          );
+
+          // Wait a bit for state to update before redirect
+          setTimeout(() => {
+            navigate("/dashboard", { replace: true });
+          }, 100);
+        } else {
+          // If no role info, still redirect
+          navigate("/dashboard", { replace: true });
+        }
       }
     } catch (error) {
       // Error handling is done in AuthService with toast notifications

@@ -1,17 +1,25 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
+import axiosInstance from "../services/axiosInstance";
+import { normalizeArticleList } from "../utils/articleHelpers";
+import type { Article as ArticleType } from "../utils/articleHelpers";
 
 interface ArticleCardProps {
   id: number;
   category: string;
   title: string;
   description: string;
-  preview: string;
-  categoryRoute: string;
+  preview?: string;
+  categoryRoute?: string;
+  tag?: string;
   onClick: () => void;
 }
 
+// Using the imported ArticleType instead of redefining it
+type Article = ArticleType;
+
+// ArticleCard component remains the same
 const ArticleCard: React.FC<ArticleCardProps> = ({
   category,
   title,
@@ -46,45 +54,84 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
 
 const EdukasiPage: React.FC = () => {
   const navigate = useNavigate();
-  const articles = [
-    {
-      id: 1,
-      category: "Trimester I",
-      title: "Perubahan Tubuh di Trimester Pertama",
-      description:
-        "Memahami perubahan fisik dan hormonal yang terjadi pada 12 minggu pertama kehamilan",
-      preview:
-        "Trimester pertama adalah periode krusial dalam kehamilan dimana terjadi banyak perubahan...",
-      categoryRoute: "trimester-1",
-    },
-    {
-      id: 11,
-      category: "Trimester II",
-      title: "Perkembangan Janin Trimester 2",
-      description: "Milestone penting perkembangan bayi di usia 13-27 minggu",
-      preview:
-        "Trimester kedua adalah periode emas kehamilan dimana banyak organ berkembang...",
-      categoryRoute: "trimester-2",
-    },
-    {
-      id: 21,
-      category: "Trimester III",
-      title: "Persiapan Persalinan",
-      description: "Panduan lengkap mempersiapkan diri menjelang persalinan",
-      preview:
-        "Trimester ketiga adalah waktu untuk mempersiapkan persalinan...",
-      categoryRoute: "trimester-3",
-    },
-    {
-      id: 31,
-      category: "Imunisasi",
-      title: "Jadwal Imunisasi Ibu Hamil",
-      description: "Vaksin yang aman dan diperlukan selama kehamilan",
-      preview:
-        "Imunisasi selama kehamilan penting untuk melindungi ibu dan bayi...",
-      categoryRoute: "imunisasi",
-    },
-  ];
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Check for category filter from URL parameters
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get("kategori");
+    if (categoryFromUrl) {
+      setActiveFilter(categoryFromUrl);
+    }
+  }, [searchParams]);
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        console.log("Fetching articles from API...");
+        const response = await axiosInstance.get(`/article/`);
+
+        console.log("API Response received:", response.data);
+
+        // Use the helper function to normalize article data
+        const articleData = normalizeArticleList(response.data);
+        console.log("Normalized articles:", articleData.length);
+
+        // Save articles to localStorage for detail page access
+        localStorage.setItem("edukasiArticles", JSON.stringify(articleData));
+
+        setArticles(articleData);
+        setLoading(false);
+      } catch (err: any) {
+        console.error("Error fetching articles:", err);
+
+        // Check if it's a network error or server error
+        if (err.response?.status >= 500) {
+          setError("Server sedang bermasalah. Silakan coba lagi nanti.");
+        } else if (err.code === "NETWORK_ERROR" || !err.response) {
+          setError("Koneksi bermasalah. Periksa koneksi internet Anda.");
+        } else {
+          setError("Gagal memuat artikel. Menggunakan data contoh.");
+        } // Use mock data as fallback
+        const fallbackData = normalizeArticleList(null);
+
+        // Save fallback articles to localStorage for detail page access
+        localStorage.setItem("edukasiArticles", JSON.stringify(fallbackData));
+
+        setArticles(fallbackData);
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+  // Filter articles based on search query and category filter
+  const filteredArticles = articles.filter((article) => {
+    // Filter by search query
+    const matchesSearch =
+      searchQuery === "" ||
+      article.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.deskripsi.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.tag.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Filter by category
+    const matchesCategory =
+      activeFilter === "all" ||
+      article.kategori.toLowerCase().replace(/\s+/g, "-") ===
+        activeFilter.toLowerCase() ||
+      article.kategori.toLowerCase() === activeFilter.toLowerCase();
+
+    return matchesSearch && matchesCategory;
+  });
+
+  // Get unique categories from articles for filter buttons
+  const categories = [...new Set(articles.map((article) => article.kategori))];
 
   return (
     <>
@@ -152,29 +199,121 @@ const EdukasiPage: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Recommendations Section */}
-          <div className="mb-6">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">
-              Rekomendasi untuk Anda!
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
-              {articles.map((article, index) => (
-                <ArticleCard
-                  key={index}
-                  id={article.id}
-                  category={article.category}
-                  title={article.title}
-                  description={article.description}
-                  preview={article.preview}
-                  categoryRoute={article.categoryRoute}
-                  onClick={() =>
-                    navigate(`/edukasi/${article.categoryRoute}/${article.id}`)
-                  }
+          </div>{" "}
+          {/* Search Section */}
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+                Artikel Edukasi
+              </h2>
+              <div className="w-full sm:w-64 relative">
+                <input
+                  type="text"
+                  placeholder="Cari artikel..."
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                <svg
+                  className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Category Filters */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <button
+                className={`px-4 py-2 text-sm rounded-full ${
+                  activeFilter === "all"
+                    ? "bg-primary-500 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                } transition-colors`}
+                onClick={() => setActiveFilter("all")}
+              >
+                Semua
+              </button>{" "}
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={`px-4 py-2 text-sm rounded-full ${
+                    activeFilter === category.toLowerCase().replace(/\s+/g, "-")
+                      ? "bg-primary-500 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  } transition-colors`}
+                  onClick={() =>
+                    setActiveFilter(category.toLowerCase().replace(/\s+/g, "-"))
+                  }
+                >
+                  {category}
+                </button>
               ))}
             </div>
+
+            {/* Loading state */}
+            {loading && (
+              <div className="bg-gray-50 p-8 rounded-lg text-center">
+                <div className="spinner-border h-8 w-8 mx-auto mb-4 border-2 border-t-primary-500 border-primary-200 rounded-full animate-spin"></div>
+                <p className="text-gray-500">Memuat artikel...</p>
+              </div>
+            )}
+
+            {/* Error state */}
+            {error && (
+              <div className="bg-gray-50 p-8 rounded-lg text-center">
+                <div className="text-3xl mb-2">⚠️</div>
+                <h3 className="text-lg font-medium text-gray-700 mb-2">
+                  {error}
+                </h3>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+                >
+                  Coba lagi
+                </button>
+              </div>
+            )}
+
+            {/* Articles List */}
+            {!loading && !error && (
+              <>
+                {filteredArticles.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {filteredArticles.map((article, index) => (
+                      <ArticleCard
+                        key={index}
+                        id={article.id}
+                        category={article.kategori}
+                        title={article.judul}
+                        description={article.deskripsi}
+                        preview=""
+                        onClick={() => navigate(`/edukasi/${article.id}`)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 p-8 rounded-lg text-center">
+                    <div className="text-3xl mb-2">🔍</div>
+                    <h3 className="text-lg font-medium text-gray-700 mb-2">
+                      Tidak ada artikel yang ditemukan
+                    </h3>
+                    <p className="text-gray-500 text-sm">
+                      Coba dengan kata kunci lain atau filter yang berbeda
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
