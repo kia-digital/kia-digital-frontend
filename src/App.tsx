@@ -14,12 +14,23 @@ import Layout from "./components/Layout";
 import ArtikelDetail from "./pages/Edukasi/ArtikelDetail_new";
 import DetailPemeriksaanIbu from "./pages/DetailPemeriksaanIbu";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { isAuthenticated } from "./utils/auth";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+        {/* Root route - redirect based on auth status */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated() ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
         <Route
           path="/auth"
           element={
@@ -104,17 +115,7 @@ function App() {
         {/* 404 Route */}
         <Route
           path="*"
-          element={
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-6xl font-bold text-pink-500 mb-4">404</h1>
-                <p className="text-xl text-gray-600 mb-6">
-                  Halaman tidak ditemukan
-                </p>
-                <Navigate to="/dashboard" replace />
-              </div>
-            </div>
-          }
+          element={<Navigate to="/dashboard" replace />}
         />
       </Routes>
     </Router>
