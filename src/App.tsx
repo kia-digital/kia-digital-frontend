@@ -19,7 +19,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
         <Route
           path="/auth"
           element={

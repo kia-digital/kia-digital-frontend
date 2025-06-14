@@ -3,9 +3,7 @@ import toast from "react-hot-toast";
 import { getToken, removeToken } from "../utils/auth";
 
 // Use proxy in development, direct URL in production
-const baseURL = import.meta.env.DEV
-  ? "/api/v1" // Akan melalui Vite proxy
-  : "https://nugrahanggarasiregar.my.id/api/v1"; // Direct URL untuk production
+const baseURL = "https://nugrahanggarasiregar.my.id/api/v1"; // Direct URL untuk production
 // Check if the environment variable is set correctly
 // const BASE_URL =
 //   import.meta.env.VITE_API_URL || "http://141.11.190.106:15000/api/v1";
