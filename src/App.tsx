@@ -14,7 +14,6 @@ import Layout from "./components/Layout";
 import ArtikelDetail from "./pages/Edukasi/ArtikelDetail_new";
 import DetailPemeriksaanIbu from "./pages/DetailPemeriksaanIbu";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { isAuthenticated } from "./utils/auth";
 
 function App() {
   return (
@@ -24,11 +23,9 @@ function App() {
         <Route
           path="/"
           element={
-            isAuthenticated() ? (
+            <AuthRedirect>
               <Navigate to="/dashboard" replace />
-            ) : (
-              <Navigate to="/auth" replace />
-            )
+            </AuthRedirect>
           }
         />
         <Route
@@ -113,10 +110,7 @@ function App() {
           }
         />
         {/* 404 Route */}
-        <Route
-          path="*"
-          element={<Navigate to="/dashboard" replace />}
-        />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
   );
